@@ -95,7 +95,7 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 
-$db['accellardb'] = array(
+$db['gamasys'] = array(
     'dsn'	=> '',
     'hostname' => '192.168.1.202',
     'username' => 'root',

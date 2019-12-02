@@ -26,6 +26,8 @@ class MY_Controller extends CI_Controller{
             $this->myConlocation  = $_SESSION['session_user_data']['location'];
             $this->MyConUserGroup  = $_SESSION['session_user_data']['userGroup'];
         }
+        $this->gamaSysDb = $this->load->database('gamasys',TRUE);
+        $this->saveStyleDataFrmGamaSysDb();
     }
 
     public function checkSession(){
@@ -47,6 +49,32 @@ class MY_Controller extends CI_Controller{
 
         if ($company == '' || $location == '' || $team == '' || $lineSection == '') {
             redirect(base_url("Profile_App_Con"), 'refresh');
+        }
+    }
+
+    public function saveStyleDataFrmGamaSysDb(){
+        $sqlFrmGamaSys = "SELECT
+        `styleNo`,
+        scNumber,
+        deliveryNo,
+        garmentColour,
+        `size`,
+        orderQty,
+        recorded_datetime,
+        deliveryType,
+        qty,
+        `recorded_datetime`
+      FROM
+        `temp_exela_order_details`
+      WHERE qty != '0' ORDER BY `recorded_datetime` DESC
+      LIMIT 100";
+
+        $result = $this->gamaSysDb->query($sqlFrmGamaSys)->result();
+
+        foreach ($result as $row){
+
+            $sql = "INSERT IGNORE INTO style_Info (scNumber,styleNo,deliveryNo,deliveryType,garmentColour,orderQty,size,qty,cut_Plan_Date) VALUES ('$row->scNumber','$row->styleNo','$row->deliveryNo','$row->deliveryType','$row->garmentColour','$row->orderQty','$row->size','$row->qty','$row->recorded_datetime')";
+            $this->db->query($sql);
         }
     }
 
