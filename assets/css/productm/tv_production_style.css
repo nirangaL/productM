@@ -1,0 +1,200 @@
+body {
+    top: 10px;
+    background-color: black;
+    margin: 0 1%;
+    overflow: hidden;
+}
+
+.tbheader tr {
+    background-color: #4b6584;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+tbody tr {
+    background: #001B23 !important;
+}
+
+th {
+    font-size: 1.5000rem;
+    width: 12.5%;
+    margin: 0;
+    padding: 0;
+}
+
+th:nth-child(1) {
+    width: 25%;
+}
+
+td {
+    font-size: 1.5625rem;
+    color: #F2FB3A;
+}
+
+.tile {
+    background: #001B23;
+    top: 10Px;
+    height: 270px;
+    max-height: 270px;
+    overflow: hidden;
+}
+
+.tile h1 {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    /* text-transform: capitalize; */
+}
+
+.value {
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 110px;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.f-green {
+    color: #00a65a;
+}
+
+.f-white {
+    color: #fff;
+}
+
+.f-yellow {
+    color: #f39c12;
+}
+
+.f-red {
+    color: #dd4b39;
+}
+
+.f-blue {
+    color: #27B7FF;
+}
+
+.up-icon {
+    color: #00d000 !important;
+}
+
+.down-icon {
+    color: #e10600 !important;
+}
+
+.clip {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: center right;
+    transition: transform 1s;
+    perspective: 1000px;
+    /* top: 20px; */
+}
+
+.is-flipped {
+    transform: translateX(-100%) rotateY(-180deg);
+}
+
+.card__face {
+    position: absolute !important;
+    width: 100% !important;
+    /* line-height: 260px !important; */
+    backface-visibility: hidden !important;
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+.timecount {
+    font-size: 60px !important;
+    padding-top: 37px;
+}
+
+.prasentage {
+    font-size: 85px !important;
+}
+
+.col,
+.col-1,
+.col-10,
+.col-11,
+.col-12,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-auto,
+.col-lg,
+.col-lg-1,
+.col-lg-10,
+.col-lg-11,
+.col-lg-12,
+.col-lg-2,
+.col-lg-3,
+.col-lg-4,
+.col-lg-5,
+.col-lg-6,
+.col-lg-7,
+.col-lg-8,
+.col-lg-9,
+.col-lg-auto,
+.col-md,
+.col-md-1,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-auto,
+.col-sm,
+.col-sm-1,
+.col-sm-10,
+.col-sm-11,
+.col-sm-12,
+.col-sm-2,
+.col-sm-3,
+.col-sm-4,
+.col-sm-5,
+.col-sm-6,
+.col-sm-7,
+.col-sm-8,
+.col-sm-9,
+.col-sm-auto,
+.col-xl,
+.col-xl-1,
+.col-xl-10,
+.col-xl-11,
+.col-xl-12,
+.col-xl-2,
+.col-xl-3,
+.col-xl-4,
+.col-xl-5,
+.col-xl-6,
+.col-xl-7,
+.col-xl-8,
+.col-xl-9,
+.col-xl-auto {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 1px !important;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+}

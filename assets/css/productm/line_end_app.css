@@ -1,0 +1,401 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.modal {
+    top: -22px !important;
+}
+
+.modal-header {
+    padding: 0.70rem !important;
+}
+
+.form-inline,
+.d-md-none {
+    padding-top: 10px !important;
+    margin-right: 10px;
+}
+
+body {
+    background: #fff;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/* header nav style */
+
+.nav-item {
+    overflow: hidden;
+    padding: 0;
+}
+
+.d-md-none .item-name {
+    margin-right: 10px;
+}
+
+.item-des {
+    width: 300% !important;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.item-title {
+    color: #f39c12 !important;
+    font-size: 18px !important;
+    font-weight: bold;
+}
+
+.item-name {
+    color: #00a65a !important;
+    font-size: 18px !important;
+    /* font-weight: bold; */
+}
+
+.navbar-nav {
+    width: 100% !important;
+}
+
+.navbar-nav .nav-item:nth-child(1) {
+    width: 28.33% !important;
+}
+
+.navbar-nav .nav-item:nth-child(2) {
+    width: 28.33% !important;
+}
+
+.navbar-nav .nav-item:nth-child(3) {
+    width: 28.33% !important;
+}
+
+.navbar-nav .nav-item:nth-child(4) {
+    width: 20% !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .navbar-nav .nav-item:nth-child(1) {
+        width: 100% !important;
+    }
+    .navbar-nav .nav-item:nth-child(2) {
+        width: 100% !important;
+    }
+    .navbar-nav .nav-item:nth-child(3) {
+        width: 100% !important;
+    }
+    .navbar-nav .nav-item:nth-child(4) {
+        display: none;
+        /* width: 100% !important; */
+    }
+}
+
+
+/* Style config model style */
+
+.label,
+.model-head {
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
+.width-fix {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 45px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    display: block;
+    padding-left: 8px;
+    padding-right: 20px;
+    padding-top: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 20px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 38px;
+}
+
+.select2-results__option {
+    padding: 6px;
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 18px;
+}
+
+.select2-search--dropdown .select2-search__field {
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+.modal-body {
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 2% 1%;
+}
+
+.col-form-label {
+    padding-top: calc(.4375rem + 1px);
+    padding-bottom: calc(.4375rem + 1px);
+    margin-bottom: 0;
+    font-size: inherit;
+    line-height: 1.5385;
+    text-align: left;
+}
+
+.style-config-error {
+    color: red;
+    font-size: 14px;
+}
+
+
+/* Size panal Style */
+
+.size-panal {
+    display: flex;
+    flex-wrap: nowrap;
+    border: 1px solid #bdc3c7;
+    overflow-x: auto;
+    margin: 12px 0 7px 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    height: 100px;
+}
+
+.size-panal h1 {
+    font-size: 25px;
+    text-transform: uppercase;
+    color: #ef5350;
+}
+
+.size-box {
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+    background: #fff;
+    font-size: 20px;
+    color: black;
+    overflow: hidden;
+    margin: 4px 4px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid red;
+}
+
+.size-box-clicked {
+    background-color: black;
+    border: 2px solid red;
+    color: red;
+}
+
+.size-box:after,
+.size-panal {
+    content: "";
+    /* position: absolute; */
+    clear: both;
+}
+
+.size-name {
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+    margin: auto;
+}
+
+.btn-wrapper {
+    margin: 4px 0;
+}
+
+.btn-box {
+    height: 120px;
+    width: 100%;
+    margin: 2px 0;
+    margin-bottom: 2%;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    text-align: left;
+    padding: 0 !important;
+    transition: 0.7s;
+}
+
+.btn-box:focus {
+    border: none;
+    outline: none;
+    /* -moz-outline-style: none; */
+}
+
+.btn-box:active {
+    opacity: 0.2 !important;
+}
+
+.btn-center {
+    text-align: center;
+    margin-top: -50px;
+}
+
+.btn-title {
+    padding-left: 10px;
+    font-weight: bold;
+    color: black;
+    margin-top: -16px;
+    font-size: 18px;
+}
+
+.btn-center i {
+    font-size: 35px;
+    color: black;
+}
+
+.btn-center span {
+    font-size: 40px;
+    padding: 0;
+    margin: 0;
+    color: black;
+}
+
+
+/* Defect Reason model */
+
+.defect-reason {
+    padding-top: 6px;
+    width: 100%;
+    height: 35px;
+    max-height: 60px;
+    overflow: scroll;
+    margin: 10px 0;
+    background-color: #fff9c4;
+    border: 1px solid #ff5722;
+    text-align: left;
+    padding-left: 10px !important;
+    border-radius: 15px;
+}
+
+.defect-reason-clicked {
+    background-color: #ff5722;
+    border: 1px solid #ff5722;
+    border-radius: 15px !important;
+}
+
+.defect-reason span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.defect-reason:focus {
+    /* border: none !im; */
+    border-radius: 15px !important;
+}
+
+.modal-footer button {
+    width: 128px;
+    height: 42px;
+    font-size: 16px;
+}
+
+.savelogDisplay {
+    height: 120px;
+    max-height: 120px;
+    overflow-y: scroll;
+    margin: 3%;
+}
+
+.savelogDisplay p {
+    color: #192a56;
+    font-family: monospace;
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+    /* line-height: 5px; */
+}
+
+.savelogDisplay p span {
+    text-transform: uppercase;
+}
+
+.savelogDisplay .warning {
+    color: #e1b12c !important;
+    font-size: 14px !important;
+}
+
+.savelogDisplay .success {
+    color: #4cd137 !important;
+    font-size: 11px !important;
+}
+
+.savelogDisplay .error {
+    color: #c23616 !important;
+    font-size: 14px !important;
+}
+
+.modal-cus {
+    height: 275px;
+    overflow-y: scroll;
+    margin-right: 0;
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    /* padding-top: 1%; */
+}
+
+.frequentReasons {
+    position: relative;
+    margin-top: -8px;
+    margin-bottom: 1%;
+}
+
+#defect-reasons-model .title {
+    color: #7f8fa6;
+    text-transform: uppercase;
+}
+
+.frequentReasons span {
+    width: 170px;
+    font-size: 16px;
+    padding-left: 5px;
+}
+
+.frequentReasons hr {
+    display: block !important;
+    text-align: center !important;
+    position: absolute !important;
+    top: -10px !important;
+    width: 70% !important;
+    left: 158px !important;
+}
+
+.frequentReasons .row {
+    margin-top: 10px;
+}
