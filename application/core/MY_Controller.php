@@ -53,28 +53,29 @@ class MY_Controller extends CI_Controller{
     }
 
     public function saveStyleDataFrmGamaSysDb(){
-        $sqlFrmGamaSys = "SELECT
-        `styleNo`,
-        scNumber,
-        deliveryNo,
-        garmentColour,
-        `size`,
-        orderQty,
-        recorded_datetime,
-        deliveryType,
-        qty,
-        `recorded_datetime`
-      FROM
-        `temp_exela_order_details`
-      WHERE qty != '0' ORDER BY `recorded_datetime` DESC
-      LIMIT 100";
 
-        $result = $this->gamaSysDb->query($sqlFrmGamaSys)->result();
+        /// get last insertRow's date ////////
+        $lastTimeUpdateDate = $this->getLastUpdateDate();
+
+        $result = $this->gamaSysDb->query("SELECT `styleNo`,scNumber,deliveryNo,garmentColour,`size`,orderQty,recorded_datetime,deliveryType,qty FROM `temp_exela_order_details` WHERE recorded_datetime > '$lastTimeUpdateDate' AND qty !='0' ORDER BY recorded_datetime DESC LIMIT 500")->result();
 
         foreach ($result as $row){
 
-            $sql = "INSERT IGNORE INTO style_Info (scNumber,styleNo,deliveryNo,deliveryType,garmentColour,orderQty,size,qty,cut_Plan_Date) VALUES ('$row->scNumber','$row->styleNo','$row->deliveryNo','$row->deliveryType','$row->garmentColour','$row->orderQty','$row->size','$row->qty','$row->recorded_datetime')";
+            $sql = "INSERT INTO style_Info (scNumber,styleNo,deliveryNo,deliveryType,garmentColour,orderQty,size,qty,cut_Plan_Date) VALUES ('$row->scNumber','$row->styleNo','$row->deliveryNo','$row->deliveryType','$row->garmentColour','$row->orderQty','$row->size','$row->qty','$row->recorded_datetime')";
             $this->db->query($sql);
+        }
+    }
+
+    public function getLastUpdateDate(){
+        $result =  $this->db->query("SELECT `cut_Plan_Date` FROM `style_Info` WHERE id = (SELECT MAX(id) FROM `style_Info`)")->result();
+
+        if(!empty($result)){
+            return $result[0]->cut_Plan_Date;
+        }else{
+            // return date('Y-m-d H:i:s',strtotime("-1 days"));
+            $format = 'Y-m-d H:i:s';
+            $date = DateTime::createFromFormat($format, '2000-01-01 00:00:00');
+            return $date->format('Y-m-d H:i:s');
         }
     }
 
