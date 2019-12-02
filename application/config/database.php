@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-    'hostname' => 'localhost', //'192.168.1.211'
+    'hostname' => 'localhost',  //'192.168.1.211'
     'username' => 'root',
-    'password' => 'NiraNga.1',//'20@Oa#15',
+    'password' => 'NiraNga.1',  //'20@Oa#15',
     'database' => 'intranet_db',
     'dbdriver' => 'mysqli',
 	'dbprefix' => '',
