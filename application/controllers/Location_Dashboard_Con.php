@@ -217,6 +217,7 @@ class Location_Dashboard_Con extends MY_Controller{
             'style' => $result[$i]->style,
             'delivery' => $result[$i]->delivery,
             'orderQty' => $result[$i]->orderQty,
+            'smv' => $result[$i]->smv,
             'dayPlanQty' => $result[$i]->dayPlanQty,
             'hrs' => $result[$i]->hrs,
             'lineOutQty' => $result[$i]->actualQty,

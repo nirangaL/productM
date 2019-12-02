@@ -112,6 +112,7 @@
               <th>Style</th>
               <th>Delv/PO</th>
               <th>Run.Days</th>
+              <th>SMV</th>
               <th>Plan.Qty</th>
               <th>Out.Qty</th>
               <th>Effi%</th>
@@ -288,6 +289,7 @@
             var neededQrLvl = '-';
             var incentive = '-';
             var nextS = 0;
+            var smv = '';
 
             if(json_value['tvData'][i] != null){
               for(var x=0;x<json_value['tvData'][i]['gridData'].length;x++){
@@ -304,6 +306,7 @@
                 neededQrLvl = json_value['tvData'][i]['gridData'][x]['needQrLvl'];
                 status = json_value['tvData'][i]['gridData'][x]['status'];
                 neededQtyAtTime = json_value['tvData'][i]['gridData'][x]['neededQtyAtTime'];
+                smv = json_value['tvData'][i]['gridData'][x]['smv'];
 
 
                 if(json_value['tvData'][i]['gridData'][x]['whatData'] == 'feeding'){
@@ -311,7 +314,7 @@
                   html += "<td>" + teamName + "</td>";
                   html += "<td>" + buyer + "</td>";
                   html += "<td>" + style + "</td>";
-                  html += "<td colspan='8' style='color:orange;text-align:center;font-weight:bold;'>Feeding...</td>";
+                  html += "<td colspan='9' style='color:orange;text-align:center;font-weight:bold;'>Feeding...</td>";
                   html += "</tr>";
                 }else{
                   html += "<tr>";
@@ -320,6 +323,7 @@
                   html += "<td>" + style + "</td>";
                   html += "<td>" + delv + "</td>";
                   html += "<td>" + runDay + "</td>";
+                  html += "<td>" + smv + "</td>";
                   html += "<td>" + pQty + "</td>";
 
                   if(neededQtyAtTime != '-'){
@@ -365,6 +369,7 @@
             }else{
               html +="<tr>";
               html +="<td>"+json_value['team'][i]+"</td>";
+              html +="<td>-</td>";
               html +="<td>-</td>";
               html +="<td>-</td>";
               html +="<td>-</td>";
