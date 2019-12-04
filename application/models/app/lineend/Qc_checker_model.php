@@ -321,18 +321,23 @@ class Qc_checker_model extends CI_Model{
     $style = $this->input->post('style');
     $date = date('Y-m-d');
     $sql ="SELECT
-    (SELECT COALESCE(COUNT(id),0) AS pass FROM `qc_pass_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) AS passQty
-    ,(SELECT COALESCE(COUNT(rejectId),0) FROM `qc_reject_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`  ) - (SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) -(SELECT COALESCE(COUNT(id),0) FROM `qc_rereject_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`)  AS defectQty
-    ,(SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) AS remakeQty
-    FROM
-    `checking_header_tb`
-    LEFT JOIN `qc_pass_log`
-    ON (`checking_header_tb`.`id` = `qc_pass_log`.`chckHeaderId`)
-    LEFT JOIN `qc_reject_log`
-    ON (`checking_header_tb`.`id` = `qc_reject_log`.`chckHeaderId`)
-    LEFT JOIN `qc_remake_log`
-    ON (`checking_header_tb`.`id` = `qc_remake_log`.`chckHeaderId`)
-    WHERE style='$style' AND lineNo='$this->team' AND DATE(`checking_header_tb`.`dateTime`)='$date' GROUP BY style ;";
+        mt.lineNo,
+    mt.style,
+   SUM(mt.passQty) AS passQty,
+   SUM(mt.defectQty) AS defectQty,
+   SUM(mt.remakeQty) AS remakeQty
+  FROM
+  (SELECT
+        `checking_header_tb`.*
+        ,`qc_pass_log`.`size`
+        ,(SELECT COALESCE(COUNT(id),0) AS pass FROM `qc_pass_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) AS passQty
+        ,(SELECT COALESCE(COUNT(rejectId),0) FROM `qc_reject_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`  ) - (SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) -(SELECT COALESCE(COUNT(id),0) FROM `qc_rereject_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`)  AS defectQty
+        ,(SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) AS remakeQty
+        FROM
+        `checking_header_tb`
+        LEFT JOIN `qc_pass_log`
+        ON (`checking_header_tb`.`id` = `qc_pass_log`.`chckHeaderId`)
+        WHERE style='$style' AND lineNo='$this->team' AND DATE(`checking_header_tb`.`dateTime`)='$date' GROUP BY `checking_header_tb`.id) mt GROUP BY mt.style";
 
     return $this->db->query($sql)->result();
   }
