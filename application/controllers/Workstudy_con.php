@@ -53,6 +53,10 @@ class Workstudy_con extends MY_Controller{
 
   public function saveDayPlan(){
     if($this->dayPlanFormValidation('save')) {
+      $dayPlanType  = $this->input->post('dayPlanType');
+      if($dayPlanType == 4){
+        $this->Workstudy_model->changeDayPlanType($dayPlanType);
+      }
       $result = $this->Workstudy_model->saveDayPlan();
       if($result){
         redirect(base_url('Workstudy_con'), 'refresh');
@@ -77,6 +81,9 @@ class Workstudy_con extends MY_Controller{
   }
 
   public function editDayPlan($planId){
+     
+        /// if this day plan two Style Same Smv then change other related day plan to normal ///// 
+       $chenageStyleType =  $this->Workstudy_model->changeDayPlanTypeToNormal($planId);
 
       if($this->dayPlanFormValidation('edit')) {
         $result = $this->Workstudy_model->editDayPlan($planId);
@@ -98,7 +105,6 @@ class Workstudy_con extends MY_Controller{
       $this->form_validation->set_rules('style', 'Style', 'trim|required');
       $this->form_validation->set_rules('dayPlanType', 'dayPlanType', 'trim|required');
       $this->form_validation->set_rules('timeTempl', 'timeTempl', 'trim|required');
-      $this->form_validation->set_rules('delivery', 'Delivery', 'trim|required');
       $this->form_validation->set_rules('smv', 'SMV', 'trim|required');
       $this->form_validation->set_rules('workingHrs', 'Hrs', 'trim|required');
       $this->form_validation->set_rules('noOfWorkser', 'No Of Workers', 'trim|required');
@@ -109,7 +115,7 @@ class Workstudy_con extends MY_Controller{
       // $this->form_validation->set_rules('style', 'Style', 'trim|required');
       // $this->form_validation->set_rules('dayPlanType', 'dayPlanType', 'trim|required');
       // $this->form_validation->set_rules('timeTempl', 'timeTempl', 'trim|required');
-      // $this->form_validation->set_rules('delivery', 'Delivery', 'trim|required');
+      $this->form_validation->set_rules('runDay', 'Run Day', 'trim|required');
       $this->form_validation->set_rules('smv', 'SMV', 'trim|required');
       $this->form_validation->set_rules('workingHrs', 'Hrs', 'trim|required');
       $this->form_validation->set_rules('noOfWorkser', 'No Of Workers', 'trim|required');
@@ -128,27 +134,23 @@ class Workstudy_con extends MY_Controller{
   }
 
   public function getStyleRunDays(){
+    $dayPlanType = $this->input->post('dayPlanType');
+    // if($dayPlanType == '4'){
+    //   $styleRunDays = $this->Workstudy_model->otherDayPlan();
+    //   $runDaysinToday = $styleRunDays['runDay']+1;
+    // }else{
+    //   $styleRunDays = $this->Workstudy_model->getStyleRunDays();
+    //   $runDaysinToday = $styleRunDays['runDay']+1;
+    // }
 
     $styleRunDays = $this->Workstudy_model->getStyleRunDays();
-
-    $fDay = 'n';
-    if($styleRunDays['num_rows'] == 0){
-      $fDay = 'y';
-      $styleRunDays['num_rows'] = 1;
-    }
-
-    $runDaysinToday = $styleRunDays['num_rows']+1;
-
-    $result = $this->Workstudy_model->needRuningDaysEffi( $runDaysinToday);
-
+    $runDaysinToday = $styleRunDays['runDay']+1;
+   
+    $result = $this->Workstudy_model->needRuningDaysEffi($runDaysinToday);
 
     if(!empty($result)){
       $result[0]->styleRunDays = new stdClass();
-      if( $fDay == 'y'){
-        $result[0]->styleRunDays = 0;
-      }else{
-        $result[0]->styleRunDays = $styleRunDays['num_rows'];
-      }
+      $result[0]->styleRunDays = $runDaysinToday;
       $result[0]->lastRunDate = new stdClass();
       $result[0]->lastRunDate = $styleRunDays['lastRunDate'];
       echo json_encode($result);
@@ -163,10 +165,10 @@ class Workstudy_con extends MY_Controller{
 
     $result = $this->Workstudy_model->getStyleRunDays();
 
-    if(empty($result) || $result['num_rows'] =='0'){
+    if(empty($result) || $result['runDay'] =='0'){
       $styleRunnigDaysCount = 1;
     }else {
-      $styleRunnigDaysCount = $result['num_rows'];
+      $styleRunnigDaysCount = $result['runDay'];
     }
 
     //        echo 'style run days  '. $styleRunnigDaysCount.'---';

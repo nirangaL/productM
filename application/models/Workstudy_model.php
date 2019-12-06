@@ -19,11 +19,11 @@ class Workstudy_model extends CI_Model{
     , `prod_line`.`line`
     , `day_plan`.`dayPlanType`
     , `day_plan`.`style`
+    , `day_plan`.`smv`
     , `day_plan`.`scNumber`
-    , `day_plan`.`delivery`
-    , `day_plan`.`orderQty`
     , `day_plan`.`dayPlanQty`
     , `day_plan`.`hrs`
+    , `day_plan`.`noOfwokers`
     , `day_plan`.`status`
     , `day_plan`.`createDate` AS `dateTime`
     , `location`.`location`
@@ -44,11 +44,8 @@ class Workstudy_model extends CI_Model{
     $timeTempl = $this->input->post('timeTempl');
     $style = $this->input->post('style');
     $scNumber = $this->input->post('scNumber');
-    $delivery = $this->input->post('delivery');
-    $orderQty = $this->input->post('orderQty');
-    $planPer = $this->input->post('planPer');
-    $plannerQty = $this->input->post('plannerQty');
     $dayPlanQty = $this->input->post('planQty');
+    $runningDay = $this->input->post('runDay');
     $workingHrs = $this->input->post('workingHrs');
     $smv = $this->input->post('smv');
     $noOfWorkser = $this->input->post('noOfWorkser');
@@ -69,11 +66,8 @@ class Workstudy_model extends CI_Model{
       'timeTemplate' => $timeTempl,
       'style' => $style,
       'scNumber' => $scNumber,
-      'delivery' => $delivery,
-      'orderQty' =>  $orderQty,
-      'plannerPers' =>  $planPer,
-      'plannerQty' =>  $plannerQty,
-      'dayPlanQty' =>  $dayPlanQty,
+      'dayPlanQty' =>  $dayPlanQty, 
+      'runningDay' =>  $runningDay, 
       'hrs' =>  $workingHrs,
       'smv' =>  $smv,
       'noOfwokers' =>  $noOfWorkser,
@@ -101,10 +95,7 @@ class Workstudy_model extends CI_Model{
   public function editDayPlan($planId){
     $status = $this->input->post('status');
 
-    $delivery = $this->input->post('delivery');
-    $orderQty = $this->input->post('orderQty');
-    $planPer = $this->input->post('planPer');
-    $plannerQty = $this->input->post('plannerQty');
+    $runDay = $this->input->post('runDay');
     $smv = $this->input->post('smv');
     $workingHrs = $this->input->post('workingHrs');
     $noOfWorkser = $this->input->post('noOfWorkser');
@@ -121,6 +112,7 @@ class Workstudy_model extends CI_Model{
     $this->db->set('smv', $smv);
     $this->db->set('noOfwokers', $noOfWorkser);
     $this->db->set('dayPlanQty', $planQty);
+    $this->db->set('runningDay', $runDay);
     $this->db->set('incentiveHour', $ince_hour);
     // $this->db->set('incenEffi', $efficiency);
     $this->db->set('forecastEffi', $forecastEffi);
@@ -147,6 +139,29 @@ class Workstudy_model extends CI_Model{
     return $this->db->query($sql)->result();
   }
 
+  // public function otherDayPlan(){
+  //   $style = $this->input->post('style');
+  //   $line = $this->input->post('line');
+  //   $date = date('Y-m-d');
+  //   $sql = "SELECT runnigDay AS runDay,DATE(createDate) AS lastRunDate FROM day_plan WHERE line='$line' AND style='$style' AND DATE(createDate) ='$date';";
+
+  //   $result =  $this->db->query($sql)->result();
+
+  //   if(!empty($result)){
+  //     $data = array(
+  //       'runDay' =>(Int)$result[0]->runDaysCount,
+  //       'lastRunDate' =>$result[0]->lastRunDate
+  //     );
+  //   }else{
+  //     $data = array(
+  //       'runDay' =>0,
+  //       'lastRunDate' =>'--/--/----'
+  //     );
+  //   }
+
+  //   return $data;
+  // }
+
   public  function getStyleRunDays(){
     $style = $this->input->post('style');
     $line = $this->input->post('line');
@@ -157,12 +172,12 @@ class Workstudy_model extends CI_Model{
 
     if(!empty($result)){
       $data = array(
-        'num_rows' =>(Int)$result[0]->runDaysCount,
+        'runDay' =>(Int)$result[0]->runDaysCount,
         'lastRunDate' =>$result[0]->lastRunDate
       );
     }else{
       $data = array(
-        'num_rows' =>1,
+        'runDay' =>0,
         'lastRunDate' =>'--/--/----'
       );
     }
@@ -201,13 +216,50 @@ class Workstudy_model extends CI_Model{
     `timeTemplate`,
     `hrs`,
     `smv`,
+    `runnigDay`,
     `noOfwokers`,
+    `incentiveHour`,
     `sysEffi`,
     `incenEffi`,
     `forecastEffi`
     FROM
     `day_plan` WHERE line='$lineId' AND dayPlanType ='1'AND status !='3' AND DATE(createDate) = '$date'";
     return $this->db->query($sql)->result();
+  }
+
+  public function changeDayPlanType($dayPlanType){
+    $otherDayPlanId = $this->input->post('otherDayPlan');
+    $this->db->trans_start();
+    $this->db->set('dayPlanType',$dayPlanType );
+    $this->db->where('id',$otherDayPlanId);
+    $this->db->update('day_plan');
+    $this->db->trans_complete();
+
+  }
+
+
+  public function changeDayPlanTypeToNormal($planId){
+    $date = date('Y-m-d');
+    $otherDayPlan =$this->db->query(
+      "SELECT line FROM `day_plan` WHERE id = '$planId'"
+    )->result();
+
+    if(!empty($otherDayPlan)){
+      $line = $otherDayPlan[0]->line;
+      $sql = "UPDATE
+              `intranet_db`.`day_plan`
+            SET
+              `dayPlanType` = '1'
+            WHERE `line` = '$line'
+              AND DATE(createDate) = '$date'
+              AND dayPlanType = '4'";
+
+      $this->db->trans_start();
+      $this->db->query($sql);
+      $this->db->trans_complete();
+    }
+
+    
   }
 
 }

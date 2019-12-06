@@ -30,8 +30,6 @@
               </div>
             </div>
 
-            <!--            --><?php //print_r($userGroups);?>
-
           </div>
 
           <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
@@ -71,13 +69,13 @@
                     <label class="col-form-label col-md-1">Team :</label>
                     <div class="col-md-3">
                       <select id="line" name="line" class="form-control select-search"
-                      onchange="checkLineIsRunning(this);resetTextField('team');" data-fouc required>
+                      onchange="checkLineIsRunning(this);resetTextField('team');resetAfterSelectDayPlanType();" data-fouc required>
                       <option value="">--- Select Line ----</option>
                       <?php foreach ($prdocLine as $row) {
-                        ?>
+    ?>
                         <option value="<?php echo $row->line_id; ?>" <?php echo set_select('line', $row->line_id); ?> > <?php echo $row->line; ?> </option>
                         <?php
-                      } ?>
+}?>
                     </select>
                     <span class="error" id="error" ><?php echo form_error('line'); ?></span>
                     <span class="error" id="errorLineRunnig" style="color:orange;"></span>
@@ -86,89 +84,41 @@
                   <div class="col-md-3">
                     <select id="dayPlanType" name="dayPlanType" class="form-control select" data-placeholder="Select a Day Plan type"
                     onchange="asDayPlanType();" data-fouc required>
-
                   </select>
                   <span class="error" id="error"><?php echo form_error('dayPlanType'); ?></span>
-
                 </div>
-                  <label class="col-form-label col-md-1">Time Template :</label>
+                  <label class="col-form-label col-md-1">Time Table :</label>
                   <div class="col-md-3">
                     <select id="timeTempl" name="timeTempl" class="form-control select-search" data-fouc required>
-                      <option value="">--- Select Time Template ----</option>
+                      <option value="">--- Select Time Table ----</option>
                       <?php foreach ($timeTempl as $row) {
-                        ?>
-                        <option value="<?php echo $row->id; ?>" <?php echo set_select('line', $row->id); ?> > <?php echo $row->templateCode.' - '. $row->templateName; ?> </option>
+    ?>
+                        <option value="<?php echo $row->id; ?>" <?php echo set_select('line', $row->id); ?> > <?php echo $row->templateCode . ' - ' . $row->templateName; ?> </option>
                         <?php
-                      } ?>
+}?>
                     </select>
                     <span class="error" id="error"><?php echo form_error('timeTempl'); ?></span>
                   </div>
                 </div>
 
+              <input type="hidden" id="otherDayPlan" name="otherDayPlan" value="">
+
                 <div class="form-group row">
                   <label class="col-form-label col-md-1">Style :</label>
                   <div class="col-md-3">
                     <select id="style" name="style" class="form-control select-search"
-                    onchange="getDelivery(this);getPlannedQty();getStyleRunDays();" data-fouc required>
+                    onchange="getPlannedQty();getStyleRunDays();" data-fouc required>
                     <option value="">--- Select Style ----</option>
                     <?php foreach ($style as $row) {
-                      ?>
+    ?>
                       <option value="<?php echo $row->styleNo; ?>" <?php echo set_select('style', $row->styleNo); ?> > <?php echo $row->styleNo . ' - ' . $row->scNumber; ?> </option>
                       <?php
-                    } ?>
+}?>
                   </select>
                   <span class="error" id="error"><?php echo form_error('style'); ?></span>
                 </div>
 
-                <label class="col-form-label col-md-1">Delivery :</label>
-                <div class="col-md-3">
-                  <select id="delivery" name="delivery" class="form-control select-search"
-                  onchange="getOrderQty(this);getPlannedQty();" data-fouc
-                  required>
-                  <option value="">--- Select Delivery ----</option>
-                </select>
-                <span class="error" id="error"><?php echo form_error('delivery'); ?></span>
-              </div>
-
-              <label class="col-form-label col-md-1">Order QTY :</label>
-              <div class="col-md-3">
-                <input id="orderQty" name="orderQty" type="text" class="form-control"
-                value="<?php echo set_value('orderQty'); ?>" readonly>
-                <span class="error" id="error"><?php echo form_error('orderQty'); ?></span>
-              </div>
-
-            </div>
-
-
-            <div class="form-group row">
-              <label class="col-form-label col-md-1">Plan % :</label>
-              <div class="col-md-2">
-                <input id="planPer" name="planPer" type="text" class="form-control"
-                value="<?php echo set_value('planPer'); ?>" min="0" onkeyup="getPlannerQty();"
-                required>
-                <span class="error" id="error"><?php echo form_error('planPer'); ?></span>
-              </div>
-
-              <div class="col-md-1"></div>
-              <label class="col-form-label col-md-1">Planner QTY :</label>
-              <div class="col-md-2">
-                <input id="plannerQty" name="plannerQty" type="number" class="form-control"
-                value="<?php echo set_value('plannerQty'); ?>" min="0" readonly required>
-                <span class="error" id="error"><?php echo form_error('plannerQty'); ?></span>
-              </div>
-
-              <div class="col-md-1"></div>
-              <label class="col-form-label col-md-1">Hrs:</label>
-              <div class="col-md-2">
-                <input id="workingHrs" name="workingHrs" type="text" class="form-control"
-                value="<?php echo set_value('workingHrs'); ?>" min="0" max="24"
-                onkeyup="getPlannedQty();setInceHour();" required>
-                <span class="error" id="error"><?php echo form_error('workingHrs'); ?></span>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label class="col-form-label col-md-1">SMV :</label>
+                <label class="col-form-label col-md-1">SMV :</label>
               <div class="col-md-2">
                 <input id="smv" name="smv" type="text" class="form-control"
                 value="<?php echo set_value('smv'); ?>" min="0"
@@ -176,7 +126,6 @@
                 <span class="error" id="error"><?php echo form_error('smv'); ?></span>
               </div>
               <div class="col-md-1"></div>
-
               <label class="col-form-label col-md-1">Workers:</label>
               <div class="col-md-2">
                 <input id="noOfWorkser" name="noOfWorkser" type="number" step="any" min="0" class="form-control"
@@ -186,23 +135,42 @@
               </div>
               <div class="col-md-1"></div>
 
-              <label class="col-form-label col-md-1">Day Plan Qty :</label>
+
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-form-label col-md-1">Hours:</label>
+              <div class="col-md-2">
+                <input id="workingHrs" name="workingHrs" type="text" class="form-control"
+                value="<?php echo set_value('workingHrs'); ?>" min="0" max="24"
+                onkeyup="getPlannedQty();setInceHour();" required>
+                <span class="error" id="error"><?php echo form_error('workingHrs'); ?></span>
+              </div>
+              <div class="col-md-1"></div>
+              <label class="col-form-label col-md-1">Plan Qty :</label>
               <div class="col-md-2">
                 <input id="planQty" name="planQty" type="number" class="form-control"
                 value="<?php echo set_value('planQty'); ?>" min="0" required>
                 <span class="error" id="error"><?php echo form_error('planQty'); ?></span>
               </div>
-
+              <div class="col-md-1"></div>
+              <label class="col-form-label col-md-1">Run Day :</label>
+              <div class="col-md-1">
+                <input id="runDay" name="runDay" type="number" class="form-control"
+                value="<?php echo set_value('runDay'); ?>" min="0" required>
+                <span class="error" id="error"><?php echo form_error('runDay'); ?></span>
+              </div>
             </div>
 
             <div class="form-group row">
               <label class="col-form-label col-md-1">Inc.Hour :</label>
-              <div class="col-md-1">
+              <div class="col-md-2">
                 <input id="ince_hour" name="ince_hour" type="text" class="form-control"
                 value="<?php echo set_value('ince_hour'); ?>" min="0" max="24" required>
                 <span class="error" id="error"><?php echo form_error('ince_hour'); ?></span>
               </div>
-              <div class="col-md-2"></div>
+              <div class="col-md-1"></div>
               <label class="col-form-label col-md-1">Inc.Efficiency :</label>
               <div class="col-md-2">
                 <input id="efficiency" name="efficiency" type="number" class="form-control"
@@ -227,7 +195,7 @@
                 <div class="form-check form-check-inline form-check-right">
                   <label class="form-check-label">
                     Run
-                    <input type="radio" id="run" class="form-check-input-styled" name="status" onclick="changStatus();"
+                    <input type="radio" id="run" class="form-check-input-styled" name="status"
                     value="1" checked data-fouc>
                   </label>
                 </div>
@@ -235,7 +203,7 @@
                 <div class="form-check form-check-inline form-check-right">
                   <label class="form-check-label">
                     Hold
-                    <input type="radio" id="hold" class="form-check-input-styled" name="status" onclick="changStatus();"
+                    <input type="radio" id="hold" class="form-check-input-styled" name="status"
                     value="2" data-fouc>
                   </label>
                 </div>
@@ -243,7 +211,7 @@
                 <div class="form-check form-check-inline form-check-right">
                   <label class="form-check-label">
                     Feeding
-                    <input type="radio" id="feeding" class="form-check-input-styled"name="status" onclick="changStatus();"
+                    <input type="radio" id="feeding" class="form-check-input-styled"name="status"
                     value="4" data-fouc>
                   </label>
                 </div>
@@ -264,10 +232,10 @@
                 <div id="feedingInputDiv" class="col-md-2" style="display: none;">
                   <input id="feedHours" name="feedHours" type="number" class="form-control "
                   value="<?php if (set_value('feedHours') == '') {
-                    echo '0';
-                  } else {
-                    echo set_value('feedHours');
-                  } ?>" placeholder="Feeding Hours" min="0" >
+    echo '0';
+} else {
+    echo set_value('feedHours');
+}?>" placeholder="Feeding Hours" min="0" >
                   <span class="error" id="error"><?php echo form_error('feedHours'); ?></span>
                 </div>
                 <div class="col-md-9">
@@ -296,62 +264,12 @@
         }
       });
 
-        function getDelivery(style) {
-          var style = $(style).val();
-          if (style != '') {
-            $.ajax({
-              url: '<?php echo base_url("index.php/Workstudy_con/getDelivery")?>', //This is the current doc
-              type: "POST",
-              data: ({
-                style: style,
-              }),
-              success: function (data) {
-                var html = "<option value='' selected=\"selected\">&nbsp;</option>";
-                var json_value = JSON.parse(data);
-                for (var i = 0; i < json_value.length; i++) {
-                  html += "<option value='" + json_value[i]['deliveryNo'] + "'>" + json_value[i]['deliveryNo'] + "</option>";
-                }
-                $('#delivery').empty().append(html);
-              }
-            });
-          } else {
-
-
-          }
-        }
-
-        function getOrderQty(delivery) {
-
-          var delivery = $(delivery).val();
-          var style = $('#style').val();
-          if (delivery != '') {
-            $.ajax({
-              url: '<?php echo base_url("Workstudy_con/getOrderQty")?>', //This is the current doc
-              type: "POST",
-              data: ({
-                deliveryNo: delivery,
-                style: style,
-              }),
-              success: function (data) {
-                var json_value = JSON.parse(data);
-                $('#orderQty').val(json_value[0]['orderQty']);
-                $('#scNumber').val(json_value[0]['scNumber']);
-
-                getPlannedQty();
-                getPlannerQty();
-              }
-            });
-          } else {
-            $('#orderQty').val('');
-            $('#plannerQty').val('');
-          }
-        }
 
         function checkLineIsRunning(selectLine) {
           var selectLine = $(selectLine).val();
           if (selectLine != '') {
             $.ajax({
-              url: '<?php echo base_url("Workstudy_con/checkLineIsRunning")?>', //This is the current doc
+              url: '<?php echo base_url("Workstudy_con/checkLineIsRunning") ?>', //This is the current doc
               type: "POST",
               data: ({
                 line: selectLine
@@ -398,7 +316,6 @@
           }else{
             html += '<option></option>';
             html += '<option value="2">Feeding</option>';
-            html += '<option value="3">Two Style - Split Team</option>';
             html += '<option value="4">Two Style & Same SMV- All Workers </option>';
           }
           $('#dayPlanType').empty().append(html);
@@ -412,12 +329,13 @@
 
           if (style != '' && line != '') {
             $.ajax({
-              url: '<?php echo base_url("Workstudy_con/getStyleRunDays")?>', //This is the current doc
+              url: '<?php echo base_url("Workstudy_con/getStyleRunDays") ?>', //This is the current doc
               type: "POST",
               data: ({
                 style: style,
                 line: line,
-                smv: smv
+                smv: smv,
+                dayPlanType:dayPlanType
               }),
               success: function (data) {
                 var date = '-'
@@ -428,6 +346,7 @@
                     date = json_value[0]['lastRunDate'];
                   }
                   StyleRunDays = json_value[0]['styleRunDays'];
+                  $('#runDay').val(StyleRunDays);
                   if(dayPlanType != '4'){
                     $('#efficiency').val(json_value[0]['efficiency']);
                     $('#efficiency_hid').val(json_value[0]['efficiency']);
@@ -439,7 +358,7 @@
                 } else {
 
                 }
-                $('#msg').html('<b>Note :</b>  This  <b>' + style + '</b> style have run this line in <b>' + StyleRunDays + '</b> days. Last days is/was <b>' + date + '</b>');
+                $('#msg').html('<b>Note :</b>  This  <b>' + (style-1) + '</b> style have run this line in <b>' + StyleRunDays + '</b> days. Last days is/was <b>' + date + '</b>');
               }
             });
           } else {
@@ -457,7 +376,7 @@
 
           if (style != '' && line != '' && smv != '' && hrs != '' && workers != '') {
             $.ajax({
-              url: '<?php echo base_url("Workstudy_con/getPlannedQty")?>', //This is the current doc
+              url: '<?php echo base_url("Workstudy_con/getPlannedQty") ?>', //This is the current doc
               type: "POST",
               data: ({
                 hrs: hrs,
@@ -476,29 +395,11 @@
 
         }
 
-        function getPlannerQty() {
-          var orderQty = parseInt($('#orderQty').val());
-          var planPer = parseFloat($('#planPer').val());
-          var PlannerQty = orderQty;
-
-          if (planPer != '' && orderQty != '' && planPer != 0) {
-            PlannerQty += parseInt(orderQty * (planPer / 100));
-
-            $('#plannerQty').val(PlannerQty);
-          } else {
-            $('#plannerQty').val(PlannerQty);
-          }
-
-        }
-
         function resetTextField(selectWht) {
 
           if (selectWht == 'team') {
             $('#style').val(null).trigger('change');
-            $('#delivery').val(null).trigger('change');
-            $('#orderQty').val('');
-            $('#planPer').val('');
-            $('#plannerQty').val('');
+            $('#dayPlanType').val(null).trigger('change');
             $('#workingHrs').val('');
             $('#smv').val('');
             $('#noOfWorkser').val('');
@@ -514,9 +415,6 @@
             $( "#run" ).trigger( "click" );
           }else if(dayPlanType == '2'){
             $( "#feeding" ).trigger( "click" );
-            resetAfterSelectDayPlanType()
-          }else if(dayPlanType == '3' ){
-            $( "#hold" ).trigger( "click" );
             resetAfterSelectDayPlanType()
           }else if(dayPlanType == '4'){
             $( "#hold" ).trigger( "click" );
@@ -550,7 +448,7 @@
           if(lineId !=''){
             // loaderOn();
             $.ajax({
-              url: '<?php echo base_url("Workstudy_con/getPreRunnigDayPlan")?>',
+              url: '<?php echo base_url("Workstudy_con/getPreRunnigDayPlan") ?>',
               type: "POST",
               data: ({
                 lineId: lineId,
@@ -559,24 +457,31 @@
                 if (data != 'noPreDayPlan') {
                   var json_value = JSON.parse(data);
                   $('#timeTempl').val(json_value[0]['timeTemplate']).trigger('change');
+                  $('#otherDayPlan').val(json_value[0]['id']);
                   $('#workingHrs').val(json_value[0]['hrs']);
                   $('#smv').val(json_value[0]['smv']);
                   $('#noOfWorkser').val(json_value[0]['noOfwokers']);
+                  $('#ince_hour').val(json_value[0]['incentiveHour']);
                   $('#efficiency').val(json_value[0]['incenEffi']);
                   $('#efficiency_hid').val(json_value[0]['sysEffi']);
                   $('#forecastEffi').val(json_value[0]['forecastEffi']);
                   $('#forecastEffi_hid').val(json_value[0]['sysEffi']);
+                  $('#runDay').val(json_value[0]['runnigDay']);
+                  $('#runDay').attr('readonly','readonly');
 
                   // $('#timeTempl').attr('Disabled','Disabled');
-                  $('#timeTempl').select2('readonly',true);
+                  // $('#timeTempl').select2({disabled:readonly});
                   $('#workingHrs').attr('readonly','readonly');
+                  $('#ince_hour').attr('readonly','readonly');
                   $('#smv').attr('readonly','readonly');
                   $('#noOfWorkser').attr('readonly','readonly');
                   $('#efficiency').attr('readonly','readonly');
                   $('#forecastEffi').attr('readonly','readonly');
 
                 }else{
-                  alert("no Previous Day Plan");
+                  sweetAlert('Sorry','Only 2 day plan can add this type','warning');
+                  resetTextField('team');
+                  resetAfterSelectDayPlanType();
                 }
               }
             });
@@ -586,9 +491,12 @@
 
         function resetAfterSelectDayPlanType() {
           $('#timeTempl').val(null).trigger('change');
+          $('#otherDayPlan').val('');
           $('#workingHrs').val('');
           $('#smv').val('');
-          $('#noOfWorkser').val('');
+          $('#noOfWorkser').val(''); 
+          $('#runDay').val(''); 
+          $('#ince_hour').val('');
           $('#efficiency').val('');
           $('#efficiency_hid').val('');
           $('#forecastEffi').val('');
@@ -598,6 +506,8 @@
           $('#workingHrs').removeAttr('readonly','readonly');
           $('#smv').removeAttr('readonly','readonly');
           $('#noOfWorkser').removeAttr('readonly','readonly');
+          $('#runDay').removeAttr('readonly','readonly');
+          $('#ince_hour').removeAttr('readonly','readonly');
           $('#efficiency').removeAttr('readonly','readonly');
           $('#forecastEffi').removeAttr('readonly','readonly');
         }

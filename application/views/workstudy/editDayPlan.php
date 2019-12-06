@@ -29,9 +29,6 @@
                 <span>Schedule</span></a>
               </div>
             </div>
-
-            <!--            --><?php //print_r($userGroups);?>
-
           </div>
 
           <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
@@ -82,7 +79,7 @@
                       <span class="error" id="errorLineRunnig"></span>
                    </div>
 
-                      <label class="col-form-label col-md-1">Type :</label>
+                  <label class="col-form-label col-md-1">Type :</label>
                       <div class="col-md-3">
                         <select id="dayPlanType" name="dayPlanType" class="form-control select" data-placeholder="Select a Day Plan type"
                         onchange="asDayPlanType();" data-fouc disabled>
@@ -93,10 +90,10 @@
                       </select>
                       <span class="error" id="error"><?php echo form_error('dayPlanType'); ?></span>
                     </div>
-                    <label class="col-form-label col-md-1">Time Template :</label>
+                    <label class="col-form-label col-md-1">Time Table :</label>
                     <div class="col-md-3">
                       <select id="timeTempl" name="timeTempl" class="form-control select-search" data-fouc required disabled>
-                        <option value="">--- Select Time Template ----</option>
+                        <option value="">--- Select Time Table ----</option>
                         <?php foreach ($timeTempl as $row) {
                           ?>
                           <option value="<?php echo $row->id; ?>" <?php if($row->id == $dayPlanData[0]->timeTemplate) {echo 'Selected';} echo set_select('line', $row->id);?> > <?php echo $row->templateCode.' - '. $row->templateName; ?> </option>
@@ -121,57 +118,24 @@
                         <span class="error" id="error"><?php echo form_error('style'); ?></span>
                         <input type="hidden" id="style_hid" value="<?php echo $dayPlanData[0]->style; ?>">
                       </div>
-
-                      <label class="col-form-label col-md-1">Delivery :</label>
-                      <div class="col-md-3">
-                        <select id="delivery" name="delivery" class="form-control select-search" onchange="getOrderQty(this)" data-fouc>
-                          <option value="<?php echo $dayPlanData[0]->delivery?>"> <?php echo $dayPlanData[0]->delivery?></option>
-                        </select>
-                        <span class="error" id="error"><?php echo form_error('delivery'); ?></span>
-                      </div>
-
-                      <label class="col-form-label col-md-1">Order QTY :</label>
-                      <div class="col-md-3">
-                        <input id="orderQty" name="orderQty" type="text" class="form-control" value="<?php  if(!empty($dayPlanData[0]->orderQty)){echo $dayPlanData[0]->orderQty; }else{ echo set_value('orderQty');} ?>" onchange="getPlannerQty()" readonly>
-                        <span class="error" id="error"><?php echo form_error('orderQty'); ?></span>
-                      </div>
-
-                    </div>
-
-
-                    <div class="form-group row">
-                      <label class="col-form-label col-md-1">Plan % :</label>
-                      <div class="col-md-2">
-                        <input id="planPer" name="planPer" type="text" class="form-control" value="<?php echo $dayPlanData[0]->plannerPers; ?>" min="0" onkeyup="getPlannerQty();"  >
-                        <span class="error" id="error"><?php echo form_error('planPer'); ?></span>
-                      </div>
-                      <div class="col-md-1"></div>
-                      <label class="col-form-label col-md-1">Planner QTY :</label>
-                      <div class="col-md-2">
-                        <input id="plannerQty" name="plannerQty" type="number" class="form-control" value="<?php echo $dayPlanData[0]->plannerQty; ?>" min="0" readonly >
-                        <span class="error" id="error"><?php echo form_error('plannerQty'); ?></span>
-                      </div>
-                      <div class="col-md-1"></div>
-                      <label class="col-form-label col-md-1">Hrs:</label>
-                      <div class="col-md-2">
-                        <input id="workingHrs" name="workingHrs" type="text" class="form-control" value="<?php if(!empty($dayPlanData[0]->hrs)){echo $dayPlanData[0]->hrs; }else{ echo set_value('workingHrs');} ?>" min="0" onkeyup="getPlannedQty();">
-                        <span class="error" id="error"><?php echo form_error('workingHrs'); ?></span>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-
                       <label class="col-form-label col-md-1">SMV :</label>
                       <div class="col-md-2">
                         <input id="smv" name="smv" type="text" class="form-control" value="<?php if(!empty($dayPlanData[0]->smv)){echo $dayPlanData[0]->smv; }else{ echo set_value('smv');}  ?>" min="0" onkeyup="getPlannedQty();">
                         <span class="error" id="error"><?php echo form_error('smv'); ?></span>
                       </div>
-
+                      
                       <div class="col-md-1"></div>
                       <label class="col-form-label col-md-1">Workers:</label>
                       <div class="col-md-2">
                         <input id="noOfWorkser" name="noOfWorkser" type="number" step="any" min="0" class="form-control" value="<?php if(!empty($dayPlanData[0]->noOfwokers)){echo $dayPlanData[0]->noOfwokers; }else{ echo set_value('noOfWorkser');} ?>" min="1" onkeyup="getPlannedQty()">
                         <span class="error" id="error"><?php echo form_error('noOfWorkser'); ?></span>
+                      </div>
+                    </div>           
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-1">Hours:</label>
+                      <div class="col-md-2">
+                        <input id="workingHrs" name="workingHrs" type="text" class="form-control" value="<?php if(!empty($dayPlanData[0]->hrs)){echo $dayPlanData[0]->hrs; }else{ echo set_value('workingHrs');} ?>" min="0" onkeyup="getPlannedQty();">
+                        <span class="error" id="error"><?php echo form_error('workingHrs'); ?></span>
                       </div>
                       <div class="col-md-1"></div>
                       <label class="col-form-label col-md-1">Plan Qty :</label>
@@ -179,16 +143,23 @@
                         <input id="planQty" name="planQty" type="number" class="form-control" value="<?php  if(!empty($dayPlanData[0]->dayPlanQty)){echo $dayPlanData[0]->dayPlanQty; }else{ echo set_value('planQty');} ?>" min="0">
                         <span class="error" id="error"><?php echo form_error('planQty'); ?></span>
                       </div>
+                      <div class="col-md-1"></div>
+                      <label class="col-form-label col-md-1">Run Day :</label>
+                      <div class="col-md-1">
+                        <input id="runDay" name="runDay" type="number" class="form-control"
+                        value="<?php  if(!empty($dayPlanData[0]->dayPlanQty)){echo $dayPlanData[0]->runningDay; }else{ echo set_value('runDay');} ?>" min="1" required>
+                        <span class="error" id="error"><?php echo form_error('runDay'); ?></span>
+                      </div>
                     </div>
 
                     <div class="form-group row">
                       <label class="col-form-label col-md-1">Inc.Hour :</label>
-                      <div class="col-md-1">
+                      <div class="col-md-2">
                         <input id="ince_hour" name="ince_hour" type="text" class="form-control"
                         value="<?php  if(!empty($dayPlanData[0]->incentiveHour)){echo $dayPlanData[0]->incentiveHour; }else{ echo set_value('ince_hour');} ?>"  min="0" max="24" required>
                         <span class="error" id="error"><?php echo form_error('ince_hour'); ?></span>
                       </div>
-                      <div class="col-md-2"></div>
+                      <div class="col-md-1"></div>
                       <label class="col-form-label col-md-1">Inc.Efficiency :</label>
                       <div class="col-md-2">
                         <input id="efficiency" name="efficiency" type="number" class="form-control" value="<?php  if(!empty($dayPlanData[0]->incenEffi)){echo $dayPlanData[0]->incenEffi; }else{ echo set_value('efficiency');} ?>" min="0" readonly>
@@ -245,7 +216,6 @@
                     <div class="form-group row">
                       <div id="tempDiv" class="col-md-3" <?php if($dayPlanData[0]->status == '4'){echo 'style="display: none"';}else{echo 'style="display: block;"';}?> >
                       </div>
-
                       <label id="feedingLbl" class="col-form-label col-md-1" <?php if($dayPlanData[0]->status == '4'){echo 'style="display: block;"';}else{echo 'style="display: none;"';}?> >Feeding Hrs
                         :</label>
                         <div id="feedingInputDiv" class="col-md-2" <?php if($dayPlanData[0]->status == '4'){echo 'style="display: block;"';}else{echo 'style="display: none;"';}?> >

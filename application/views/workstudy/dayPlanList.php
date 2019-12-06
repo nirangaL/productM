@@ -57,15 +57,15 @@
             <div class="card-body">
                 <fieldset class="mb-3">
                     <legend class="text-uppercase font-size-sm font-weight-bold"></legend>
-
+                    <div class="table-responsive">
                     <table class="table datatable-basic table-hover table-bordered">
                         <thead>
                         <tr>
                             <th>Line</th>
                             <th>Type</th>
                             <th>Style</th>
-                            <th>Delivery</th>
-                            <th>Order QTY</th>
+                            <th>SMV</th>
+                            <th>Workers</th>
                             <th>Plan QTY</th>
                             <th>Status</th>
                             <th>Date</th>
@@ -100,8 +100,9 @@
                                     ?>
 
                                     <td><?php echo $row->style; ?></td>
-                                    <td><?php echo $row->delivery; ?></td>
-                                    <td><?php echo $row->orderQty; ?></td>
+                                    <td><?php echo $row->smv; ?></td>
+                                    <td><?php echo $row->noOfwokers; ?></td>
+
                                     <td><?php echo $row->dayPlanQty; ?></td>
 
                                     <?php
@@ -135,7 +136,7 @@
 
                         </tbody>
                     </table>
-
+                    </div>
 
 
                 </fieldset>
