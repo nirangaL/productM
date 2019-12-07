@@ -34,7 +34,7 @@
   <!-- Main navbar -->
   <div class="navbar navbar-expand-md fixed-top navbar-dark">
     <form class="form-inline">
-      <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#style-config-modal" style="top:-5px">CONFIG THE STYLE</button>
+      <button type="button" onclick="styleConfigStart();" class="btn btn-outline-success" data-toggle="modal" data-target="#style-config-modal" style="top:-5px">CONFIG THE STYLE</button>
     </form>
 
     <div class="d-md-none">
@@ -149,19 +149,12 @@
         <div class="modal-body text-center">
           <div class="form-horizontal">
 								<div class="modal-body"  style="overflow:hidden;">
-                  <!-- <?php print_r($style);?> -->
-                  <!-- <form id="config-style"> -->
+              
 									<div class="form-group row">
 										<label class="col-form-label col-sm-2 label">Style : </label>
 										<div class="col-sm-10">
                       <select id="style" onchange="getDelv()" data-placeholder="Select a Style..." class="form-control form-control-lg select" data-container-css-class="select-lg" style="width:100%" data-fouc>
-                        <option></option>
-                        <?php foreach ($style as $row) {
-                          ?>
-                          <option value="<?php echo $row->style?>"> <?php echo  $row->style.' - '.$row->scNumber ?></option>
 
-                          <?php
-                        }?>
   									</select>
                     <span id="style-error" class="style-config-error"></span>
 										</div>
@@ -241,9 +234,15 @@
 
 </body>
 </html>
+
+<input type="hidden" id="hid_style" value="">
+<input type="hidden" id="hid_del" value="">
+<input type="hidden" id="hid_color" value="">
+
 <input type="hidden" id="scNumber" value="">
 <input type="hidden" id="selectSize" value="">
 <input type="hidden" id="selectDefectReason" value="">
+<input type="hidden" id="getStyleLink" value="<?php echo base_url('app/lineend/Checker_Con/getStyle');?>">
 <input type="hidden" id="getDelvLink" value="<?php echo base_url('app/lineend/Checker_Con/getDelivery');?>">
 <input type="hidden" id="getColorLink" value="<?php echo base_url('app/lineend/Checker_Con/getColor');?>">
 <input type="hidden" id="getCountFromLogUrl" value="<?php echo base_url('app/lineend/Checker_Con/getCountFormLog');?>">

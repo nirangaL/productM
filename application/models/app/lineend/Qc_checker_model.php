@@ -40,20 +40,17 @@ class Qc_checker_model extends CI_Model{
       return $this->db->query($sql)->result();
     }
 
-    public function getSize($team){
+    public function getSize(){
       $style = $this->input->post('style');
-      $delivery = $this->input->post('delivery');
       $color = $this->input->post('color');
 
       $sql = "SELECT
               size
             FROM
-              `production_input`
-            WHERE style = '$style'
-              AND delv = '$delivery'
-              AND color = '$color'
-              AND teamId = '$team' GROUP BY size ";
-
+              `style_info`
+            WHERE styleNo = '$style'
+              AND garmentColour = '$color'
+              GROUP BY size";
             return $this->db->query($sql)->result();
 
     }
@@ -80,12 +77,10 @@ class Qc_checker_model extends CI_Model{
       $this->lastHeaderSavedId = '';
       $style = $data[0]['style'];
       $scNumber = $data[0]['scNumber'];
-      $del_no = $data[0]['delivery'];
-      $color = $data[0]['color'];
       $currentDate = date('Y-m-d');
 
       ///////////////////// check the this style already save ///////////////////////
-      $sql = "SELECT id FROM checking_header_tb WHERE style ='$style' AND scNumber='$scNumber' AND deliverNo='$del_no' AND lineNo='$this->team' AND DATE(`dateTime`)  = '$currentDate'";
+      $sql = "SELECT id FROM checking_header_tb WHERE style ='$style' AND scNumber='$scNumber' AND lineNo='$this->team' AND DATE(`dateTime`)  = '$currentDate'";
 
       //  echo $sql;exit();
 
@@ -95,7 +90,6 @@ class Qc_checker_model extends CI_Model{
               'location' => $location,
               'style' => $style,
               'scNumber' => $scNumber,
-              'deliverNo' => $del_no,
               'lineNo' =>  $this->team,
               'dateTime' => date('Y-m-d H:i:s')
           );
@@ -108,29 +102,22 @@ class Qc_checker_model extends CI_Model{
   }
 
   public function saveGridData($data){
-
+      $del_no = $data[0]['delivery'];
       $color = $data[0]['color'];
       $size = $data[0]['size'];
       $btn = $data[0]['btn'];
       $checking_id = $this->lastHeaderSavedId;
-
       $curDate = date('Y-m-d');
 
-      $sql = "SELECT `id`,`passQty`,`rejectQty`,`remakeQty`,`reRejectQty` FROM checking_grid_tb WHERE color ='$color' AND size='$size' AND chckHeaderId ='$checking_id' AND DATE(`lastModifiedDate`) = '$curDate'";
+      $sql = "SELECT `id`,`passQty`,`rejectQty`,`remakeQty`,`reRejectQty` FROM checking_grid_tb WHERE  delivery='$del_no' AND color ='$color' AND size='$size' AND chckHeaderId ='$checking_id' AND DATE(`lastModifiedDate`) = '$curDate'";
     
       $result = $this->db->query($sql)->result();
 
       if(empty($result)){
-          $this->saveGridDataNew($color,$size,$btn);
+          $this->saveGridDataNew($del_no,$color,$size,$btn);
       }else{
           $this->gridSavedId = $result[0]->id;
-
-          $passQty =$result[0]->passQty;
-          $rejectQty =$result[0]->rejectQty;
-          $remakeQty =$result[0]->remakeQty;
-          $reRejectQty =$result[0]->reRejectQty;
-
-          $this->updateGridData($btn,$passQty,$rejectQty,$remakeQty);
+          $this->updateGridData($result[0]->id,$btn,$result[0]->passQty,$result[0]->rejectQty,$result[0]->remakeQty);
       }
 
       if($btn == 'pass'){
@@ -144,15 +131,13 @@ class Qc_checker_model extends CI_Model{
         $this->setPassLog($color,$size);
         $this->setRemakeLog($color,$size);
     }
-    // if($btn == 'rereject'){
-    //     $this->setReRejectLog();
-    // }
   }
 
-  public function saveGridDataNew($color,$size,$btn){
+  public function saveGridDataNew($delivery,$color,$size,$btn){
 
       $data = array(
           'chckHeaderId' => $this->lastHeaderSavedId,
+          'delivery' => $delivery,
           'color' => $color,
           'size' => $size,
           'lastModifiedDate' => date('Y-m-d H:i:s')
@@ -174,22 +159,19 @@ class Qc_checker_model extends CI_Model{
 
       if($btn == 'remake'){
           $remake_count = 1;
-          $reject_count = 1;
+          $pass_count = 1;
           $data += array(
               'remakeQty' => $remake_count,
-              'rejectQty' => $reject_count
+              'passQty'=> $pass_count
           );
       }
 
        $this->db->insert('checking_grid_tb', $data);
        $this->gridSavedId = $this->db->insert_id();
-
-      
-
   }
 
-  public function updateGridData($btn,$passQty,$rejectQty,$remakeQty){
-
+  public function updateGridData($gridId,$btn,$passQty,$rejectQty,$remakeQty){
+   
       $data = array(
           'lastModifiedDate' => date('Y-m-d H:i:s')
       );
@@ -208,22 +190,11 @@ class Qc_checker_model extends CI_Model{
       if($btn == 'remake'){
           $data += array(
               'remakeQty' => ($remakeQty + 1),
-              'rejectQty' => ($rejectQty - 1),
+              'passQty' => ($passQty + 1)
           );
       }
-
-//       if($btn == 'rereject'){
-// //            $reReject_count = $this->input->post('rereject_count');
-// //            $reject_count = $this->input->post('reject_count');
-//           $data += array(
-//               'reRejectQty' => ($reRejectQty + 1),
-//               'rejectQty' => ($rejectQty +1)
-//           );
-      // }
-
-      $this->db->where('chckHeaderId',$this->lastHeaderSavedId);
-      $this->db->where('id',$this->gridSavedId);
-      $this->db->update('checking_grid_tb', $data);
+      $this->db->where('id',$gridId);
+      $this->db->update('checking_grid_tb',$data);
   }
 
   /////// ********** set log ***********//////
@@ -269,24 +240,6 @@ class Qc_checker_model extends CI_Model{
       return $this->db->insert('qc_remake_log', $data);
 
   }
-
-  // public function setReRejectLog(){
-  //     $header_id = $this->lastHeaderSavedId;
-  //     $grid_id = $this->gridSavedId;
-  //     $color = $this->input->post('color');
-  //     $size = $this->input->post('size');
-  //     $data = array(
-  //         'chckHeaderId' => $header_id,
-  //         'chckGridId' => $grid_id,
-  //         'color' => $color,
-  //         'size' => $size,
-  //         'dateTime' => date('Y-m-d H:i:s')
-  //     );
-  //     return $this->db->insert('qc_rereject_log', $data);
-  // }
-
-
-
 
   public function checkOtherPlan($newStyle,$newDelv,$team){
       $date = date('Y-m-d');

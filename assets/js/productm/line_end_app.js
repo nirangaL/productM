@@ -6,21 +6,9 @@ $(document).ready(function() {
     });
     select2NonSearch();
     disableBtn();
-
-    // appIsOnline();
-
+    getStyle();
 });
 
-
-
-// function appIsOnline() {
-//     setInterval(function() {
-//         var ifConnected = window.navigator.onLine;
-//         if (!ifConnected) {
-//             Notiflix.Report.Failure('Connection issue', '"Please check the your wifi connection"', 'Noted');
-//         }
-//     }, 1000);
-// }
 
 Notiflix.Notify.Init({
     width: '400px',
@@ -45,10 +33,47 @@ function select2NonSearch() {
     });
 }
 
+function styleConfigStart() {
+    var selectedStyle = $('#hid_style').val();
+    if (selectedStyle != "") {
+        getStyle();
+        getDelv();
+
+    }
+
+}
+
+
+function getStyle() {
+
+    var selectedStyle = $('#hid_style').val();
+
+    $.ajax({
+        data: {},
+        type: 'post',
+        url: $('#getStyleLink').val(),
+    }).done(function(data) {
+        var json_val = JSON.parse(data);
+        var html = "<option></option>";
+        for (var i = 0; i < json_val.length; i++) {
+            if (selectedStyle != "" && json_val[i]['style'] == selectedStyle) {
+                html += "<option value='" + json_val[i]['style'] + "' selected>" + json_val[i]['style'] + "</option>";
+            } else {
+                html += "<option value='" + json_val[i]['style'] + "' >" + json_val[i]['style'] + "</option>";
+            }
+
+        }
+        $('#style').empty().append(html);
+        $('#style').removeAttr('disabled', 'disabled');
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        Notiflix.Report.Failure('Connection issue', '"Please check the your wifi connection"', 'Noted')
+    });
+}
+
+
 function getDelv() {
     var style = $('#style').val();
     $('#log').empty();
-
     if (style == '') {
         return;
     }
@@ -56,6 +81,8 @@ function getDelv() {
     $('#color').empty();
     $('.size-panal').empty();
     disableBtn();
+
+    var selectedDel = $('#hid_del').val();
     $.ajax({
         data: {
             'style': style
@@ -66,7 +93,12 @@ function getDelv() {
         var json_val = JSON.parse(data);
         var html = "<option></option>";
         for (var i = 0; i < json_val.length; i++) {
-            html += "<option value='" + json_val[i]['delv'] + "'>" + json_val[i]['delv'] + "</option>";
+            if (selectedDel != "" && json_val[i]['delv'] == selectedDel) {
+                html += "<option value='" + json_val[i]['delv'] + "' selected>" + json_val[i]['delv'] + "</option>";
+                getColor();
+            } else {
+                html += "<option value='" + json_val[i]['delv'] + "'>" + json_val[i]['delv'] + "</option>";
+            }
         }
         if (json_val.length < 10) {
             $('#delivery').removeClass('select');
@@ -74,7 +106,7 @@ function getDelv() {
             select2NonSearch();
         }
         $('#scNumber').val(json_val[0]['scNumber'])
-        $('#delivery').append(html);
+        $('#delivery').empty().append(html);
         $('#delivery').removeAttr('disabled', 'disabled');
     }).fail(function(jqXHR, textStatus, errorThrown) {
         Notiflix.Report.Failure('Connection issue', '"Please check the your wifi connection"', 'Noted')
@@ -86,10 +118,21 @@ function getDelv() {
 
 function getColor() {
     var style = $('#style').val();
-    var delivery = $('#delivery').val();
+    var selectedColor = $('#hid_color').val();
+    if ($('#delivery').val() == "" || $('#delivery').val() == undefined) {
+        var delivery = $('#hid_del').val();
+    } else {
+        var delivery = $('#delivery').val();
+    }
+
+    if (style == "" || delivery == "") {
+        return;
+    }
     $('#color').empty();
     $('.size-panal').empty();
     disableBtn();
+
+
     $.ajax({
         data: {
             'style': style,
@@ -101,9 +144,14 @@ function getColor() {
         var json_val = JSON.parse(data);
         var html = "<option></option>";
         for (var i = 0; i < json_val.length; i++) {
-            html += "<option value='" + json_val[i]['color'] + "'>" + json_val[i]['color'] + "</option>";
+            if (selectedColor != "" && json_val[i]['color'] == selectedColor) {
+                html += "<option value='" + json_val[i]['color'] + "' selected>" + json_val[i]['color'] + "</option>";
+                getSize();
+            } else {
+                html += "<option value='" + json_val[i]['color'] + "'>" + json_val[i]['color'] + "</option>";
+            }
         }
-        $('#color').append(html);
+        $('#color').empty().append(html);
         $('#color').removeAttr('disabled', 'disabled');
     }).fail(function(jqXHR, textStatus, errorThrown) {
         Notiflix.Report.Failure('Connection issue', '"Please check the your wifi connection"', 'Noted')
@@ -122,6 +170,11 @@ function configStyle() {
         $('#item-delivery').text(delivery);
         $('#item-color').text(color);
         $('#style-config-modal').modal('hide');
+
+        $('#hid_style').val(style);
+        $('#hid_del').val(delivery);
+        $('#hid_color').val(color);
+
         getCountFormLog(style, delivery, color);
 
     } else {
@@ -132,8 +185,13 @@ function configStyle() {
 function getSize() {
     loaderOn();
     var style = $('#style').val();
-    var delivery = $('#delivery').val();
-    var color = $('#color').val();
+
+    if ($('#color').val() == "" || $('#color').val() == undefined) {
+        var color = $('#hid_color').val();
+    } else {
+        var color = $('#color').val();
+
+    }
 
     $('.size-panal').empty();
     $.ajax({
@@ -141,7 +199,6 @@ function getSize() {
         url: $('#getSizeLink').val(),
         data: {
             'style': style,
-            'delivery': delivery,
             'color': color
         }
     }).done(function(data) {
@@ -203,6 +260,11 @@ function clearSelect() {
     $('.tyle-config-error').text('');
     $('.size-panal').empty();
 
+
+    $('#hid_style').val('');
+    $('#hid_del').val('');
+    $('#hid_color').val('');
+
     sizeBoxClear();
     defectReasonClear();
     clearCount();
@@ -218,14 +280,14 @@ function styleConfigedValidate(style, delivery, color) {
         $('#style-error').text("");
     }
 
-    if (delivery == '') {
+    if (delivery == '' || delivery == undefined) {
         $('#delivery-error').text("Please select a Delivery");
         return false;
     } else {
         $('#delivery-error').text("");
     }
 
-    if (color == '') {
+    if (color == '' || color == undefined) {
         $('#color-error').text("Please select a Color");
         return false;
     } else {
@@ -371,10 +433,12 @@ function saveBtnPress(btn, btnType) {
             $('#log' + logId + '').addClass('warning');
             $('#log' + logId + '').html(html);
 
-        } else {
+        } else if (data === "pass" || data === "defect" || data === "remake") {
             html = "<span>" + btnType + "</span> is successfully saved.";
             $('#log' + logId + '').addClass('success');
             $('#log' + logId + '').html(html);
+        } else {
+            Notiflix.Notify.Warning("Something went wrong!.Please get IT support");
         }
 
     }).fail(function(jqXHR, textStatus, errorThrown) {

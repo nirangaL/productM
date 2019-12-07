@@ -18,11 +18,17 @@ class Checker_Con extends MY_Controller {
         if ($this->location == '' || $this->team == '') {
             redirect(base_url("Profile_App_Con/index?from=team_end_checker"), 'refresh');
         } else {
-            $data['style'] = $this->Qc_checker_model->getStyle($this->team);
             $data['team'] = $this->Qc_checker_model->getTeamName($this->team);
             $data['defectReason'] = $this->Qc_checker_model->getDefectReason($this->location);
             $this->load->view('app/lineend/checker_view',$data);
         }
+    }
+
+    public function getStyle(){
+        $style = $this->Qc_checker_model->getStyle($this->team);
+      if($style){
+          echo json_encode($style);
+      }
     }
 
     public function getDelivery(){
@@ -40,7 +46,7 @@ class Checker_Con extends MY_Controller {
     }
 
     public function getSize(){
-        $size = $this->Qc_checker_model->getSize($this->team);
+        $size = $this->Qc_checker_model->getSize();
         if($size){
             echo json_encode($size);
         }
