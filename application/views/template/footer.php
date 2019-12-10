@@ -55,7 +55,7 @@
             character: "❄",
             color: "white",
             frequency: 100,
-            speed: 3000,
+            speed: 5000,
             small: 4,
             large: 14,
             wind: 40,

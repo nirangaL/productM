@@ -26,7 +26,7 @@
         <!-- Theme JS files -->
         <script src="<?php echo base_url() ?>assets/js/app.js"></script>
 
-        <script src="<?php echo base_url()?>assets/global_assets/snow-summer/jquery.flurry.min.js"></script>
+        <script src="<?php echo base_url()?>assets/global_assets/snow-summer/jquery.flurry.js"></script>
       
         <!-- /theme JS files -->
 

@@ -7,11 +7,12 @@ $(document).ready(function() {
     getTeamData();
     $('body').flurry({
         character: "❄",
+        // character: "*",
         color: "white",
         frequency: 100,
-        speed: 3000,
-        small: 14,
-        large: 42,
+        speed: 7000,
+        small: 4,
+        large: 24,
         wind: 40,
         windVariance: 60,
         rotation: 90,
@@ -21,7 +22,7 @@ $(document).ready(function() {
         opacityEasing: "cubic-bezier(1,.3,.6,.74)",
         blur: true,
         overflow: "hidden",
-        zIndex: 99990999
+        zIndex: 9999
     });
 
 });
