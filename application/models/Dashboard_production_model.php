@@ -18,9 +18,9 @@ class Dashboard_production_model extends CI_Model{
         ,`temp_accller_view`.`buyer`
         , `day_plan`.`style`
         , `day_plan`.`scNumber`
-        , `day_plan`.`delivery`
-        , `day_plan`.`orderQty`
         , `day_plan`.`dayPlanQty`
+        , `day_plan`.`runningDay`
+        , `day_plan`.`showRunningDay`
         , `day_plan`.`hrs`
         , `day_plan`.`smv`
         , `day_plan`.`noOfwokers`
@@ -40,6 +40,8 @@ class Dashboard_production_model extends CI_Model{
             ON (`day_plan`.`line` = `prod_line`.`line_id`)
         LEFT JOIN `temp_accller_view` ON (`day_plan`.`style` = `temp_accller_view`.`style`)
                 WHERE day_plan.line = '$team' AND day_plan.status IN ( '1','2','4') AND DATE(day_plan.createDate) = '$date' GROUP BY style ORDER BY `day_plan`.`id` ASC";
+
+        // echo $sql;exit();
 
         return $this->db->query($sql)->result();
 
@@ -78,14 +80,16 @@ class Dashboard_production_model extends CI_Model{
 
     public function getPassQtyForTimeRange($startTime,$endTime,$style,$team){
         $sql = "SELECT
-                    `qc_pass_log`.`dateTime`
+                    COUNT(`qc_pass_log`.`id`) as passQty
                 FROM
                     `intranet_db`.`checking_header_tb`
                     INNER JOIN `intranet_db`.`qc_pass_log`
                         ON (`checking_header_tb`.`id` = `qc_pass_log`.`chckHeaderId`)
                 WHERE `checking_header_tb`.`lineNo` = '$team' AND (`qc_pass_log`.`dateTime` BETWEEN '$startTime' AND '$endTime') AND `checking_header_tb`.`style`='$style'";
 
-        return $this->db->query($sql)->num_rows();
+        $result = $this->db->query($sql)->result();
+        // echo $sql;exit();
+        return $result[0]->passQty;
     }
 
     //// team second for hour /////
