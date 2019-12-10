@@ -7,12 +7,11 @@ class Location_dashboard_model extends CI_model{
 
     function __construct(){
         parent::__construct();
-        // $this->load->helper('cookie');
         $this->location = get_cookie('location');
     }
 
     public function getLineName(){
-        $sql= "SELECT `line` FROM `prod_line` WHERE `line_id` = '$this->lineNo'";
+        $sql= "SELECT `line` FROM `prod_line` WHERE `line_id` = '$this->lineNo' AND active ='1'";
         return $this->db->query($sql)->result();
     }
 
@@ -64,7 +63,8 @@ class Location_dashboard_model extends CI_model{
                 INNER JOIN `intranet_db`.`prod_line`
                     ON (`day_plan`.`line` = `prod_line`.`line_id`)
                 LEFT JOIN `temp_accller_view` ON (`day_plan`.`style` = `temp_accller_view`.`style`)
-                        WHERE day_plan.line = '$lineNo' AND day_plan.status IN ( '1','2','4') AND DATE(day_plan.createDate) = '$today' GROUP BY `day_plan`.`delivery` ORDER BY `prod_line`.`line` REGEXP '^[a-z]' DESC,`prod_line`.`line`";
+                        WHERE day_plan.line = '$lineNo' AND day_plan.status IN ( '1','2','4') AND DATE(day_plan.createDate) = '$today' GROUP BY `day_plan`.`delivery` ORDER BY `day_plan`.`id` ASC";
+
 
         return $this->db->query($sql)->result();
     }
@@ -242,8 +242,6 @@ class Location_dashboard_model extends CI_model{
 
     public function getMonthlyEffi($minuteForHour,$locationId){
 
-      $date = date('Y-m-d');
-
       $sql = "CALL getDateWiseFactEffi($minuteForHour,$locationId);";
             //add this two line
         $query = $this->db->query($sql);
@@ -256,5 +254,26 @@ class Location_dashboard_model extends CI_model{
 
     }
 
+
+    public function getHourStartEndTime($hour,$timeTemplateId){
+        $startHour = (string)$hour.'hStart';
+        $endHour = (string)$hour.'hEnd';
+
+        $sql = "SELECT $startHour AS start, $endHour AS end FROM `time_template` WHERE id = '$timeTemplateId'";
+        return $this->db->query($sql)->result();
+    }
+
+    public function getHourQty($team,$style,$startTime,$endTime){
+       
+        $sql = "SELECT
+        COUNT(plog.id) AS qty
+      FROM
+        `checking_header_tb` htb
+        LEFT JOIN `qc_pass_log` plog
+          ON htb.`id` = plog.`chckHeaderId`
+      WHERE htb.`lineNo` = '$team'
+        AND htb.`style` = '$style' AND plog.`dateTime` BETWEEN '$startTime' AND '$endTime'";
+         return $this->db->query($sql)->result();
+    }
 
 }
