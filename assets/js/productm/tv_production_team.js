@@ -5,6 +5,25 @@ window.setInterval(function() {
 
 $(document).ready(function() {
     getTeamData();
+    $('body').flurry({
+        character: "❄",
+        color: "white",
+        frequency: 100,
+        speed: 3000,
+        small: 14,
+        large: 42,
+        wind: 40,
+        windVariance: 60,
+        rotation: 90,
+        rotationVariance: 180,
+        startOpacity: 1,
+        endOpacity: 0,
+        opacityEasing: "cubic-bezier(1,.3,.6,.74)",
+        blur: true,
+        overflow: "hidden",
+        zIndex: 99990999
+    });
+
 });
 
 window.setInterval(function() {
@@ -36,9 +55,8 @@ function getTeamData() {
             if (json_data.length != 0) {
                 var short_exceed_qty = 0;
                 $('#tb-style').text(json_data['teamData']['style']);
-                $('#tb-delv').text(json_data['teamData']['delivery']);
-                $('#tb-run-days').text(json_data['teamData']['styleRunDays']);
-
+                $('#tb-run-days').text(json_data['teamData']['showRunningDay']);
+                $('#tb-worksers').text(json_data['teamData']['noOfwokers']);
                 ///// team up Down ///////
                 var planQtyHr = parseInt(json_data['teamData']['needOutQtyHr']);
                 var actOurQtyHr = parseInt(json_data['teamData']['teamHrsOutQty']);

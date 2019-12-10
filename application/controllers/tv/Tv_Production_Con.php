@@ -41,77 +41,62 @@ class Tv_Production_Con extends MY_Controller
         $totalUsedMin = 0;
         $totalEffi = 0;
 
-        $params = array('location' => $this->location, 'team' => $this->team, 'date' => $date);
-        $this->load->library('production_dashboard_library', $params);
-        $teamData = $this->production_dashboard_library->get_team_data();
+        // $params = array('location' => $this->location, 'team' => $this->team, 'date' => $date);
+        $this->load->library('production_dashboard_library');
+        $teamData = $this->production_dashboard_library->get_team_data($this->location,$this->team,$date);
 
         $dayPlanCount = sizeOf($teamData['teamData']);
         $data = '';
-
-        for ($i = 0; $i < $dayPlanCount; $i++) {
-
-            if($teamData['teamData'][$i]['runStatus'] == '1'){
-                $totalPlanQty = $teamData['teamData'][$i]['dayPlanQty'];
-                $totalPassQty = $teamData['teamData'][$i]['totalPassQty'];
-                $totalRemake = $teamData['teamData'][$i]['remakeQty'];
-                $totalDefect = $teamData['teamData'][$i]['rejectQty'];
-                $totalEffi = $teamData['teamData'][$i]['actEff'];
-            }else if ($teamData['teamData'][$i]['dayPlanType'] == '4' ) {
-                $totalPlanQty += $teamData['teamData'][$i]['$dayPlanQty'];
-                $totalPassQty += $teamData['teamData'][$i]['$passQty'];
-                $totalRemake += $teamData['teamData'][$i]['remakeQty'];
-                $totalDefect += $teamData['teamData'][$i]['rejectQty'];
-                $totalDefect += $teamData['teamData'][$i]['rejectQty'];
-                $totalDefect += $teamData['teamData'][$i]['rejectQty'];
-                $totalProduceMin += $teamData['teamData'][$i]['teamProduceMin'];
-                $totalUsedMin += $teamData['teamData'][$i]['teamUsedMin'];
-                if($totalUsedMin != 0 && $totalProduceMin != 0){
-                    $totalEffi = ($totalProduceMin / $totalUsedMin) * 100;
-                }
-            }
-        }
-        
+        $style ='';
         for ($i = 0; $i < $dayPlanCount; $i++) {
            
             // echo '<pre>';
             // print_r($teamData);
             // echo '</pre>';
-
-            // echo $teamData['teamData'][$i]['runStatus'];
-            if($teamData['teamData'][$i]['runStatus'] == '1'){
-
+             
+                if($teamData['teamData'][$i]['dayPlanType']=='4'){
+                    if($style != ''){
+                        $style =  $style.' & '.$teamData['teamData'][$i]['style'];
+                    }else{
+                        $style = $teamData['teamData'][$i]['style'];
+                    }
+                }else{
+                    $style = $teamData['teamData'][$i]['style'];
+                }
+                 
                 $data['teamData'] = array(
                     'whatData' => $teamData['teamData'][$i]['whatData'],
                     'lineName' => $teamData['teamData'][$i]['lineName'],
                     'dayPlanType' => $teamData['teamData'][$i]['dayPlanType'],
                     'runStatus' => $teamData['teamData'][$i]['runStatus'],
-                    'style' => $teamData['teamData'][$i]['style'],
-                    'delivery' => $teamData['teamData'][$i]['delivery'],
-                    'orderQty' => $teamData['teamData'][$i]['orderQty'],
-                    'dayPlanQty' => $totalPlanQty,
+                    'style' => $style,
+                    'dayPlanQty' => $teamData['teamData'][$i]['dayPlanQty'],
                     'hrs' => $teamData['teamData'][$i]['hrs'],
                     'currentHr' => $teamData['teamData'][$i]['currentHr'],
-                    'lineOutQty' => $totalPassQty,
+                    'lineOutQty' => $teamData['teamData'][$i]['totalPassQty'],
                     'needOutQtyHr'=> $teamData['teamData'][$i]['needOutQtyHr'],
                     'teamHrsOutQty' => $teamData['teamData'][$i]['teamHrsOutQty'],
                     'preHour' => $teamData['teamData'][$i]['preHour'],
                     'preHourPassQty' => $teamData['teamData'][$i]['preHourPassQty'],
                     'statusTeamTv' => $teamData['teamData'][$i]['statusTeamTv'],
                     'ForEff' => $teamData['teamData'][$i]['ForEff'],
-                    'actEff' => (double) $totalEffi,
+                    'actEff' => $teamData['teamData'][$i]['actEff'],
                     'rejectQty' => $teamData['teamData'][$i]['rejectQty'],
                     'remakeQty' => $teamData['teamData'][$i]['remakeQty'],
                     'actualQrLevel' => $teamData['teamData'][$i]['actualQrLevel'],
                     'incentive' => $teamData['teamData'][$i]['incentive'],
-                    'styleRunDays' => $teamData['teamData'][$i]['styleRunDays'],
+                    'styleRunDays' => $teamData['teamData'][$i]['showRunningDay'],
+                    'noOfwokers' => $teamData['teamData'][$i]['noOfwokers'],
                     'neededQtyAtTime' => $teamData['teamData'][$i]['neededQtyAtTime'],
                     'needQrLvl' => $teamData['teamData'][$i]['needQrLvl'],
                     'minuteForHour' => $teamData['teamData'][$i]['minuteForHour'],
                     'timeForTimeCountDown' => $teamData['teamData'][$i]['timeForTimeCountDown'],
                     'hourStartTime' => $teamData['teamData'][$i]['hourStartTime'],
                 );
-            }
 
+            if($teamData['teamData'][$i]['dayPlanType'] != "4" && $teamData['teamData'][$i]['runStatus']=="1"){
+                break;
+            }
         }
 
          echo json_encode($data);

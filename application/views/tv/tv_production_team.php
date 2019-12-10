@@ -26,6 +26,8 @@
         <!-- Theme JS files -->
         <script src="<?php echo base_url() ?>assets/js/app.js"></script>
 
+        <script src="<?php echo base_url()?>assets/global_assets/snow-summer/jquery.flurry.min.js"></script>
+      
         <!-- /theme JS files -->
 
 
@@ -39,8 +41,8 @@
                         <thead>
                             <tr>
                                 <th scope="col">Style</th>
-                                <th scope="col">Delv/PO</th>
                                 <th scope="col">Run.Days</th>
+                                <th scope="col">Workers</th>
                                 <th scope="col">Plan.QTY/H</th>
                                 <th scope="col">Out.QTY/H</th>
                                 <th id="th-short-exceed" scope="col">Short QTY/H</th>
@@ -50,8 +52,8 @@
                         <tbody id="tblBody">
                             <tr>
                                 <td id="tb-style">-</td>
-                                <td id="tb-delv">-</td>
                                 <td id="tb-run-days">-</td>
+                                <td id="tb-worksers">-</td>
                                 <td id="tb-plan-qty-hr">-</td>
                                 <td id="tb-out-qty-hr">-</td>
                                 <td id="tb-short-exceed-qty">-</td>
