@@ -25,21 +25,24 @@ class Checker_Con extends MY_Controller {
     }
 
     public function getStyle(){
-        $style = $this->Qc_checker_model->getStyle($this->team);
+        $inputValidate = $this->checkRule('teamInputVsOutput');
+        $style = $this->Qc_checker_model->getStyle($this->team,$inputValidate);
       if($style){
           echo json_encode($style);
       }
     }
 
     public function getDelivery(){
-      $delivery = $this->Qc_checker_model->getDelivery($this->team);
+     $inputValidate = $this->checkRule('teamInputVsOutput');
+      $delivery = $this->Qc_checker_model->getDelivery($this->team,$inputValidate);
       if($delivery){
           echo json_encode($delivery);
       }
     }
 
     public function getColor(){
-      $color = $this->Qc_checker_model->getColor($this->team);
+      $inputValidate = $this->checkRule('teamInputVsOutput');
+      $color = $this->Qc_checker_model->getColor($this->team,$inputValidate);
       if($color){
           echo json_encode($color);
       }
@@ -55,7 +58,7 @@ class Checker_Con extends MY_Controller {
       /// Insert Pass count and data ///////
       public  function insertData(){
         $data = $this->input->get('data');
-        $inputValidate = $this->checkRule('teamInputVsOutput');;
+        $inputValidate = $this->checkRule('teamInputVsOutput');
 
         // exit($inputValidate);
         ////// check the input qty to checkout qty /////

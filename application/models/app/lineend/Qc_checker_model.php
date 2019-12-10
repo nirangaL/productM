@@ -15,28 +15,50 @@ class Qc_checker_model extends CI_Model{
         return $this->db->query($sql)->result();
     }
 
-    public function getStyle($team){
-      $sql = "SELECT style,scNumber FROM `production_input` WHERE teamId = '$team' GROUP BY style ORDER BY createDate DESC LIMIT 10";
+    public function getStyle($team,$inputValidate){
+        if($inputValidate == '1'){
+            $sql = "SELECT style,scNumber FROM `production_input` WHERE teamId = '$team' GROUP BY style ORDER BY createDate DESC LIMIT 5";
+        }else{
+            $sql = "SELECT styleNo AS style,scNumber,`TimeStamp` FROM  `style_Info` GROUP BY style ORDER BY `TimeStamp` DESC LIMIT 100";
+        }
+      
       return $this->db->query($sql)->result();
     }
 
-    public function getDelivery($team){
+    public function getDelivery($team,$inputValidate){
       $style = $this->input->post('style');
-      $sql = "SELECT delv,scNumber FROM `production_input` WHERE style = '$style' AND teamId = '$team' GROUP BY delv";
+      if($inputValidate == '1'){
+        $sql = "SELECT delv,scNumber FROM `production_input` WHERE style = '$style' AND teamId = '$team' GROUP BY delv";
+      }else{
+        $sql = "SELECT deliveryNo AS delv,scNumber FROM `style_Info` WHERE styleNo = '$style' GROUP BY deliveryNo";
+      }
       return $this->db->query($sql)->result();
     }
 
-    public function getColor($team){
+    public function getColor($team,$inputValidate){
       $style = $this->input->post('style');
       $delivery = $this->input->post('delivery');
-      $sql = "SELECT
-              color
-            FROM
-              `production_input`
-            WHERE style = '$style'
-              AND delv = '$delivery'
-              AND teamId = '$team'
-            GROUP BY color";
+
+      if($inputValidate == '1'){
+            $sql = "SELECT
+            color
+        FROM
+            `production_input`
+        WHERE style = '$style'
+            AND delv = '$delivery'
+            AND teamId = '$team'
+        GROUP BY color";
+
+      }else{
+          $sql = "SELECT
+          garmentColour AS color
+         FROM
+         `style_Info`
+         WHERE styleNo = '$style'
+         AND deliveryNo = '$delivery'
+         GROUP BY garmentColour";
+      }
+     
       return $this->db->query($sql)->result();
     }
 
@@ -45,12 +67,12 @@ class Qc_checker_model extends CI_Model{
       $color = $this->input->post('color');
 
       $sql = "SELECT
-              size
+            size
             FROM
-              `style_info`
+            `style_Info`
             WHERE styleNo = '$style'
-              AND garmentColour = '$color'
-              GROUP BY size";
+            AND garmentColour = '$color'
+            GROUP BY size";
             return $this->db->query($sql)->result();
 
     }
