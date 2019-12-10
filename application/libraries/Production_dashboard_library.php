@@ -45,8 +45,9 @@ class Production_dashboard_library
             $plannedQtyHrs = 0;
             $teamOutQty = 0;
             $style='';
-            $teamProduceMin = 0;
-            $teamUsedMin = 0;
+           
+           $this->teamProduceMin = 0;;
+           $this->teamUsedMin = 0;
 
 
             $styleDayPlanQty = 0;
@@ -216,7 +217,7 @@ class Production_dashboard_library
 
                 $lineAndStyleEffi = $this->getEfficiency($workingMin, $passQty, $smv, $noOfwokers);
 
-                $efficiency = $lineAndStyleEffi['styleEff'];
+                $efficiency = $lineAndStyleEffi['lineEffi'];
                 $actulaOutQty = 0;
                 if ($passQty == 0) {
                     $actulaOutQty = 1;
@@ -247,8 +248,8 @@ class Production_dashboard_library
                     $incentive = 0;
                 }
 
-                $teamProduceMin +=  ($passQty * (double) $smv);
-                $teamUsedMin += ($noOfwokers * $workingMin);
+                // $teamProduceMin +=  ($passQty * (double) $smv);
+                // $teamUsedMin += ($noOfwokers * $workingMin);
 
                 $data['teamData'][$i] = array(
                     'whatData' => $whatData,
@@ -274,7 +275,7 @@ class Production_dashboard_library
                     'rejectQty' => (int)($defectQty -$remakeQty),
                     'remakeQty' => $remakeQty,
                     'actualQrLevel' => number_format((float) $actualQrLevel, 2, '.', ''),
-                    'incentive' => $incentive,
+                    'incentive' => intval($incentive),
                     'styleRunDays' => $styleRunningDay,
                     'showRunningDay' => $showRunningDay,
                     'noOfwokers' => $noOfwokers,
@@ -285,7 +286,7 @@ class Production_dashboard_library
                     'hourStartTime' => $hourStartTime,
                     'teamProduceMin' =>($passQty * (double) $smv),
                     'teamUsedMin' =>  $noOfwokers * $workingMin,
-                    'toalEff'=> (( $passQty * (double) $smv)/ ($noOfwokers * $workingMin))*100,
+                    'toalEff'=> number_format((float) (( $passQty * (double) $smv)/ ($noOfwokers * $workingMin))*100, 2, '.', ''),
                     'styleDayPlanQty'=> $styleDayPlanQty,
                     'styleNeedQty'=> intval($styleNeedQty),
                 );
@@ -552,6 +553,7 @@ class Production_dashboard_library
         $usedMinu = ((double) $noOfwokers * $workingMin);
         //// Team used Min ////
         $this->teamUsedMin += $usedMinu;
+        
         $lineEffi = (double) ($this->teamProduceMin / $this->teamUsedMin) * 100;
         $styleEff = (double) ($produceMin / $usedMinu) * 100;
 

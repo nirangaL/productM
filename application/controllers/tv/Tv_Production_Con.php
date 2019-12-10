@@ -32,15 +32,6 @@ class Tv_Production_Con extends MY_Controller
     {
         $date = date('Y-m-d');
         
-        $totalPlanQty = 0;
-        $totalPassQty = 0;
-        $totalRemake = 0;
-        $totalDefect = 0;
-
-        $totalProduceMin = 0;
-        $totalUsedMin = 0;
-        $totalEffi = 0;
-
         // $params = array('location' => $this->location, 'team' => $this->team, 'date' => $date);
         $this->load->library('production_dashboard_library');
         $teamData = $this->production_dashboard_library->get_team_data($this->location,$this->team,$date);

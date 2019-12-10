@@ -393,14 +393,16 @@
                         }
 
                     }else if(((json_value['tvData'][i]['gridData'].length)-1) == (x+1)){
-                        if(json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
+                       if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "2" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "1"){
                           html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
-                        }else if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "2" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "1"){
+                        }else if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "1" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
                           html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
-                        }
-                    }else if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "1" && ((json_value['tvData'][i]['gridData'].length)-1) == x){
-                      
-                    }else if(dayPlanType != "2"){
+                        }else if(json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
+                          // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
+                        } 
+                    }else if((json_value['tvData'][i]['gridData'].length) == 2){
+                     
+                    }else{
                       html += "<td>" + effi + "</td>";
                     }
 
