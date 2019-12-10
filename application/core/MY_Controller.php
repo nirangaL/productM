@@ -27,6 +27,7 @@ class MY_Controller extends CI_Controller{
             $this->MyConUserGroup  = $_SESSION['session_user_data']['userGroup'];
         }
         $this->gamaSysDb = $this->load->database('gamasys',TRUE);
+        $this->load->model('Core_model');
         $this->saveStyleDataFrmGamaSysDb();
     }
 
@@ -77,6 +78,17 @@ class MY_Controller extends CI_Controller{
             $date = DateTime::createFromFormat($format, '2000-01-01 00:00:00');
             return $date->format('Y-m-d H:i:s');
         }
+    }
+
+    public function checkRule($rule){
+        
+        $result = $this->Core_model->getRuleStatus(get_cookie('location'),$rule);
+        if(!empty($result)){
+           return $result[0]->rule;
+        }else{
+            return 0;
+        }
+
     }
 
 }
