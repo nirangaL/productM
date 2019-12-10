@@ -144,11 +144,17 @@
                         <span class="error" id="error"><?php echo form_error('planQty'); ?></span>
                       </div>
                       <div class="col-md-1"></div>
-                      <label class="col-form-label col-md-1">Run Day :</label>
+                      <label class="col-form-label col-md-1">R. Day :</label>
                       <div class="col-md-1">
                         <input id="runDay" name="runDay" type="number" class="form-control"
                         value="<?php  if(!empty($dayPlanData[0]->dayPlanQty)){echo $dayPlanData[0]->runningDay; }else{ echo set_value('runDay');} ?>" min="1" required>
                         <span class="error" id="error"><?php echo form_error('runDay'); ?></span>
+                      </div>
+                      <label class="col-form-label col-md-1">Show R.Day :</label>
+                      <div class="col-md-1">
+                        <input id="showRunDay" name="showRunDay" type="number" class="form-control"
+                        value="<?php  if(!empty($dayPlanData[0]->showRunningDay)){echo $dayPlanData[0]->showRunningDay; }else{ echo set_value('showRunDay');} ?>" min="1" onkeyup="copytoShowRunDay(this)" required>
+                        <span class="error" id="error"><?php echo form_error('showRunDay'); ?></span>
                       </div>
                     </div>
 
@@ -267,6 +273,12 @@
               maxboostedstep: 10,
 
             });
+           function copytoShowRunDay(runday){
+              var runday = $(runday).val();
+              if( $('#showRunDay').val()==''){
+                $('#showRunDay').val(runday);
+              }
+            }
 
             function getDelivery(style) {
               var style = $(style).val();

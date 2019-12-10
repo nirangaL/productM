@@ -46,6 +46,7 @@ class Workstudy_model extends CI_Model{
     $scNumber = $this->input->post('scNumber');
     $dayPlanQty = $this->input->post('planQty');
     $runningDay = $this->input->post('runDay');
+    $showRunningDay = $this->input->post('showRunDay');
     $workingHrs = $this->input->post('workingHrs');
     $smv = $this->input->post('smv');
     $noOfWorkser = $this->input->post('noOfWorkser');
@@ -67,7 +68,8 @@ class Workstudy_model extends CI_Model{
       'style' => $style,
       'scNumber' => $scNumber,
       'dayPlanQty' =>  $dayPlanQty, 
-      'runningDay' =>  $runningDay, 
+      'runningDay' =>  $runningDay,
+      'showRunningDay' =>  $showRunningDay,
       'hrs' =>  $workingHrs,
       'smv' =>  $smv,
       'noOfwokers' =>  $noOfWorkser,
@@ -104,6 +106,7 @@ class Workstudy_model extends CI_Model{
     // $efficiency = $this->input->post('efficiency');
     $forecastEffi = $this->input->post('forecastEffi');
     $status = $this->input->post('status');
+    $runningDay = $this->input->post('showRunDay');
 
 
 
@@ -113,6 +116,7 @@ class Workstudy_model extends CI_Model{
     $this->db->set('noOfwokers', $noOfWorkser);
     $this->db->set('dayPlanQty', $planQty);
     $this->db->set('runningDay', $runDay);
+    $this->db->set('showRunningDay', $runningDay);
     $this->db->set('incentiveHour', $ince_hour);
     // $this->db->set('incenEffi', $efficiency);
     $this->db->set('forecastEffi', $forecastEffi);
@@ -216,7 +220,8 @@ class Workstudy_model extends CI_Model{
     `timeTemplate`,
     `hrs`,
     `smv`,
-    `runnigDay`,
+    `runningDay`,
+    `showRunningDay`,
     `noOfwokers`,
     `incentiveHour`,
     `sysEffi`,

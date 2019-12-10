@@ -151,15 +151,22 @@
               <label class="col-form-label col-md-1">Plan Qty :</label>
               <div class="col-md-2">
                 <input id="planQty" name="planQty" type="number" class="form-control"
-                value="<?php echo set_value('planQty'); ?>" min="0" required>
+                value="<?php echo set_value('planQty'); ?>" min="0" required >
                 <span class="error" id="error"><?php echo form_error('planQty'); ?></span>
               </div>
               <div class="col-md-1"></div>
-              <label class="col-form-label col-md-1">Run Day :</label>
+              <label class="col-form-label col-md-1">R.Day :</label>
               <div class="col-md-1">
                 <input id="runDay" name="runDay" type="number" class="form-control"
-                value="<?php echo set_value('runDay'); ?>" min="0" required>
+                value="<?php echo set_value('runDay'); ?>" min="0" onkeyup="copytoShowRunDay(this)" required>
                 <span class="error" id="error"><?php echo form_error('runDay'); ?></span>
+              </div>
+
+              <label class="col-form-label col-md-1">Show R.Day :</label>
+              <div class="col-md-1">
+                <input id="showRunDay" name="showRunDay" type="number" class="form-control"
+                value="<?php echo set_value('showRunDay'); ?>" min="0" required>
+                <span class="error" id="error"><?php echo form_error('showRunDay'); ?></span>
               </div>
             </div>
 
@@ -264,6 +271,13 @@
         }
       });
 
+      function copytoShowRunDay(runday){
+        var runday = $(runday).val();
+        if( $('#showRunDay').val()==''){
+          $('#showRunDay').val(runday);
+        }
+        
+      }
 
         function checkLineIsRunning(selectLine) {
           var selectLine = $(selectLine).val();
@@ -347,6 +361,7 @@
                   }
                   StyleRunDays = json_value[0]['styleRunDays'];
                   $('#runDay').val(StyleRunDays);
+                  $('#showRunDay').val(StyleRunDays);
                   if(dayPlanType != '4'){
                     $('#efficiency').val(json_value[0]['efficiency']);
                     $('#efficiency_hid').val(json_value[0]['efficiency']);
@@ -466,7 +481,8 @@
                   $('#efficiency_hid').val(json_value[0]['sysEffi']);
                   $('#forecastEffi').val(json_value[0]['forecastEffi']);
                   $('#forecastEffi_hid').val(json_value[0]['sysEffi']);
-                  $('#runDay').val(json_value[0]['runnigDay']);
+                  $('#runDay').val(json_value[0]['runningDay']);
+                  $('#showRunDay').val(json_value[0]['showRunningDay']);
                   $('#runDay').attr('readonly','readonly');
 
                   // $('#timeTempl').attr('Disabled','Disabled');
