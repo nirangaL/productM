@@ -102,35 +102,42 @@ class Qc_checker_model extends CI_Model{
   }
 
   public function saveGridData($data){
-      $del_no = $data[0]['delivery'];
-      $color = $data[0]['color'];
-      $size = $data[0]['size'];
-      $btn = $data[0]['btn'];
-      $checking_id = $this->lastHeaderSavedId;
-      $curDate = date('Y-m-d');
+        $del_no = $data[0]['delivery'];
+        $color = $data[0]['color'];
+        $size = $data[0]['size'];
+        $btn = $data[0]['btn'];
+        $checking_id = $this->lastHeaderSavedId;
+        $curDate = date('Y-m-d');
 
-      $sql = "SELECT `id`,`passQty`,`rejectQty`,`remakeQty`,`reRejectQty` FROM checking_grid_tb WHERE  delivery='$del_no' AND color ='$color' AND size='$size' AND chckHeaderId ='$checking_id' AND DATE(`lastModifiedDate`) = '$curDate'";
-    
-      $result = $this->db->query($sql)->result();
+        $sql = "SELECT `id`,`passQty`,`rejectQty`,`remakeQty`,`reRejectQty` FROM checking_grid_tb WHERE  delivery='$del_no' AND color ='$color' AND size='$size' AND chckHeaderId ='$checking_id' AND DATE(`lastModifiedDate`) = '$curDate'";
+        
+        $result = $this->db->query($sql)->result();
 
-      if(empty($result)){
-          $this->saveGridDataNew($del_no,$color,$size,$btn);
-      }else{
-          $this->gridSavedId = $result[0]->id;
-          $this->updateGridData($result[0]->id,$btn,$result[0]->passQty,$result[0]->rejectQty,$result[0]->remakeQty);
-      }
+        if(empty($result)){
+            $gridSaved =  $this->saveGridDataNew($del_no,$color,$size,$btn);
+        }else{
+            $this->gridSavedId = $result[0]->id;
+            $gridSaved = $this->updateGridData($result[0]->id,$btn,$result[0]->passQty,$result[0]->rejectQty,$result[0]->remakeQty);
+        }
 
-      if($btn == 'pass'){
-        $this->setPassLog($color,$size);
-    }
-    if($btn == 'defect'){
-        $reject_reason = $data[0]['defectReason'];
-        $this->setRejectLog($color,$size,$reject_reason);
-    }
-    if($btn == 'remake'){
-        $this->setPassLog($color,$size);
-        $this->setRemakeLog($color,$size);
-    }
+        if($gridSaved){
+            if($btn == 'pass'){
+                $this->setPassLog($color,$size);
+            }
+        
+            if($btn == 'defect'){
+                $reject_reason = $data[0]['defectReason'];
+                $this->setRejectLog($color,$size,$reject_reason);
+            }
+            if($btn == 'remake'){
+                $this->setPassLog($color,$size);
+                $this->setRemakeLog($color,$size);
+            }
+        }else{
+            return false;
+        }
+
+        
   }
 
   public function saveGridDataNew($delivery,$color,$size,$btn){
@@ -166,7 +173,7 @@ class Qc_checker_model extends CI_Model{
           );
       }
 
-       $this->db->insert('checking_grid_tb', $data);
+     return  $this->db->insert('checking_grid_tb', $data);
        $this->gridSavedId = $this->db->insert_id();
   }
 
@@ -194,7 +201,7 @@ class Qc_checker_model extends CI_Model{
           );
       }
       $this->db->where('id',$gridId);
-      $this->db->update('checking_grid_tb',$data);
+     return $this->db->update('checking_grid_tb',$data);
   }
 
   /////// ********** set log ***********//////
@@ -274,23 +281,24 @@ class Qc_checker_model extends CI_Model{
     $style = $this->input->post('style');
     $date = date('Y-m-d');
     $sql ="SELECT
-        mt.lineNo,
-    mt.style,
-   SUM(mt.passQty) AS passQty,
-   SUM(mt.defectQty) AS defectQty,
-   SUM(mt.remakeQty) AS remakeQty
+    lineNo,
+    style,
+    IFNULL(SUM(mt.passQty),0) AS passQty,
+    IFNULL(SUM(mt.defectQty),0) AS defectQty,
+    IFNULL(SUM(mt.remakeQty),0) AS remakeQty
   FROM
-  (SELECT
-        `checking_header_tb`.*
-        ,`qc_pass_log`.`size`
-        ,(SELECT COALESCE(COUNT(id),0) AS pass FROM `qc_pass_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) AS passQty
-        ,(SELECT COALESCE(COUNT(rejectId),0) FROM `qc_reject_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`  ) - (SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) -(SELECT COALESCE(COUNT(id),0) FROM `qc_rereject_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`)  AS defectQty
-        ,(SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = `checking_header_tb`.`id`) AS remakeQty
-        FROM
-        `checking_header_tb`
-        LEFT JOIN `qc_pass_log`
-        ON (`checking_header_tb`.`id` = `qc_pass_log`.`chckHeaderId`)
-        WHERE style='$style' AND lineNo='$this->team' AND DATE(`checking_header_tb`.`dateTime`)='$date' GROUP BY `checking_header_tb`.id) mt GROUP BY mt.style";
+    (SELECT
+      htb.*,
+      `qc_pass_log`.`size`,
+      (SELECT COALESCE(COUNT(id), 0) AS pass FROM `qc_pass_log` WHERE `chckHeaderId` = htb.`id`) AS passQty,
+      (SELECT COALESCE(COUNT(rej.`rejectId`)) FROM `qc_reject_log` rej LEFT JOIN `checking_header_tb` tbH ON rej.`chckHeaderId` = tbH.`id` WHERE tbH.`style` = htb.style AND tbH.lineNo = htb.lineNo) - (SELECT COALESCE(COUNT(rem.id)) FROM `qc_remake_log` rem LEFT JOIN `checking_header_tb` tbH ON rem.`chckHeaderId` = tbH.`id` WHERE tbH.`style` =  htb.style AND tbH.lineNo = htb.lineNo) AS defectQty,
+      (SELECT COALESCE(COUNT(id), 0) FROM `qc_remake_log` WHERE `chckHeaderId` = htb.`id`) AS remakeQty
+    FROM
+      `checking_header_tb` htb
+      LEFT JOIN `qc_pass_log` ON (htb.`id` = `qc_pass_log`.`chckHeaderId`) 
+    WHERE style = '$style' AND lineNo = '$this->team' AND DATE(htb.`dateTime`) = '$date' 
+    GROUP BY htb.id) AS mt";
+
 
     return $this->db->query($sql)->result();
   }

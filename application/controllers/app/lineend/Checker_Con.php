@@ -55,14 +55,19 @@ class Checker_Con extends MY_Controller {
       /// Insert Pass count and data ///////
       public  function insertData(){
         $data = $this->input->get('data');
+        $inputValidate = $this->checkRule('teamInputVsOutput');;
 
+        // exit($inputValidate);
         ////// check the input qty to checkout qty /////
-        if($data[0]['btn'] == 'pass' || $data[0]['btn'] == 'defect'){
+        if($inputValidate == '1' && ($data[0]['btn'] == 'pass' || $data[0]['btn'] == 'defect' || $data[0]['btn'] == 'remake')){
+           
             if($this->validateInput($data)){
                 $this->switchingToRunning($data);
                 $result =  $this->Qc_checker_model->insertData($data,$this->location);
                 if($result){
                     echo $data[0]['btn'];
+                }else{
+                    echo 'error';
                 }
             }else{
                 echo 'needInput';
@@ -72,6 +77,8 @@ class Checker_Con extends MY_Controller {
             $result =  $this->Qc_checker_model->insertData($data,$this->location);
             if($result){
                 echo $data[0]['btn'];
+            }else{
+                echo 'error';
             }
         }
         

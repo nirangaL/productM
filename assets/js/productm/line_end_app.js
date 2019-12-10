@@ -384,6 +384,7 @@ function saveBtnPress(btn, btnType) {
     var delivery = $('#delivery').val();
     var color = $('#color').val();
     var size = $('#selectSize').val();
+    var inputValidate = $('#inputValidate').val();
 
     var logId = Math.floor(Math.random() * 100001);
 
@@ -399,7 +400,7 @@ function saveBtnPress(btn, btnType) {
             'color': color,
             'size': size,
             'btn': btnType,
-            'defectReason': defectReason
+            'defectReason': defectReason,
         }];
         defectReasonClear();
     } else {
@@ -409,7 +410,7 @@ function saveBtnPress(btn, btnType) {
             'delivery': delivery,
             'color': color,
             'size': size,
-            'btn': btnType
+            'btn': btnType,
         }];
     }
 
@@ -422,6 +423,7 @@ function saveBtnPress(btn, btnType) {
             Notiflix.Report.Failure('No Input', '"You are going to exceed the input Qty"', 'Noted')
             if (btnType == "remake") {
                 $('#btn-pass').find('.count').text(parseInt($('#btn-pass').find('.count').text()) - 1);
+                $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) + 1);
                 $(btn).find('.count').text(parseInt($(btn).find('.count').text()) - 1);
             } else if (btnType == "defect") {
                 $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) - 1);
@@ -438,7 +440,7 @@ function saveBtnPress(btn, btnType) {
             $('#log' + logId + '').addClass('success');
             $('#log' + logId + '').html(html);
         } else {
-            Notiflix.Notify.Warning("Something went wrong!.Please get IT support");
+            Notiflix.Report.Warning("Something went wrong!.", "Please get IT support", 'Close');
         }
 
     }).fail(function(jqXHR, textStatus, errorThrown) {
