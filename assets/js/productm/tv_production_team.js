@@ -56,7 +56,7 @@ function getTeamData() {
             if (json_data.length != 0) {
                 var short_exceed_qty = 0;
                 $('#tb-style').text(json_data['teamData']['style']);
-                $('#tb-run-days').text(json_data['teamData']['showRunningDay']);
+                $('#tb-run-days').text(json_data['teamData']['styleRunDays']);
                 $('#tb-worksers').text(json_data['teamData']['noOfwokers']);
                 ///// team up Down ///////
                 var planQtyHr = parseInt(json_data['teamData']['needOutQtyHr']);
