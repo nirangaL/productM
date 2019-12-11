@@ -152,4 +152,4 @@
 <input type="hidden" id="startHour">
 <!-- / End hidden input for time count down -->
 
-<script src="<?php echo base_url() ?>/assets/js/productm/tv_production_team.js"></script>
+<script src="<?php echo base_url() ?>assets/js/productm/tv_production_team.js"></script>
