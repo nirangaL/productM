@@ -158,7 +158,7 @@
               <label class="col-form-label col-md-1">R.Day :</label>
               <div class="col-md-1">
                 <input id="runDay" name="runDay" type="number" class="form-control"
-                value="<?php echo set_value('runDay'); ?>" min="0" onkeyup="copytoShowRunDay(this)" required>
+                value="<?php echo set_value('runDay'); ?>" min="0" onkeyup="copytoShowRunDay(this);getStyleRunDays();" required>
                 <span class="error" id="error"><?php echo form_error('runDay'); ?></span>
               </div>
 
@@ -273,10 +273,7 @@
 
       function copytoShowRunDay(runday){
         var runday = $(runday).val();
-        if( $('#showRunDay').val()==''){
-          $('#showRunDay').val(runday);
-        }
-        
+          $('#showRunDay').val(runday);  
       }
 
         function checkLineIsRunning(selectLine) {
@@ -339,9 +336,18 @@
           var style = $('#style').val();
           var line = $('#line').val();
           var smv = $('#smv').val();
+          var runDay = $('#runDay').val();
           var dayPlanType = $('#dayPlanType').val();
+          $('#efficiency').val('');
+          $('#efficiency_hid').val('');
 
-          if (style != '' && line != '') {
+          $('#forecastEffi').val('');
+          $('#forecastEffi_hid').val('');
+          if(runDay ==''){
+            runDay ='';
+          }
+
+          if (style != '' && line != '' && smv !='') {
             $.ajax({
               url: '<?php echo base_url("Workstudy_con/getStyleRunDays") ?>', //This is the current doc
               type: "POST",
@@ -349,7 +355,8 @@
                 style: style,
                 line: line,
                 smv: smv,
-                dayPlanType:dayPlanType
+                dayPlanType:dayPlanType,
+                runDay:runDay
               }),
               success: function (data) {
                 var date = '-'

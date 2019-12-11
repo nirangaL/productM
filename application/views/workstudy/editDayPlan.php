@@ -107,7 +107,7 @@
                     <div class="form-group row">
                       <label class="col-form-label col-md-1">Style :</label>
                       <div class="col-md-3">
-                        <select id="style" name="style" class="form-control select-search" onchange="getDelivery(this)" data-fouc disabled>
+                        <select id="style" name="style" class="form-control select-search" data-fouc disabled>
                           <option value="" >--- Select Style ----</option>
                           <?php foreach ($style as $row){
                             ?>
@@ -120,7 +120,7 @@
                       </div>
                       <label class="col-form-label col-md-1">SMV :</label>
                       <div class="col-md-2">
-                        <input id="smv" name="smv" type="text" class="form-control" value="<?php if(!empty($dayPlanData[0]->smv)){echo $dayPlanData[0]->smv; }else{ echo set_value('smv');}  ?>" min="0" onkeyup="getPlannedQty();">
+                        <input id="smv" name="smv" type="text" class="form-control" value="<?php if(!empty($dayPlanData[0]->smv)){echo $dayPlanData[0]->smv; }else{ echo set_value('smv');}  ?>" min="0" onkeyup="getPlannedQty();" onblur="getStyleRunDays();"> 
                         <span class="error" id="error"><?php echo form_error('smv'); ?></span>
                       </div>
                       
@@ -147,7 +147,7 @@
                       <label class="col-form-label col-md-1">R. Day :</label>
                       <div class="col-md-1">
                         <input id="runDay" name="runDay" type="number" class="form-control"
-                        value="<?php  if(!empty($dayPlanData[0]->dayPlanQty)){echo $dayPlanData[0]->runningDay; }else{ echo set_value('runDay');} ?>" min="1" required>
+                        value="<?php  if(!empty($dayPlanData[0]->dayPlanQty)){echo $dayPlanData[0]->runningDay; }else{ echo set_value('runDay');} ?>" min="1" onkeyup="copytoShowRunDay(this);getStyleRunDays();" required>
                         <span class="error" id="error"><?php echo form_error('runDay'); ?></span>
                       </div>
                       <label class="col-form-label col-md-1">Show R.Day :</label>
@@ -168,7 +168,7 @@
                       <div class="col-md-1"></div>
                       <label class="col-form-label col-md-1">Inc.Efficiency :</label>
                       <div class="col-md-2">
-                        <input id="efficiency" name="efficiency" type="number" class="form-control" value="<?php  if(!empty($dayPlanData[0]->incenEffi)){echo $dayPlanData[0]->incenEffi; }else{ echo set_value('efficiency');} ?>" min="0" readonly>
+                        <input id="efficiency" name="efficiency" type="number" class="form-control" value="<?php  if(!empty($dayPlanData[0]->incenEffi)){echo $dayPlanData[0]->incenEffi; }else{ echo set_value('efficiency');} ?>" min="0">
                         <span class="error" id="error"><?php echo form_error('efficiency'); ?></span>
                       </div>
                       <div class="col-md-1"></div>
@@ -264,6 +264,11 @@
               checkLineIsRunning('<?php echo $dayPlanData[0]->line?>');
             });
 
+            function copytoShowRunDay(runday){
+            var runday = $(runday).val();
+              $('#showRunDay').val(runday);  
+            }
+
             $("input[name='addWorkers']").TouchSpin({
               min: -10000000000,
               max: 100,
@@ -280,48 +285,62 @@
               }
             }
 
-            function getDelivery(style) {
-              var style = $(style).val();
-              var delv = '';
-              var temp = '';
-              if(style != ''){
-                $.ajax({
-                  url: '<?php echo base_url("index.php/Workstudy_con/getDelivery")?>', //This is the current doc
-                  type: "POST",
-                  data: ({
-                    style: style,
-                  }),
-                  success: function (data) {
-                    var html = "<option value='' selected=\"selected\">&nbsp;</option>";
-                    var json_value = JSON.parse(data);
-                    for (var i = 0; i < json_value.length; i++){
-                      html += "<option value='" + json_value[i]['deliveryNo'] + "'>" + json_value[i]['deliveryNo'] + "</option>";
-                    }
-                    $('#delivery').empty().append(html);
-                  }
-                });
-              }
-            }
+            function getStyleRunDays() {
+          var style = $('#style').val();
+          var line = $('#line').val();
+          var smv = $('#smv').val();
+          var runDay = $('#runDay').val();
+          var dayPlanType = $('#dayPlanType').val();
+          $('#efficiency').val('');
+          $('#efficiency_hid').val('');
 
-            function getOrderQty(delivery){
-              var delivery = $(delivery).val();
-              var style = $('#style').val();
-              if(delivery != ''){
-                $.ajax({
-                  url: '<?php echo base_url("Workstudy_con/getOrderQty")?>', //This is the current doc
-                  type: "POST",
-                  data: ({
-                    deliveryNo: delivery,
-                    style: style,
-                  }),
-                  success: function (data) {
-                    var json_value = JSON.parse(data);
-                    $('#orderQty').val(json_value[0]['orderQty']);
-                    $('#scNumber').val(json_value[0]['scNumber']);
+          $('#forecastEffi').val('');
+          $('#forecastEffi_hid').val('');
+          if(runDay ==''){
+            runDay ='';
+          }
+
+          if (style != '' && line != '' && smv !='') {
+            $.ajax({
+              url: '<?php echo base_url("Workstudy_con/getStyleRunDays") ?>', //This is the current doc
+              type: "POST",
+              data: ({
+                style: style,
+                line: line,
+                smv: smv,
+                dayPlanType:dayPlanType,
+                runDay:runDay
+              }),
+              success: function (data) {
+                var date = '-'
+                var StyleRunDays = 0;
+                if (data != 0) {
+                  var json_value = JSON.parse(data);
+                  if (json_value[0]['lastRunDate'] != null) {
+                    date = json_value[0]['lastRunDate'];
                   }
-                });
+                  StyleRunDays = json_value[0]['styleRunDays'];
+                  $('#runDay').val(StyleRunDays);
+                  $('#showRunDay').val(StyleRunDays);
+                  if(dayPlanType != '4'){
+                    $('#efficiency').val(json_value[0]['efficiency']);
+                    $('#efficiency_hid').val(json_value[0]['efficiency']);
+
+                    $('#forecastEffi').val(json_value[0]['efficiency']);
+                    $('#forecastEffi_hid').val(json_value[0]['efficiency']);
+                  }
+
+                } else {
+
+                }
+                $('#msg').html('<b>Note :</b>  This  <b>' + (style-1) + '</b> style have run this line in <b>' + StyleRunDays + '</b> days. Last days is/was <b>' + date + '</b>');
               }
-            }
+            });
+          } else {
+            $('#msg').html('');
+          }
+
+        }
 
             function checkLineIsRunning(selectLine) {
               var selectLine = selectLine;

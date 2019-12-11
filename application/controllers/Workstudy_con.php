@@ -6,8 +6,8 @@
 * Time: 8:32 AM
 */
 //
-//error_reporting(-1);
-//ini_set('display_errors', 1);
+error_reporting(-1);
+ini_set('display_errors', 1);
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Workstudy_con extends MY_Controller{
@@ -134,25 +134,22 @@ class Workstudy_con extends MY_Controller{
   }
 
   public function getStyleRunDays(){
-    $dayPlanType = $this->input->post('dayPlanType');
-    // if($dayPlanType == '4'){
-    //   $styleRunDays = $this->Workstudy_model->otherDayPlan();
-    //   $runDaysinToday = $styleRunDays['runDay']+1;
-    // }else{
-    //   $styleRunDays = $this->Workstudy_model->getStyleRunDays();
-    //   $runDaysinToday = $styleRunDays['runDay']+1;
-    // }
+  
 
-    $styleRunDays = $this->Workstudy_model->getStyleRunDays();
-    $runDaysinToday = $styleRunDays['runDay']+1;
+    $userEnterRunDay = $this->input->post('runDay');
+    if($userEnterRunDay != '' ){
+      $runDaysinToday = $userEnterRunDay;
+    }else{
+      
+      $styleRunDays = $this->Workstudy_model->getStyleRunDays();
+      $runDaysinToday = (int)$styleRunDays['runDay']+1;
+    }
    
     $result = $this->Workstudy_model->needRuningDaysEffi($runDaysinToday);
 
     if(!empty($result)){
       $result[0]->styleRunDays = new stdClass();
       $result[0]->styleRunDays = $runDaysinToday;
-      $result[0]->lastRunDate = new stdClass();
-      $result[0]->lastRunDate = $styleRunDays['lastRunDate'];
       echo json_encode($result);
     }
   }
