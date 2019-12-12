@@ -221,7 +221,7 @@
 
         // Extend default options with those supplied by user.
         options = $.extend({
-            height: $el.height() > 200 ? $el.height() : 800, // default to 200px or the height of the element, whichever is smaller
+            height: $el.height() > 200 ? 900 : $el.height(), // default to 200px or the height of the element, whichever is smaller
             useRelative: $el.is('body') ? false : true, // default to false for the body element and true for all other elements
         }, $.fn[pluginName].defaults, options);
 

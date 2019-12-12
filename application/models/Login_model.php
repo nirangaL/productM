@@ -27,14 +27,16 @@ class Login_model extends CI_Model{
             if($result[0]->active=='1'){
 
                 $sql = "SELECT
-                      epfNo,
-                      `name`,
-                      `designation`,
-                      userGroup,
-                      location,
-                      userName
+                        `users`.epfNo,
+                        `users`.`name`,
+                        `users`.`designation`,
+                        `users`.userGroup,
+                        location.`comp_id`,
+                        `users`.location,
+                        `users`.userName
                     FROM
-                      `users`
+                        `users`
+                        INNER JOIN location ON `users`.`location` = location.`location_id`
                     WHERE userName = '$user'";
 
                 $result2 = $this->db->query($sql)->result();
@@ -44,9 +46,9 @@ class Login_model extends CI_Model{
                     'userName' => $result2[0]->userName,
                     'name' => $result2[0]->name,
                     'designation' =>$result2[0]->designation,
+                    'company' =>$result2[0]->comp_id,
                     'location' => $result2[0]->location,
-                    'userGroup' => $result2[0]->userGroup,
-                    'id' => $result2[0]->id,
+                    'userGroup' => $result2[0]->userGroup
                 );
                 $this->session->set_userdata('session_user_data', $ses_user_data);
                 $this->add_userOnline($user);

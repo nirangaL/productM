@@ -93,7 +93,6 @@
                     <th>Team</th>
                     <th>Buyer</th>
                     <th>Style</th>
-                    <th>Delivery</th>
                     <th>SMV</th>
                     <th>Run Days</th>
                     <th>Workers Count</th>
@@ -171,7 +170,6 @@
                             <!-- <td><?php //echo $tableData[$i]->line;?></td> -->
                             <td><?php echo $tableData[$i]->buyer;?></td>
                             <td><?php echo $tableData[$i]->style;?></td>
-                            <td><?php echo $tableData[$i]->delivery;?></td>
                             <td><?php echo $tableData[$i]->smv;?></td>
                             <td><?php echo $tableData[$i]->runDay;?></td>
                             <td><?php echo $tableData[$i]->workersCount;?></td>

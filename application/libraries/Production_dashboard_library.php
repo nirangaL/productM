@@ -253,6 +253,7 @@ class Production_dashboard_library
 
                 $data['teamData'][$i] = array(
                     'whatData' => $whatData,
+                    'line' => $team,
                     'lineName' => $teamName,
                     'dayPlanType' => $dayPlanType,
                     'runStatus' => $dayPlanStatus,

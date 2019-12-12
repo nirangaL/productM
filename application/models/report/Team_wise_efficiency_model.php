@@ -22,7 +22,6 @@ class Team_wise_efficiency_model extends CI_model{
                   ON `day_efficiency`.`lineId` = prod_line.`line_id`
                 JOIN `location`
                   ON `location`.`location_id` = `prod_line`.`location_id`
-
               WHERE DATE(day_efficiency.`dateTime`) = '$date'
                 AND location.`location_id` = '$location'";
 

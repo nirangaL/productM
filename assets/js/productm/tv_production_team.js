@@ -6,15 +6,15 @@ window.setInterval(function() {
 $(document).ready(function() {
     getTeamData();
     $('body').flurry({
-        character: "❄",
-        // character: "*",
+        character: "❆",
+        // character: "•",
         color: "white",
         frequency: 100,
-        speed: 7000,
+        speed: 10000,
         small: 4,
-        large: 24,
+        large: 20,
         wind: 40,
-        windVariance: 60,
+        windVariance: 10,
         rotation: 90,
         rotationVariance: 180,
         startOpacity: 1,

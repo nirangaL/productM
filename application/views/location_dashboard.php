@@ -14,6 +14,21 @@
 .effi{
   background:#f1f2f6; 
 }
+
+#tv-icon{
+  cursor: pointer;
+}
+
+.summary{
+  font-size:15px;
+  font-family: inherit;
+}
+
+.summary span{
+  font-weight: bold;
+}
+
+
 </style>
 <div class="content-wrapper">
 
@@ -60,6 +75,9 @@
   <!-- Content area -->
   <div class="content">
 
+  <!-- <?php 
+  //  print_r($sessionData);
+  ?> -->
     <!-- Gauges -->
     <div class="row">
       <div class="col-md-8">
@@ -111,10 +129,15 @@
     <!--View Production Team -->
     <div class="card" >
       <div class="card-header header-elements-sm-inline">
-        <h6 class="card-title">View Production Team</h6>
+        <h5 class="card-title">View Production Team</h5>
+        <span class="summary text-slate-600">Total Workers : <span id="totWorker" class="text-slate-800"></span></span>
+        <span class="summary text-slate-600">No. of Style : <span id="totStyle" class="text-slate-800"></span></span>
+        <span class="summary text-slate-600">Total Plan Qty : <span id="totPlan" class="text-slate-800"></span></span>
+        <span class="summary text-slate-600">Total Out Qty : <span id="totOut" class="text-slate-800"></span></span>
+        
         <div class="header-elements">
           <div class="list-icons">
-          <button type="button" data-toggle="modal" data-target="#modal_full" class="btn btn-dark" ><i class="icon-alarm mr-2"></i> Hourly Progress</button>
+          <!-- <button type="button" data-toggle="modal" data-target="#modal_full" class="btn btn-dark" ><i class="icon-alarm mr-2"></i> Hourly Progress</button> -->
             <a class="list-icons-item" data-action="collapse"></a>
             <!-- <a class="list-icons-item" data-action="reload"></a> -->
           </div>
@@ -137,6 +160,7 @@
               <th>QR.Lvl%</th>
               <th>Incen</th>
               <th>Status</th>
+              <th>Actions</th>
             <tr>
           </thead>
           <tbody id="teamData">
@@ -221,7 +245,6 @@
  				</div>
          <!-- /basic modal -->
          
-
          <!-- Full width modal -->
 				<div id="modal_full" class="modal fade" tabindex="-1">
 					<div class="modal-dialog modal-full">
@@ -251,10 +274,15 @@
 
     var timeTicket = setInterval(function () {
       getAllData();
-    }, 15000);
+    }, 10000);
 
 
     function getAllData() {
+
+      var totalWorkers = 0;
+      var totalPlanQty = 0;
+      var totalOutQty = 0;
+      var styleArray = [];
 
       $.ajax({
         url:'<?php echo base_url("Location_Dashboard_Con/getLocationData") ?>',
@@ -334,7 +362,8 @@
               var neededQtyAtTime = '-';
               var neededQrLvl = '-';
               var incentive = '-';
-              var smv = '';
+              var smv = '-';
+              var noOfwokers = '-';
               if(json_value['tvData'][i]['gridData'] != null){
                 for(var x=0;x<json_value['tvData'][i]['gridData'].length;x++){
                   teamName = json_value['tvData'][i]['gridData'][x]['lineName'];
@@ -343,16 +372,18 @@
                   style = json_value['tvData'][i]['gridData'][x]['style'];
                   noOfwokers = json_value['tvData'][i]['gridData'][x]['noOfwokers'];
                   runDay = json_value['tvData'][i]['gridData'][x]['styleRunDatys'];
-                  
                   aQty = json_value['tvData'][i]['gridData'][x]['lineOutQty'];
                   effi = json_value['tvData'][i]['gridData'][x]['actEff'];
                   qrL = json_value['tvData'][i]['gridData'][x]['actualQrLevel'];
                   incentive = json_value['tvData'][i]['gridData'][x]['incentive'];
                   neededQrLvl = json_value['tvData'][i]['gridData'][x]['needQrLvl'];
                   status = json_value['tvData'][i]['gridData'][x]['status'];
-                 
                   smv = json_value['tvData'][i]['gridData'][x]['smv'];
 
+                  
+                  if(jQuery.inArray(style, styleArray) !== -1){}else{styleArray.push(style)}
+  
+                   
                   if(dayPlanType=='4'){
                     pQty = json_value['tvData'][i]['gridData'][x]['styleDayPlanQty'];
                     neededQtyAtTime = json_value['tvData'][i]['gridData'][x]['styleNeedQty'];
@@ -361,6 +392,9 @@
                     neededQtyAtTime = json_value['tvData'][i]['gridData'][x]['neededQtyAtTime'];
                   }
 
+                  totalWorkers += parseFloat(noOfwokers);
+                  totalPlanQty += parseInt(pQty);
+                  totalOutQty += parseInt(aQty);
 
                   if(json_value['tvData'][i]['gridData'][x]['whatData'] == 'feeding'){
                     html += "<tr>";
@@ -434,14 +468,17 @@
                     // html += "<td>" + incentive + "</td>";
 
                     if ( status == 'up') {
-                      html += "<td>" + "<span class='badge bg-success-400'>Up</span>" + "</td>";
+                      html += "<td><span class='badge bg-success-400'>Up</span></td>";
 
                     } else if (status == 'down') {
-                      html += "<td>" + "<span class='badge bg-danger'>Down</span>" + "</td>";
+                      html += "<td><span class='badge bg-danger'>Down</span></td>";
                     } else {
-                      html += "<td>" + '-' + "</td>";
+                      html += "<td>'-'</td>";
                     }
-                    // html += "<td><button type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Popover title' data-content='And heres some amazing content. Its very engaging. Right?'>Click to toggle popover</button></td>";
+                    if(x==0){
+                      html += "<td rowspan='"+json_value['tvData'][i]['gridData'].length+"' class='text-center'><i id='tv-icon' class='icon-display mr-2' onclick='showTeamDash("+json_value['tvData'][i]['gridData'][(x)]['line']+")'></i></td>";
+                    }
+                    
                     html += "</tr>";
 
                   }
@@ -450,6 +487,7 @@
                  
                  
                 }
+              
               }else{
                 html +="<tr>";
                 html +="<td>"+json_value['team'][i]+"</td>";
@@ -464,11 +502,17 @@
                 html +="<td>-</td>";
                 html +="<td>-</td>";
                 html +="<td>-</td>";
+                html +="<td class='text-center'>-</td>";
                 html +="<tr>";
               }
              
             }      
             workerDetailsModal(json_value['team'],json_value['teamWorkers']);
+            $('#totWorker').text(totalWorkers);
+                $('#totPlan').text(totalPlanQty);
+                $('#totOut').text(totalOutQty);
+                $('#totStyle').text(styleArray.length);
+
             $('#teamData').append(html);
           }
         }
@@ -567,4 +611,17 @@
         
             // $('#workerCount').text(totalWorkersCount);
     }
+
+    function showTeamDash(team){
+      self.close();
+      var company  = <?php echo $sessionData['company'] ?>;
+      var location  = <?php echo $sessionData['location'] ?>;
+      document.cookie = 'company='+company+'';
+      document.cookie = 'line='+team+'';
+      document.cookie = 'location='+location+'';
+ 
+     my_window = window.open('<?php echo base_url('tv/Tv_Production_Con')?>','TeamTv','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1280,height=760');
+
+    }
+
 </script>
