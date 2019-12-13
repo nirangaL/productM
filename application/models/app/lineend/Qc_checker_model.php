@@ -19,7 +19,7 @@ class Qc_checker_model extends CI_Model{
         if($inputValidate == '1'){
             $sql = "SELECT style,scNumber FROM `production_input` WHERE teamId = '$team' GROUP BY style ORDER BY createDate DESC LIMIT 5";
         }else{
-            $sql = "SELECT styleNo AS style,scNumber,`TimeStamp` FROM  `style_Info` GROUP BY style ORDER BY `TimeStamp` DESC LIMIT 100";
+            $sql = "SELECT styleNo AS style,scNumber,`TimeStamp` FROM  `style_Info` GROUP BY style ORDER BY `TimeStamp` DESC LIMIT 500";
         }
       
       return $this->db->query($sql)->result();
@@ -84,7 +84,7 @@ class Qc_checker_model extends CI_Model{
           rejectReason
         FROM
           `reject_master`
-        WHERE location ='$location' ORDER BY rejectReason ASC" ;
+         ORDER BY rejectReason ASC" ;
         return $this->db->query($sql)->result();
     }
 
