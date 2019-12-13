@@ -199,7 +199,7 @@
                         $factoryEff = (double)(($totaProduceMin/$totalUsedMin)*100);
 
                         ?>
-                        <td colspan="6" style="font-weight:bold;font-size:16px;" class="text-center"><i>Factory Total</i></td>
+                        <td colspan="5" style="font-weight:bold;font-size:16px;" class="text-center"><i>Factory Total</i></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalWorkerCount;?></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalPlanedQty;?></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalOutQty;?></td>
