@@ -6,8 +6,8 @@
 * Time: 8:32 AM
 */
 //
-error_reporting(-1);
-ini_set('display_errors', 1);
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Workstudy_con extends MY_Controller{
@@ -140,11 +140,10 @@ class Workstudy_con extends MY_Controller{
     if($userEnterRunDay != '' ){
       $runDaysinToday = $userEnterRunDay;
     }else{
-      
       $styleRunDays = $this->Workstudy_model->getStyleRunDays();
       $runDaysinToday = (int)$styleRunDays['runDay']+1;
     }
-   
+
     $result = $this->Workstudy_model->needRuningDaysEffi($runDaysinToday);
 
     if(!empty($result)){

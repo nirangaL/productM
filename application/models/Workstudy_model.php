@@ -103,7 +103,7 @@ class Workstudy_model extends CI_Model{
     $noOfWorkser = $this->input->post('noOfWorkser');
     $planQty = $this->input->post('planQty');
     $ince_hour = $this->input->post('ince_hour');
-    // $efficiency = $this->input->post('efficiency');
+    $efficiency = $this->input->post('efficiency');
     $forecastEffi = $this->input->post('forecastEffi');
     $status = $this->input->post('status');
     $runningDay = $this->input->post('showRunDay');
@@ -118,7 +118,7 @@ class Workstudy_model extends CI_Model{
     $this->db->set('runningDay', $runDay);
     $this->db->set('showRunningDay', $runningDay);
     $this->db->set('incentiveHour', $ince_hour);
-    // $this->db->set('incenEffi', $efficiency);
+    $this->db->set('incenEffi', $efficiency);
     $this->db->set('forecastEffi', $forecastEffi);
     if($status != '' ){
       $this->db->set('status', $status);
