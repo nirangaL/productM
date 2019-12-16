@@ -83,12 +83,10 @@ class Workstudy_model extends CI_Model{
       'createBy' =>  $_SESSION['session_user_data']['userName'],
       'createDate' =>  date('Y-m-d H:i:s'),
     );
+    $currentDate = date('Y-m-d');
     $this->db->trans_start();
-    $this->db->where('style', $style);
-    $this->db->where('createDate', date('Y-m-d H:i:s'));
-    $this->db->where('dayPlanType', '1');
-    $this->db->from('day_plan');
-    $count = $this->db->count_all_results();
+    $sql = "SELECT id FROM day_plan WHERE style = '$style' AND dayPlanType ='1' AND DATE(`createDate`) = '$currentDate' AND `line`= '$line'";
+    $count = $this->db->query($sql)->num_rows();
     
     if($count == 0){
       $this->db->insert('day_plan', $data);
