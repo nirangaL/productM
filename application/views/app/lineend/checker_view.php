@@ -104,6 +104,7 @@
           </br>
             <i class="icon-thumbs-down2"></i>
         </div>
+        <span class="defect-btn-footer">TODAYS : <span id="today-defect-qty" class="toDayDefectCount"> 0 </span></span>
       </button>
     </div>
   </div>

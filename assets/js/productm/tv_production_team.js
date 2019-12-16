@@ -95,6 +95,7 @@ function getTeamData() {
                 $('#tile-target-effi').html(json_data['teamData']['ForEff'] + '<span class="prasentage">%</span>');
                 $('#tile-actual-effi').html(json_data['teamData']['actEff'] + '<span class="prasentage">%</span>');
                 $('#tile-rework-qty').text(json_data['teamData']['rejectQty']);
+                $('#tile-total-rework-qty').text(json_data['teamData']['allDefectQty']);
                 $('#tile-remake-qty').text(json_data['teamData']['remakeQty']);
 
                 var needQrLevel = json_data['teamData']['needQrLvl'];

@@ -307,6 +307,7 @@ class Qc_checker_model extends CI_Model{
     style,
     IFNULL(SUM(mt.passQty),0) AS passQty,
     IFNULL(SUM(mt.defectQty),0) AS defectQty,
+    IFNULL(SUM(mt.todayDefectQty),0) AS todayDefectQty,
     IFNULL(SUM(mt.remakeQty),0) AS remakeQty
   FROM
     (SELECT
@@ -314,6 +315,7 @@ class Qc_checker_model extends CI_Model{
       `qc_pass_log`.`size`,
       (SELECT COALESCE(COUNT(id), 0) AS pass FROM `qc_pass_log` WHERE `chckHeaderId` = htb.`id`) AS passQty,
       (SELECT COALESCE(COUNT(rej.`rejectId`)) FROM `qc_reject_log` rej LEFT JOIN `checking_header_tb` tbH ON rej.`chckHeaderId` = tbH.`id` WHERE tbH.`style` = htb.style AND tbH.lineNo = htb.lineNo) - (SELECT COALESCE(COUNT(rem.id)) FROM `qc_remake_log` rem LEFT JOIN `checking_header_tb` tbH ON rem.`chckHeaderId` = tbH.`id` WHERE tbH.`style` =  htb.style AND tbH.lineNo = htb.lineNo) AS defectQty,
+      (SELECT COALESCE(COUNT(rejectId),0) FROM `qc_reject_log` WHERE `chckHeaderId` = htb.`id`  ) - (SELECT COALESCE(COUNT(id),0) FROM `qc_remake_log` WHERE `chckHeaderId` = htb.`id`) -(SELECT COALESCE(COUNT(id),0) FROM `qc_rereject_log` WHERE `chckHeaderId` = htb.`id`)  AS todayDefectQty,
       (SELECT COALESCE(COUNT(id), 0) FROM `qc_remake_log` WHERE `chckHeaderId` = htb.`id`) AS remakeQty
     FROM
       `checking_header_tb` htb

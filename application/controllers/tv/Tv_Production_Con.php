@@ -73,6 +73,7 @@ class Tv_Production_Con extends MY_Controller
                     'ForEff' => $teamData['teamData'][$i]['ForEff'],
                     'actEff' => $teamData['teamData'][$i]['actEff'],
                     'rejectQty' => $teamData['teamData'][$i]['rejectQty'],
+                    'allDefectQty' => $teamData['teamData'][$i]['allDefectQty'],
                     'remakeQty' => $teamData['teamData'][$i]['remakeQty'],
                     'actualQrLevel' => $teamData['teamData'][$i]['actualQrLevel'],
                     'incentive' => $teamData['teamData'][$i]['incentive'],

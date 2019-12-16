@@ -74,6 +74,7 @@ class Production_dashboard_library
                 $styleRunningDay = $temaData[$i]->runningDay;
                 $showRunningDay = $temaData[$i]->showRunningDay;
                 $styleDayPlanQty = $temaData[$i]->dayPlanQty;
+                $allDefectQty = $temaData[$i]->allDefectQty;
                
                 $finalHourMin = 0;
                 $workingMin = 0; ///// total working min /////
@@ -290,6 +291,7 @@ class Production_dashboard_library
                     'toalEff'=> number_format((float) (( $passQty * (double) $smv)/ ($noOfwokers * $workingMin))*100, 2, '.', ''),
                     'styleDayPlanQty'=> $styleDayPlanQty,
                     'styleNeedQty'=> intval($styleNeedQty),
+                    'allDefectQty'=> $allDefectQty,
                 );
                 // if (!empty($getTime)) {
                 //     break;

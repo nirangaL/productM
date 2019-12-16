@@ -106,8 +106,9 @@
                             <span id="tile-target-effi" class="value f-yellow">-</span>
                         </div>
                         <div class="card tile card__face back">
-                            <h1>Rework QTY</h1>
-                            <span id="tile-rework-qty" class="value f-red">-</span>   
+                            <h1>Total Rework QTY</h1>
+                            <span id="tile-total-rework-qty" class="value f-red">-</span>
+                            <span class="tile-footer">Today QTY : <span id="tile-rework-qty" class="value-footer f-red"></span></span>
                         </div>
                     </div>
                 </div>
@@ -121,7 +122,7 @@
                         <div class="card tile card__face back">
                             <h1>Remake QTY</h1>
                             <span id="tile-remake-qty" class="value f-red">-</span>
-                            
+    
                         </div>
                     </div>
                 </div>

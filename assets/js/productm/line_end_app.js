@@ -237,7 +237,9 @@ function getCountFormLog(style) {
             var json_val = JSON.parse(data);
             $('#btn-pass').find('.count').text(json_val[0]['passQty']);
             $('#btn-defect').find('.count').text(json_val[0]['defectQty']);
+            $('#btn-defect').find('#today-defect-qty').text(json_val[0]['todayDefectQty']);
             $('#btn-remake').find('.count').text(json_val[0]['remakeQty']);
+
         }
         loaderOff();
 
@@ -348,10 +350,14 @@ function btnPress(btn) {
 
     if (btnType == 'remake') {
         var defect = parseInt($('#btn-defect').find('.count').text());
+        var todayDefect = parseInt($('#btn-defect').find('#today-defect-qty').text())
         if (defect > 0) {
             defect = defect - 1;
             $('#btn-pass').find('.count').text(parseInt($('#btn-pass').find('.count').text()) + 1);
             $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) - 1);
+            if (todayDefect != 0) {
+                $('#btn-defect').find('#today-defect-qty').text(todayDefect - 1);
+            }
             $('#btn-remake').find('.count').text(parseInt($(btn).find('.count').text()) + 1);
         } else {
             validate = false;
@@ -362,9 +368,11 @@ function btnPress(btn) {
     if (btnType == 'defect') {
         // alert(btnType);
         var defectReason = $('#selectDefectReason').val();
+        var todayDefect = parseInt($('#btn-defect').find('#today-defect-qty').text())
         if (defectReason != '') {
             $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) + 1);
 
+            $('#btn-defect').find('#today-defect-qty').text(todayDefect + 1);
             $('#defect-reasons-model').modal('hide');
         } else {
             validate = false;
@@ -384,7 +392,8 @@ function saveBtnPress(btn, btnType) {
     var delivery = $('#delivery').val();
     var color = $('#color').val();
     var size = $('#selectSize').val();
-    var inputValidate = $('#inputValidate').val();
+    // var inputValidate = $('#inputValidate').val();
+    var todayDefect = parseInt($('#btn-defect').find('#today-defect-qty').text())
 
     var logId = Math.floor(Math.random() * 100001);
 
@@ -424,9 +433,14 @@ function saveBtnPress(btn, btnType) {
             if (btnType == "remake") {
                 $('#btn-pass').find('.count').text(parseInt($('#btn-pass').find('.count').text()) - 1);
                 $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) + 1);
+
+                $('#btn-defect').find('#today-defect-qty').text(todayDefect + 1);
                 $(btn).find('.count').text(parseInt($(btn).find('.count').text()) - 1);
             } else if (btnType == "defect") {
                 $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) - 1);
+                if (todayDefect != 0) {
+                    $('#btn-defect').find('#today-defect-qty').text(todayDefect - 1);
+                }
             } else {
                 $(btn).find('.count').text(parseInt($(btn).find('.count').text()) - 1);
             }
@@ -449,8 +463,12 @@ function saveBtnPress(btn, btnType) {
             $('#btn-pass').find('.count').text(parseInt($('#btn-pass').find('.count').text()) - 1);
             $(btn).find('.count').text(parseInt($(btn).find('.count').text()) - 1);
             $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) + 1);
+            $('#btn-defect').find('#today-defect-qty').text(parseInt($('#btn-defect').find('#today-defect-qty').text()) + 1);
         } else if (btnType == "defect") {
             $('#btn-defect').find('.count').text(parseInt($('#btn-defect').find('.count').text()) - 1);
+            if (todayDefect != 0) {
+                $('#btn-defect').find('#today-defect-qty').text(todayDefect - 1);
+            }
         } else {
             $(btn).find('.count').text(parseInt($(btn).find('.count').text()) - 1);
         }

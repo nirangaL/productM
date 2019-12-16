@@ -239,6 +239,7 @@ body {
 }
 
 .btn-box {
+    position: relative;
     height: 120px;
     width: 100%;
     margin: 2px 0;
@@ -284,6 +285,20 @@ body {
     padding: 0;
     margin: 0;
     color: black;
+}
+
+.defect-btn-footer {
+    position: absolute;
+    bottom: 5px;
+    right: 20px;
+    font-weight: bold;
+    color: black;
+    font-size: 18px;
+}
+
+.defect-btn-footer .toDayDefectCount {
+    font-size: 28px !important;
+    font-weight: normal;
 }
 
 
