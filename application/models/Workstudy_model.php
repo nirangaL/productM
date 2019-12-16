@@ -84,6 +84,7 @@ class Workstudy_model extends CI_Model{
       'createDate' =>  date('Y-m-d H:i:s'),
     );
     $this->db->trans_start();
+    $this->db->where('style', $style);
     $this->db->where('createDate', date('Y-m-d H:i:s'));
     $this->db->where('dayPlanType', '1');
     $this->db->from('day_plan');
