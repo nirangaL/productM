@@ -110,10 +110,9 @@ class Style_model extends CI_Model{
     public function getProcessedDelivery(){
         $styleNo  = $this->input->post('style');
         $sql = "SELECT
-                  `deliverNo`,
-                  scNumber
+                  `delivery`  AS `deliverNo`
                 FROM
-                  `intranet_db`.`checking_header_tb`
+                  `intranet_db`.checking_grid_tb
                 WHERE `style` = '$styleNo'
                 GROUP BY scNumber,
                   deliverNo
