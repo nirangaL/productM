@@ -84,8 +84,18 @@ class Workstudy_model extends CI_Model{
       'createDate' =>  date('Y-m-d H:i:s'),
     );
     $this->db->trans_start();
-    $this->db->insert('day_plan', $data);
-    return $this->db->trans_complete();
+    $this->db->where('createDate', date('Y-m-d H:i:s'));
+    $this->db->where('dayPlanType', '1');
+    $this->db->from('day_plan');
+    $count = $this->db->count_all_results();
+    
+    if($count == 0){
+      $this->db->insert('day_plan', $data);
+      return $this->db->trans_complete();
+    } else{
+      return true;
+    }
+   
   }
 
   public function getDatPlanToEdit($planId){
@@ -107,8 +117,6 @@ class Workstudy_model extends CI_Model{
     $forecastEffi = $this->input->post('forecastEffi');
     $status = $this->input->post('status');
     $runningDay = $this->input->post('showRunDay');
-
-
 
     $this->db->trans_start();
     $this->db->set('hrs', $workingHrs);
