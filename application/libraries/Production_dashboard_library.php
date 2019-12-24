@@ -1,5 +1,6 @@
 <?php
-
+// error_reporting(-1);
+// ini_set('display_errors', 1);
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Production_dashboard_library
@@ -11,6 +12,7 @@ class Production_dashboard_library
     private $teamProduceMin;
     private $teamUsedMin;
     private $minuteForHour;
+    private $styleStartHour;
 
     public function __construct()
     {
@@ -48,12 +50,11 @@ class Production_dashboard_library
            
            $this->teamProduceMin = 0;;
            $this->teamUsedMin = 0;
-
-
             $styleDayPlanQty = 0;
             $styleNeedQty = 0;
-
+            $this->styleStartHour = 1;
             for ($i = 0; $i < sizeof($temaData); $i++) {
+              
                 $dayPlanId = $temaData[$i]->dayPlanId;
                 $dayPlanType = $temaData[$i]->dayPlanType;
                 $dayPlanStatus = $temaData[$i]->status;
@@ -130,7 +131,7 @@ class Production_dashboard_library
                     // exit();
 
                     ////Team wokring min ////
-                    $finalHourMin = $this->get_time_difference($hourStartTime, $currentTime) * 60;
+                    $finalHourMin = $this->get_time_difference($hourStartTime, $currentTime) * $this->minuteForHour;
 
                     $prePrInfp = $this->getPrevHourProd($getTime[0]->currentHour, $hrs, $style, $this->team, $dayPlanId, $timeTemplate);
                     $preHour = $prePrInfp['hour'];
@@ -219,6 +220,7 @@ class Production_dashboard_library
                 $lineAndStyleEffi = $this->getEfficiency($workingMin, $passQty, $smv, $noOfwokers);
 
                 $efficiency = $lineAndStyleEffi['lineEffi'];
+                $styleEffi = $lineAndStyleEffi['styleEff'];
                 $actulaOutQty = 0;
                 if ($passQty == 0) {
                     $actulaOutQty = 1;
@@ -228,7 +230,11 @@ class Production_dashboard_library
 
                 $qrLevelNeed = $this->getQrLevel();
                 $actualQrLevel = $this->calculateQrLevel($actulaOutQty, $defectQty);
-
+                if($actualQrLevel >= 100){
+                    $actualQrLevel = 100;
+                }else{
+                    $actualQrLevel = number_format((float) $actualQrLevel, 2, '.', '');
+                }
                 if ($qrLevelNeed <= $actualQrLevel && $targetEfficiency != 0) {
 
                     // //// if two style and same smv then we need to get incenctive according to  efficiency of both style ////
@@ -274,15 +280,16 @@ class Production_dashboard_library
                     'statusProDashboard' => $status,
                     'ForEff' => $forecastEffi,
                     'actEff' => number_format((float) $efficiency, 2, '.', ''),
+                    'styleEffi'=>number_format((float) $styleEffi, 2, '.', ''),
                     'rejectQty' => (int)($defectQty -$remakeQty),
                     'remakeQty' => $remakeQty,
-                    'actualQrLevel' => number_format((float) $actualQrLevel, 2, '.', ''),
+                    'needQrLvl' => $qrLevelNeed,
+                    'actualQrLevel' => $actualQrLevel,
                     'incentive' => intval($incentive),
                     'styleRunDays' => $styleRunningDay,
                     'showRunningDay' => $showRunningDay,
                     'noOfwokers' => $noOfwokers,
                     'neededQtyAtTime' => intval($neededQtyAtTime),
-                    'needQrLvl' => $qrLevelNeed,
                     'minuteForHour' => $this->minuteForHour,
                     'timeForTimeCountDown' => $timeForTimeCountDown,
                     'hourStartTime' => $hourStartTime,
@@ -293,13 +300,12 @@ class Production_dashboard_library
                     'styleNeedQty'=> intval($styleNeedQty),
                     'allDefectQty'=> $allDefectQty,
                 );
-                // if (!empty($getTime)) {
-                //     break;
-                // }
+                
+                $data['hourlyOut'][$i] = $this->getHourlyOut($team,$style,$hrs,$smv,$noOfwokers,$dayPlanId,$dayPlanType,$currentHour,$timeTemplate);        
             }
-            // echo '<pre>';
-            // print_r($data);
+
             return $data;
+
         } else {
             $result = $CI->Dashboard_production_model->checkTodayFeedingSPlan($this->team);
             if (!empty($result)) {
@@ -315,79 +321,134 @@ class Production_dashboard_library
         }
     }
 
-    ////// Get Team Time current hour information //////
-    public function getTeamTime($maxHrs, $dayPlanId,$dayPlanType, $timeTemplId)
-    {
 
+    ////// Get Team Time current hour information //////
+    public function getTeamTime($maxHrs,$dayPlanId,$dayPlanType,$timeTemplId){
         $currentTime = date('H:i:s');
         $workedHours = 0;
-
+        $newStyleStartHour = 1;
         $CI = &get_instance();
         $CI->load->model('Dashboard_production_model');
 
+        ///// warning ---- This function not working properly if there are two feeding dayplan //////////
         $otherDayPlan = $CI->Dashboard_production_model->getOtherDayPlan($this->team, $dayPlanId);
     
         $decimalMin = 0;
         $roundDownHour = floor($maxHrs);
+        $roundUpHour = ceil($maxHrs);
+
         $decimalMin = $maxHrs - $roundDownHour;
 
         if (!empty($otherDayPlan) && $dayPlanType != 4) {
             $workedHours = $otherDayPlan[0]->workedHours;
+            $workedHours = $otherDayPlan[0]->workedHours;
+            $workedHourDecimal =  $workedHours - floor($workedHours);
+            if($workedHourDecimal !=0){
+                if($decimalMin != 0){     
+                    $result =  $this->getTeamTimeForDecimalValue($roundDownHour,$maxHrs,$timeTemplId,'reduceFromUpperHour');    
+                }else{
+                    $result = $this->getTeamTimeForDecimalValue($roundDownHour,$maxHrs,$timeTemplId,'addToRoundDownHour');
+                }
+                $newStyleStartHour =ceil($workedHours);
+            }else{
+                $newStyleStartHour = $roundDownHour + 1;
+            }
 
-            $newStyleStartHour = $workedHours + 1;
+
             $totalHour = $maxHrs + $workedHours;
             $cHour = 0;
-
-          
+           
+            $this->styleStartHour = $newStyleStartHour;
             for ($i = $newStyleStartHour; $i <= $totalHour; $i++) {
                 $cHour = $cHour + 1;
                 ////// Hour with decimal point ///// ex:5.5h ///////
-
                 $result = $CI->Dashboard_production_model->getTimeRange($i, $timeTemplId);
+
                 if (!empty($result)) {
                     if (strtotime($currentTime) > strtotime($result[0]->startTime) && strtotime($currentTime) < strtotime($result[0]->endTime)) {
                         $result[0]->currentHour = new stdClass();
                         $result[0]->currentHour = $cHour;
                         $result[0]->productHourForStyle = new stdClass();
                         $result[0]->productHourForStyle = $i;
-                        return $result;
-                    } else {
-                        if ($decimalMin != 0) {
-                            if (($i + $decimalMin) == $maxHrs) {
-                                return $this->getTeamTimeForDecimalValue($roundDownHour, $maxHrs);
-                            }
-                        }
-                    }
+                    }else{
+                        $result[0]->currentHour = new stdClass();
+                        $result[0]->currentHour = $totalHour;
+                    } 
                 }
             }
-        } else {
 
+        } else {
+            $this->styleStartHour = 1;
             $cHour = 0;
+            // echo $maxHrs.'max ';
+
             for ($i = 1; $i <= $maxHrs; $i++) {
                 $cHour = $cHour + 1;
+            
                 ////// Hour with decimal point ///// ex:5.5h ///////
                 $result = $CI->Dashboard_production_model->getTimeRange($i, $timeTemplId);
                 if (!empty($result)) {
-                    // echo $cHour;
-                    // echo '<br>';
                     if (strtotime($currentTime) > strtotime($result[0]->startTime) && strtotime($currentTime) < strtotime($result[0]->endTime)) {
                         $result[0]->currentHour = new stdClass();
                         $result[0]->currentHour = $cHour;
-                        return $result;
+                    break;
+                    }else{
+                        $result[0]->currentHour = new stdClass();
+                        $result[0]->currentHour = $maxHrs;
                     }
                 } else {
                     if ($decimalMin != 0) {
                         if (($i + $decimalMin) == $maxHrs) {
-
-                            return $this->getTeamTimeForDecimalValue($roundDownHour, $maxHrs);
+                            $result = $this->getTeamTimeForDecimalValue($roundDownHour,$maxHrs,$timeTemplId,'addToRoundDownHour');
                         }
                     }
                 }
             }
+           
         }
 
+     return $result;
+
     }
-    
+
+
+    ///// if last hour have decimal value //////////
+    public function getTeamTimeForDecimalValue($roundDownHour,$maxHrs,$timeTemplId,$toDo)
+    {
+        $CI = &get_instance();
+        $CI->load->model('Dashboard_production_model');
+        $decimal = $maxHrs - $roundDownHour;
+        $currentTime = date('H:i:s');
+        $min = $this->minuteForHour * ($maxHrs-$roundDownHour);
+       
+        $result = $CI->Dashboard_production_model->getTimeRange($roundDownHour, $timeTemplId);
+        $data = array();
+        if (!empty($result)) {
+            if (strtotime($currentTime) > strtotime($result[0]->startTime) && strtotime($currentTime) < strtotime($result[0]->endTime)) {
+
+                if($toDo == 'addToRoundDownHour'){
+                    $min = '+' . $min . ' minutes';
+                    $data[0]->startTime = new stdClass();
+                    $data[0]->startTime = $result[0]->endTime;
+                    $data[0]->endTime = new stdClass();
+                    $data[0]->endTime = date("H:i:s", strtotime($min, strtotime($result[0]->endTime)));
+                    $data[0]->currentHour = new stdClass();
+                    $data[0]->currentHour = $roundDownHour + $decimal;
+                }else if($toDo == 'reduceFromUpperHour'){
+                    $min = '-' . $min . ' minutes';
+                    $data[0]->startTime = new stdClass();
+                    $data[0]->startTime = date("H:i:s", strtotime($min, strtotime($result[0]->startTime)));
+                    $data[0]->endTime = new stdClass();
+                    $data[0]->endTime = $result[0]->startTime;
+                    $data[0]->currentHour = new stdClass();
+                    $data[0]->currentHour = $roundDownHour + $decimal;
+                }
+              
+                return $data;
+            }
+        }
+    }
+
     /// Get the Previous Hour Information ////
     public function getPrevHourProd($currentHour, $planHour, $style, $team, $dayPlanId, $timeTemplate)
     {
@@ -459,31 +520,7 @@ class Production_dashboard_library
         return $data;
     }
 
-    ///// if last hour have decimal value //////////
-    public function getTeamTimeForDecimalValue($roundDownHour, $maxHrs)
-    {
-        $CI = &get_instance();
-        $CI->load->model('Dashboard_production_model');
-
-        $currentTime = date('H:i:s');
-        $min = $this->minuteForHour / ($maxHrs - $roundDownHour);
-        $min = '+' . $min . ' minutes';
-        $timeTemplId = $this->timeTemplId;
-        $result = $CI->Dashboard_production_model->getTimeRange($roundDownHour, $timeTemplId);
-        $data = array();
-        if (!empty($result)) {
-            if (strtotime($currentTime) > strtotime($result[0]->startTime) && strtotime($currentTime) < strtotime($result[0]->endTime)) {
-                $data[0]->startTime = new stdClass();
-                $data[0]->startTime = $result[0]->endTime;
-                $data[0]->endTime = new stdClass();
-                $data[0]->endTime = date("H:i:s", strtotime($min, $result[0]->endTime));
-                $data[0]->currentHour = new stdClass();
-                $data[0]->currentHour = $maxHrs + $roundDownHour;
-                return $data;
-            }
-        }
-    }
-
+    
     ////// Get the time differences in hours /////
     public function get_time_difference($time1, $time2)
     {
@@ -501,11 +538,13 @@ class Production_dashboard_library
             $totoalMin = 1;
         }
 
+
+
         return $totoalMin;
+        // echo $totoalMin;
 
     }
 
-    
 
     //// get minute for hour //This diffent with each team /////
     public function getMinutForHour()
@@ -651,5 +690,227 @@ class Production_dashboard_library
             return 0.5;
         }
     }
+
+
+ ////// Get Team Time current hour information //////
+ public function getHourlyOut($team,$style,$maxHrs,$smv,$noOfwokers,$dayPlanId,$dayPlanType,$currentHour,$timeTemplId)
+ {
+    $currentTime = date('H:i:s');
+    $workedHours = 0;
+    $newStyleStartHour = 1;
+    $CI = &get_instance();
+    $CI->load->model('Dashboard_production_model');
+
+    ///// warning ---- This function not working properly if there are two feeding dayplan //////////
+    $otherDayPlan = $CI->Dashboard_production_model->getOtherDayPlan($this->team, $dayPlanId);
+
+    $decimalMin = 0;
+    $roundDownHour = floor($maxHrs);
+    $roundUpHour = ceil($maxHrs);
+    $hourData = array();
+    $decimalMin = $maxHrs - $roundDownHour;
+    
+    if (!empty($otherDayPlan) && $dayPlanType != 4) {
+        $workedHours = $otherDayPlan[0]->workedHours;
+        $workedHourDecimal =  $workedHours - floor($workedHours);
+        $newStyleStartHour =ceil($workedHours);
+        $totalHour = $maxHrs + $workedHours;
+        if($workedHourDecimal !=0){
+            if($decimalMin != 0){
+                $newStyleStartHour =ceil($workedHours);
+                 $result =  $this->getTeamTimeForDecimalValueForHourlyOut($newStyleStartHour,$decimalMin,$timeTemplId,'reduceFromUpperHour');
+                 $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,$result[0]->endTime);
+                 $workingMin = $this->minuteForHour * $decimalMin;
+                 $producedMin = ((int)$hourQty[0]->qty) * $smv;
+                 $usedMin = $noOfwokers * $workingMin;
+
+                 $hourData[$newStyleStartHour]= array(
+                 'style' =>$style,
+                 'styleStartHour' =>$newStyleStartHour,
+                 'startTime'=>$result[0]->startTime,
+                 'endTime'=>$result[0]->endTime,
+                 'hour' =>$newStyleStartHour,
+                 'qty'=> $hourQty[0]->qty,
+                 'prodeMin'=> $producedMin,
+                 'userMin'=> $usedMin,
+                 'half'=>$decimalMin
+                 );
+                 $newStyleStartHour +=1;
+            }else{
+                $newStyleStartHour = ceil($workedHours)+1;
+                $totalHour = $maxHrs + ceil($workedHours);
+            }
+        }else if($decimalMin != 0){
+           
+            $result = $this->getTeamTimeForDecimalValueForHourlyOut($roundDownHour, $maxHrs,$timeTemplId,'addToRoundDownHour');
+            // print_r($result);
+            $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,$result[0]->endTime);
+            $workingMin = $this->minuteForHour * $decimalMin;
+            $producedMin = ((int)$hourQty[0]->qty) * $smv;
+            $usedMin = $noOfwokers * $workingMin;
+
+            $hourData[$roundUpHour+floor($workedHours)]= array(
+                'style' =>$style,
+                'styleStartHour' =>$newStyleStartHour,
+                'startTime'=>$result[0]->startTime,
+                'endTime'=>$result[0]->endTime,
+                'hour' =>$roundUpHour+floor($workedHours),
+                'qty'=> $hourQty[0]->qty,
+                'prodeMin'=> $producedMin,
+                'userMin'=> $usedMin,
+                'half'=>$decimalMin
+            );    
+        $newStyleStartHour = $workedHours+1; 
+        }else{
+            $newStyleStartHour = $workedHours+1; 
+        }
+        
+        $cHour = 0;
+       
+        $this->styleStartHour = $newStyleStartHour;
+        for ($i = $newStyleStartHour; $i <= $totalHour; $i++) {
+            $producedMin = 0;
+            $usedMin = 0;
+            $cHour = $cHour + 1;
+            ////// Hour with decimal point ///// ex:5.5h ///////
+            $result = $CI->Dashboard_production_model->getTimeRange($i, $timeTemplId);
+
+            if (!empty($result)) {
+                if (strtotime($result[0]->startTime) != '00:00:00'  &&  strtotime($result[0]->endTime) != '00:00:00' ) {
+                    if($workedHourDecimal !=0 && $i == floor($totalHour)){
+                        $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,'23:00:00');
+                    }else{
+                        $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,$result[0]->endTime);
+                    }
+                    
+                    $workingMin = $this->minuteForHour;
+                    $producedMin = ((int)$hourQty[0]->qty) * $smv;
+                    $usedMin = $noOfwokers * $workingMin;
+
+                     $hourData[$i]= array(
+                        'style' =>$style,
+                        'styleStartHour' =>$newStyleStartHour,
+                        'startTime'=>$result[0]->startTime,
+                        'endTime'=>$result[0]->endTime,
+                        'hour' => $i,
+                        'qty'=> $hourQty[0]->qty,
+                        'prodeMin'=> $producedMin,
+                        'userMin'=> $usedMin,
+                        'half'=>'0'
+                    );
+                }
+            }
+        }
+
+    } else {
+        $this->styleStartHour = 1;
+        $cHour = 0;
+
+        for ($i = 1; $i <= $maxHrs; $i++) {
+            $cHour = $cHour + 1;
+            // echo $i;
+            ////// Hour with decimal point ///// ex:5.5h ///////
+            $result = $CI->Dashboard_production_model->getTimeRange($i, $timeTemplId);
+            if (!empty($result)) {
+                if(strtotime($result[0]->startTime) != '00:00:00'  &&  strtotime($result[0]->endTime) != '00:00:00') {
+                    if($i == $maxHrs){
+                        $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,'23:00:00');
+                    }else{
+                        $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,$result[0]->endTime);
+                    }
+                    
+                    $workingMin = $this->minuteForHour;
+                    $producedMin = ((int)$hourQty[0]->qty) * $smv;
+                    $usedMin = $noOfwokers * $workingMin;
+
+                     $hourData[$i]= array(
+                    'style' =>$style,
+                    'styleStartHour' =>$newStyleStartHour,
+                    'startTime'=>$result[0]->startTime,
+                    'endTime'=>$result[0]->endTime,
+                    'hour' => $i,
+                    'qty'=> $hourQty[0]->qty,
+                    'prodeMin'=> $producedMin,
+                    'userMin'=> $usedMin,
+                    'half'=>'0'
+                    );
+                }else{
+                    return '';
+                }
+            } 
+        }
+        
+        if ($decimalMin != 0) {
+           
+            $result = $this->getTeamTimeForDecimalValueForHourlyOut($roundDownHour, $maxHrs,$timeTemplId,'addToRoundDownHour');
+            // print_r($result);
+            $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,$result[0]->endTime);
+            $workingMin = $this->minuteForHour * $decimalMin;
+            $producedMin = ((int)$hourQty[0]->qty) * $smv;
+            $usedMin = $noOfwokers * $workingMin;
+
+            $hourData[$roundUpHour]= array(
+                'style' =>$style,
+                'styleStartHour' =>$newStyleStartHour,
+                'startTime'=>$result[0]->startTime,
+                'endTime'=>$result[0]->endTime,
+                'hour' =>$roundUpHour,
+                'qty'=> $hourQty[0]->qty,
+                'prodeMin'=> $producedMin,
+                'userMin'=> $usedMin,
+                'half'=>$decimalMin
+            );
+        }
+
+    }
+
+ return $hourData;
+
+}
+
+
+///// if last hour have decimal value //////////
+public function getTeamTimeForDecimalValueForHourlyOut($roundDownHour,$maxHrs,$timeTemplId,$toDo)
+{
+  
+    $CI = &get_instance();
+    $CI->load->model('Dashboard_production_model');
+    
+   if($toDo == 'reduceFromUpperHour'){
+    $result = $CI->Dashboard_production_model->getTimeRange(($roundDownHour), $timeTemplId);
+    // $min =  $this->minuteForHour * $maxHrs; ///// This is the decimal value not the max value...See the parmeters //////
+   }else{
+    // $min = $this->minuteForHour * ($maxHrs-$roundDownHour);
+    $result = $CI->Dashboard_production_model->getTimeRange(($roundDownHour+1), $timeTemplId);
+   }
+  
+    $data = array();
+    if (!empty($result)) {
+        if (strtotime($result[0]->startTime) != '00:00:00'  &&  strtotime($result[0]->endTime) != '00:00:00') {
+
+            if($toDo == 'addToRoundDownHour'){
+                // $min = '+' . $min . ' minutes';
+                $data[0]->startTime = new stdClass();
+                $data[0]->startTime = $result[0]->startTime;
+                $data[0]->endTime = new stdClass();
+                $data[0]->endTime = '23:00:00'; ////this becoz some time checker check the garment after time over//
+            }else if($toDo == 'reduceFromUpperHour'){
+                // $min = '-' . $min . ' minutes';
+                $data[0]->startTime = new stdClass();
+                $data[0]->startTime = $result[0]->startTime;
+                $data[0]->endTime = new stdClass();
+                $data[0]->endTime = $result[0]->endTime;
+            }
+          
+            // print_r($data);
+
+            return $data;
+        }
+    }
+}
+
+
+
+
 
 }

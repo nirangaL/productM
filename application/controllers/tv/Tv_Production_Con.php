@@ -37,13 +37,14 @@ class Tv_Production_Con extends MY_Controller
         $teamData = $this->production_dashboard_library->get_team_data($this->location,$this->team,$date);
 
         $dayPlanCount = sizeOf($teamData['teamData']);
-        $data = '';
+        $data = array();
         $style ='';
         for ($i = 0; $i < $dayPlanCount; $i++) {
            
-            // echo '<pre>';
-            // print_r($teamData);
-            // echo '</pre>';
+                $remakeQty = 0;
+                if($teamData['teamData'][$i]['remakeQty'] > 0){
+                    $remakeQty = $teamData['teamData'][$i]['remakeQty'];
+                }
              
                 if($teamData['teamData'][$i]['dayPlanType']=='4'){
                     if($style != ''){
@@ -72,9 +73,10 @@ class Tv_Production_Con extends MY_Controller
                     'statusTeamTv' => $teamData['teamData'][$i]['statusTeamTv'],
                     'ForEff' => $teamData['teamData'][$i]['ForEff'],
                     'actEff' => $teamData['teamData'][$i]['actEff'],
+                    'styleEffi' => $teamData['teamData'][$i]['styleEffi'],
                     'rejectQty' => $teamData['teamData'][$i]['rejectQty'],
                     'allDefectQty' => $teamData['teamData'][$i]['allDefectQty'],
-                    'remakeQty' => $teamData['teamData'][$i]['remakeQty'],
+                    'remakeQty' => $remakeQty,
                     'actualQrLevel' => $teamData['teamData'][$i]['actualQrLevel'],
                     'incentive' => $teamData['teamData'][$i]['incentive'],
                     'styleRunDays' => $teamData['teamData'][$i]['showRunningDay'],
@@ -94,7 +96,7 @@ class Tv_Production_Con extends MY_Controller
          echo json_encode($data);
 
         // echo '<pre>';
-        // print_r($data);
+        //  print_r($data);
         // echo '</pre>';
        
 

@@ -49,6 +49,7 @@ class Dashboard_production_model extends CI_Model{
     }
 
     //// Get otherDayPlan Hour as current date and team ///
+    ///// warning ---- This function not working properly if there are two feeding dayplan //////////
     public function getOtherDayPlan($teamId,$dayPlanId){
         $date = date('Y-m-d');
 
@@ -62,10 +63,8 @@ class Dashboard_production_model extends CI_Model{
                   AND `line` = '$teamId'
                   AND `id` != '$dayPlanId'";
 
-//        echo $sql;
-        return $this->db->query($sql)->result();
-        
-
+        $result = $this->db->query($sql)->result();
+        return $result;
     }
 
     public function getTimeRange($lastHour,$timeTemplId){
@@ -169,6 +168,33 @@ class Dashboard_production_model extends CI_Model{
         `mstr_department`
       WHERE location ='2' AND department ='Production' AND `status` = '1'";
       return $this->db->query($sql)->result();
+    }
+
+    public function getHourStartEndTime($hour,$timeTemplateId){
+        $startHour = (string)$hour.'hStart';
+        $endHour = (string)$hour.'hEnd';
+
+        $sql = "SELECT $startHour AS start, $endHour AS end FROM `time_template` WHERE id = '$timeTemplateId'";
+        return $this->db->query($sql)->result();
+    }
+
+    public function getHourQty($team,$style,$startTime,$endTime){
+    
+        $date = date('Y-m-d');
+
+        $sql = "SELECT
+        COUNT(plog.id) AS qty
+      FROM
+        `checking_header_tb` htb
+        LEFT JOIN `qc_pass_log` plog
+          ON htb.`id` = plog.`chckHeaderId`
+      WHERE htb.`lineNo` = '$team'
+        AND htb.`style` = '$style' AND DATE(plog.`dateTime`)='$date' AND TIME(plog.`dateTime`) BETWEEN '$startTime' AND '$endTime'";
+
+            // echo $sql;
+            // echo '<br>';
+
+         return $this->db->query($sql)->result();
     }
 
 

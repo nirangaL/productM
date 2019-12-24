@@ -276,23 +276,16 @@ class Location_Dashboard_Con extends MY_Controller{
       $timeTemplId = $this->timeTemplId;
 
       $currentTime  = date('H:i:s');
-      $feedingHour=0;
       $workedHours = 0;
       $newStyleStartHour = 1;
       $qResult = $this->Location_dashboard_model->getOtherCloseDayPlan($lineId,$dayPlanId);
-      // $queryResult = $this->Location_dashboard_model->getFeedingHour($lineId);
-      // $feedingHour = 0;
-
-      // if($queryResult){
-      //   $feedingHour = $queryResult[0]->feedingHour;
-      // }
-
-      // $timeTemplId = $this->timeTemplId;
 
       $decimalMin = 0;
+      ////// round dowm
       $roundDownHour = floor($maxHrs);
       $decimalMin = $maxHrs - $roundDownHour;
 
+      ////if there are another day plan/////////
       if($qResult){
         $workedHours = $qResult[0]->workedHours;
         // echo $workedHours;
@@ -320,6 +313,7 @@ class Location_Dashboard_Con extends MY_Controller{
             }
           }
         }
+        ///////if there are not another day plan////
       }else{
         $cHour = 0;
         for($i=1;$i<=$maxHrs;$i++){
@@ -602,42 +596,7 @@ class Location_Dashboard_Con extends MY_Controller{
 
     }
 
-    public function getHourlyOut($team,$style,$hours,$timeTemplateId,$smv,$noOfwokers,$currentHour,$styleStartHour){
-      $hourData = '';
-      if($styleStartHour==""){
-        $styleStartHour = 1;
-      }
-      for($i=0;$i<($hours+($styleStartHour-1));$i++){
-        $timeInfo = $this->Location_dashboard_model->getHourStartEndTime(($i+1),$timeTemplateId);
-        if($timeInfo){
-          if($timeInfo[0]->start != '00:00:00' AND  $timeInfo[0]->end != '00:00:00' ){
-            $startTime = date('Y-m-d').' '.$timeInfo[0]->start;
-            $endTime = date('Y-m-d').' '.$timeInfo[0]->end;
-            $hourQty = $this->Location_dashboard_model->getHourQty($team,$style,$startTime,$endTime);
-
-            $workingMin = $this->minuteForHour;
-            if(($i+1)==$currentHour){
-              $currentTime = date('H:i:s');
-              ////Team wokring min ////
-              $workingMin = $this->get_time_difference($timeInfo[0]->start, $currentTime) * 60;
-            }
-           
-            $hourEffi = $this->getEfficiency($workingMin,$hourQty[0]->qty,$smv,$noOfwokers,'no');
-            $hourData[$i]=array(
-              'startTime'=> $startTime,
-              'endTime'=>$endTime,
-              'qty'=>$hourQty[0]->qty,
-              'effi'=>$hourEffi['styleEff'],
-              'currentHour'=>$currentHour,
-              'styleStartHour'=>$styleStartHour,
-            );
-          }
-        }
-       
-      }
-
-      return  $hourData;
-    }
+    
 
 
 }

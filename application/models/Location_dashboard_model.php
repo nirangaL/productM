@@ -255,14 +255,6 @@ class Location_dashboard_model extends CI_model{
     }
 
 
-    public function getHourStartEndTime($hour,$timeTemplateId){
-        $startHour = (string)$hour.'hStart';
-        $endHour = (string)$hour.'hEnd';
-
-        $sql = "SELECT $startHour AS start, $endHour AS end FROM `time_template` WHERE id = '$timeTemplateId'";
-        return $this->db->query($sql)->result();
-    }
-
     public function getHourQty($team,$style,$startTime,$endTime){
        
         $sql = "SELECT

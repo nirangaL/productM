@@ -8,11 +8,26 @@
 
 #test {margin-left: 250px;}
 
-/* .qty{
-  background:#7bed9f; 
-} */
+.names{
+  font-weight: bold;
+}
+
+.qty{
+  font-weight: bold;
+}
 .effi{
-  background:#f1f2f6; 
+  background:#f1f2f6;
+  /* font-weight: bold;  */
+}
+
+.cr-qty{
+  background:#93d6b0 !important;
+  font-weight: bold;
+  /* background:red; */
+}
+.cr-effi{
+  background: #66b98a !important;
+  /* background:red; */
 }
 
 #tv-icon{
@@ -137,7 +152,7 @@
         
         <div class="header-elements">
           <div class="list-icons">
-          <!-- <button type="button" data-toggle="modal" data-target="#modal_full" class="btn btn-dark" ><i class="icon-alarm mr-2"></i> Hourly Progress</button> -->
+          <button type="button" data-toggle="modal" data-target="#modal_full" class="btn btn-dark" ><i class="icon-alarm mr-2"></i> Hourly Progress</button>
             <a class="list-icons-item" data-action="collapse"></a>
             <!-- <a class="list-icons-item" data-action="reload"></a> -->
           </div>
@@ -268,6 +283,9 @@
 				<!-- /full width modal -->
 
   <script type="">
+
+    var hourLength = 0;
+    var loopStart = 1;
     $(document).ready(function () {
       getAllData();
     });
@@ -364,8 +382,11 @@
               var incentive = '-';
               var smv = '-';
               var noOfwokers = '-';
+              var currentHour = '-';
               if(json_value['tvData'][i]['gridData'] != null){
-                for(var x=0;x<json_value['tvData'][i]['gridData'].length;x++){
+                var dayPlanLength = json_value['tvData'][i]['gridData'].length;
+                totalWorkers += parseFloat(json_value['tvData'][i]['gridData'][(dayPlanLength-1)]['noOfwokers']);
+                for(var x=0;x<dayPlanLength;x++){
                   teamName = json_value['tvData'][i]['gridData'][x]['lineName'];
                   dayPlanType = json_value['tvData'][i]['gridData'][x]['dayPlanType'];
                   buyer = json_value['tvData'][i]['gridData'][x]['buyer'];
@@ -379,6 +400,7 @@
                   neededQrLvl = json_value['tvData'][i]['gridData'][x]['needQrLvl'];
                   status = json_value['tvData'][i]['gridData'][x]['status'];
                   smv = json_value['tvData'][i]['gridData'][x]['smv'];
+                  currentHour = parseInt(json_value['tvData'][i]['gridData'][x]['currentHr']);
 
                   
                   if(jQuery.inArray(style, styleArray) !== -1){}else{styleArray.push(style)}
@@ -392,7 +414,7 @@
                     neededQtyAtTime = json_value['tvData'][i]['gridData'][x]['neededQtyAtTime'];
                   }
 
-                  totalWorkers += parseFloat(noOfwokers);
+                 
                   totalPlanQty += parseInt(pQty);
                   totalOutQty += parseInt(aQty);
 
@@ -483,11 +505,12 @@
 
                   }
                  
-                    // hourlyOut(teamName,json_value['tvData'][i]['hourlyData'][x],style);
-                 
-                 
                 }
-              
+                hourLength = 0;
+                loopStart = 1;
+                for(var x=0;x<json_value['tvData'][i]['hourlyData'].length;x++){
+                  hourlyOut(teamName,json_value['tvData'][i]['hourlyData'][x],style,currentHour);
+                }
               }else{
                 html +="<tr>";
                 html +="<td>"+json_value['team'][i]+"</td>";
@@ -552,18 +575,29 @@
             $('#workerCount').text(totalWorkersCount);
     }
 
+    Object.size = function(obj) {
+      var size = 0, key;
+      for (key in obj) {
+          if (obj.hasOwnProperty(key)) size++;
+      }
+      return size;
+      };
+
 ///// globel variable for hourlyOut Function
     var maxHour = 0;
     var hourTotalArray = [];
-    function hourlyOut(teamName,hourlyOut,style){
+
+    function hourlyOut(teamName,hourlyOut,style,currentHour){
+      console.log(currentHour);
+      // console.log(size);
       var htmlTHead = "";
       var htmlTBody = "";
-      var hourLength = hourlyOut.length;
+    
+      hourLength += Object.size(hourlyOut);
+      
       var totalHourQty = 0;
       var totalTeamQty = 0;
     
-  
-
       if(maxHour<hourLength){
         maxHour = hourLength;
         htmlTHead +="<tr>";
@@ -585,32 +619,49 @@
 
         
         htmlTBody +="<tr>";
-          htmlTBody +="<td>"+teamName+"</td>";
-          htmlTBody +="<td>"+style+"</td>";
+          htmlTBody +="<td class='names'>"+teamName+"</td>";
+          htmlTBody +="<td class='names'>"+hourlyOut[loopStart]['style']+"</td>";
        
-            for(var i=0;i<hourLength;i++){
+
+            for(var i=loopStart;i<=hourLength;i++){
+
+              var effi = (parseFloat(hourlyOut[i]['prodeMin'])/parseFloat(hourlyOut[i]['userMin'])) * 100;
             if(hourlyOut[i]['styleStartHour'] == 1 || hourlyOut[i]['styleStartHour'] == null){
-              htmlTBody +="<td class='qty'>"+hourlyOut[i]['qty']+"</td>";
-              htmlTBody +="<td class='effi'>"+hourlyOut[i]['effi']+"</td>";
+              if(currentHour == i){
+                htmlTBody +="<td class='cr-qty'>"+hourlyOut[i]['qty']+"</td>";
+              htmlTBody +="<td class='cr-effi'>"+effi.toFixed(2)+"</td>";
+              }else{
+                htmlTBody +="<td class='qty'>"+hourlyOut[i]['qty']+"</td>";
+                htmlTBody +="<td class='effi'>"+effi.toFixed(2)+"</td>";
+              }
+             
               // hourTotalArray.push((hourTotalArray[i] + parseInt(hourlyOut[i]['qty'])));
             }else{
               htmlTBody +="<td colspan='"+ (parseInt(hourlyOut[i]['styleStartHour'])-1)*2 +"'></td>";
               // htmlTBody +="<td colspan='"+hourlyOut[i]['styleStartHour']+"'></td>";
-              for(var x=(parseInt(hourlyOut[i]['styleStartHour'])-1); x< hourLength;x++){
-                htmlTBody +="<td class='qty'>"+hourlyOut[x]['qty']+"</td>";
-                htmlTBody +="<td class='effi'>"+hourlyOut[x]['effi']+"</td>";
+              for(var x=(parseInt(hourlyOut[i]['styleStartHour'])); x<= hourLength;x++){
+                if(currentHour == x){
+                  htmlTBody +="<td class='cr-qty'>"+hourlyOut[x]['qty']+"</td>";
+                htmlTBody +="<td class='cr-effi'>"+effi.toFixed(2)+"</td>";
+                }else{
+                  htmlTBody +="<td class='qty'>"+hourlyOut[x]['qty']+"</td>";
+                  htmlTBody +="<td class='effi'>"+effi.toFixed(2)+"</td>";
+                }
+                
                 // hourTotalArray.push((hourTotalArray[x] + parseInt(hourlyOut[x]['qty'])));
               }
               break;
             }
           
           }
+          loopStart += Object.size(hourlyOut);
           htmlTBody +="</tr>";
           // console.log(hourTotalArray);
         $('#hourlyOutTBody').append(htmlTBody);
         
             // $('#workerCount').text(totalWorkersCount);
     }
+
 
     function showTeamDash(team){
       self.close();
