@@ -26,9 +26,10 @@ class MY_Controller extends CI_Controller{
             $this->myConlocation  = $_SESSION['session_user_data']['location'];
             $this->MyConUserGroup  = $_SESSION['session_user_data']['userGroup'];
         }
-        $this->gamaSysDb = $this->load->database('gamasys',TRUE);
+       
         $this->load->model('Core_model');
-        $this->saveStyleDataFrmGamaSysDb();
+        // $this->gamaSysDb = $this->load->database('gamasys',TRUE);
+        // $this->saveStyleDataFrmGamaSysDb();
     }
 
     public function checkSession(){
