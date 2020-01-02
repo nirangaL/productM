@@ -120,12 +120,10 @@ class Checker_Con extends MY_Controller {
     /////// Change the running and hold status in day plan //////
     public function switchingToRunning($data){
     
-        $otherDayPlan = $this->Qc_checker_model->checkOtherPlan($data[0]['style'],$data[0]['delivery'],$this->team);
+        $otherDayPlan = $this->Qc_checker_model->checkOtherPlan($data[0]['style'],$this->team);
         if(!empty($otherDayPlan)){
-            $this->Qc_checker_model->switchStyleStatus($otherDayPlan[0]->id,$this->team);
-               
+            $this->Qc_checker_model->switchStyleStatus($otherDayPlan[0]->id,$this->team);         
             }
-
     }
 
     ////// Get Coumt for each tile in checker app //////
