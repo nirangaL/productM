@@ -79,12 +79,12 @@
             color: azure;
         }
         .content {
-            padding: 0.25rem 0.25rem;!importent;
+            padding: 0.25rem 0.25rem !importent;
             -ms-flex-positive: 1;
             flex-grow: 1;
         }
         .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-          margin-bottom: -0.375rem;!importent;
+          margin-bottom: -0.375rem !importent;
         }
 
     </style>
