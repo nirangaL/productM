@@ -109,14 +109,16 @@ class Production_dashboard_library
                     $endDateTime = date('Y-m-d') . ' ' . $getTime[0]->endTime;
                     $currentTime = date('H:i:s');
 
-                    if(array_key_exists('productHourForStyle',$getTime)){
+                    // print_r($getTime); 
+
+                    if(array_key_exists('productHourForStyle',$getTime[0])){
+                        // print_r($getTime); 
                         ////this is second or theird day plan current hour ///
                         $currentHour = $getTime[0]->productHourForStyle; 
                     }else{
                         $currentHour = $getTime[0]->currentHour;
                     }
                     
-
                     ///// This is get to TV Display to show count down ///////
                     $timeForTimeCountDown = date('M j, Y') . ' ' . $getTime[0]->endTime;
 
@@ -341,7 +343,6 @@ class Production_dashboard_library
 
         if (!empty($otherDayPlan) && $dayPlanType != 4) {
             $workedHours = $otherDayPlan[0]->workedHours;
-            $workedHours = $otherDayPlan[0]->workedHours;
             $workedHourDecimal =  $workedHours - floor($workedHours);
             if($workedHourDecimal !=0){
                 if($decimalMin != 0){     
@@ -370,6 +371,7 @@ class Production_dashboard_library
                         $result[0]->currentHour = $cHour;
                         $result[0]->productHourForStyle = new stdClass();
                         $result[0]->productHourForStyle = $i;
+                    break;
                     }else{
                         $result[0]->currentHour = new stdClass();
                         $result[0]->currentHour = $totalHour;
