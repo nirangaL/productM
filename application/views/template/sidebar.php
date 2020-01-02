@@ -161,6 +161,7 @@
                         <li class="nav-item"><a href="<?php echo base_url()?>report/StyleSizeWise_con" class="nav-link">  <i class="icon-menu6"></i>Style Size Wise Report</a></li>
                         <li class="nav-item"><a href="<?php echo base_url()?>report/TeamWiseEfficiency_con" class="nav-link">  <i class="icon-esc"></i>Date Wise Efficiency Report</a></li>
                        <li class="nav-item"><a href="http://192.168.1.211/intranet/index.php/Pass_list_report_con" class="nav-link">  <i class="icon-sort-time-asc"></i>View Pass & Defect Qty</a></li>
+                       <li class="nav-item"><a href="<?php echo base_url()?>report/DateWisePassQtyReport" class="nav-link">  <i class="icon-calendar2"></i>Day wise pass Qty</a></li>
                        <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_passlog" class="nav-link">  <i class="icon-stack-check"></i>Qc Pass Log</a></li>
                        <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_defectlog" class="nav-link">  <i class="icon-stack-cancel"></i>Qc Defect Log</a></li>
                        <li class="nav-item"><a href="<?php echo base_url()?>report/Team_Workers_List_Con" class="nav-link">  <i class="icon-people"></i>Date Wise worker list</a></li>
