@@ -3,27 +3,30 @@ window.setInterval(function() {
 }, 1000);
 
 
+
 $(document).ready(function() {
+    $('#canvas').delay((60000 * 1.5)).fadeOut();
+    // $('body').delay(500000).fadeIn();
     getTeamData();
-    $('body').flurry({
-        character: "❆",
-        // character: "•",
-        color: "white",
-        frequency: 100,
-        speed: 10000,
-        small: 4,
-        large: 20,
-        wind: 40,
-        windVariance: 10,
-        rotation: 90,
-        rotationVariance: 180,
-        startOpacity: 1,
-        endOpacity: 0,
-        opacityEasing: "cubic-bezier(1,.3,.6,.74)",
-        blur: true,
-        overflow: "hidden",
-        zIndex: 9999
-    });
+    // $('body').flurry({
+    //     character: "❆",
+    //     // character: "•",
+    //     color: "white",
+    //     frequency: 100,
+    //     speed: 10000,
+    //     small: 4,
+    //     large: 20,
+    //     wind: 40,
+    //     windVariance: 10,
+    //     rotation: 90,
+    //     rotationVariance: 180,
+    //     startOpacity: 1,
+    //     endOpacity: 0,
+    //     opacityEasing: "cubic-bezier(1,.3,.6,.74)",
+    //     blur: true,
+    //     overflow: "hidden",
+    //     zIndex: 9999
+    // });
 
 });
 

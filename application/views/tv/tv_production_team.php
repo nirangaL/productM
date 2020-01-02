@@ -26,14 +26,17 @@
         <!-- Theme JS files -->
         <script src="<?php echo base_url() ?>assets/js/app.js"></script>
 
-        <script src="<?php echo base_url()?>assets/global_assets/snow-summer/jquery.flurry.js"></script>
+       <!-- <script src="<?php echo base_url()?>assets/global_assets/snow-summer/jquery.flurry.js"></script> -->
+        <!-- <script src="<?php echo base_url()?>assets/global_assets/newYearAni/newyear.js"></script> -->
+
       
         <!-- /theme JS files -->
 
-
     </head>
 
-    <body>
+    <!-- <canvas id="canvas" style="background:white"></canvas> -->
+
+    <body >
         <div id="totalTeam">
             <div class="row">
                 <div class="table-responsive">
