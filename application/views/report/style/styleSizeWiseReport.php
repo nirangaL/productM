@@ -45,10 +45,10 @@
             <div class="card-body">
                <form action="<?php echo base_url('report/StyleSizeWise_con/getTableData')?>" method="post">
                    <div class="row">
-                       <label class="col-form-label col-lg-1">Style : </label>
-                       <div class="col-lg-2">
+                       <label class="col-form-label col-md-1">Style : </label>
+                       <div class="col-md-3">
                            <select id="style" name="style" class="form-control select-search select2" data-fouc=""
-                                   tabindex="-1" onchange="getDelivery(this);" required>
+                                   tabindex="-1" required>
                                <option value="">-- Select a Style --</option>
                                <?php
                                if (!empty($style)) {
@@ -62,23 +62,7 @@
                            </select>
                        </div>
 
-                       <label class="col-form-label col-lg-1">Delivery : </label>
-                       <div class="col-lg-2">
-                           <select id="delivery" name="delivery" class="form-control select-search select2" data-fouc="" tabindex="-1"
-                                   onchange="getTeam(this);">
-                               <option value="">-- Select a Delivery --</option>
-                           </select>
-                       </div>
-
-                       <label class="col-form-label col-lg-1">Team : </label>
-                       <div class="col-lg-2">
-                           <select id="team" name="team" class="form-control select-search select2" data-fouc="" tabindex="-1">
-                               <option value="">-- Select a Team --</option>
-
-                           </select>
-                       </div>
-
-                       <div class="col-lg-3">
+                       <div class="col-md-1">
                            <div class="text-right">
                                <button type="submit" class="btn btn-primary">Search <i class="icon-paperplane ml-2"></i>
                                </button>
@@ -92,246 +76,126 @@
             <table id="StyleSizeWiseTable" class="table dataTable ">
                 <thead>
                 <tr>
-                    <th>Style</th>
-                    <th>Delivery</th>
-                    <th>Order Qty</th>
-                    <th>Actual Qty</th>
-                    <th>Size</th>
-                    <th>Order Size Qty</th>
-                    <th>Actual Size Qty</th>
                     <th>Location</th>
                     <th>Team</th>
+                    <th>Style</th>
+                    <th>Delivery</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Line In</th>
+                    <th>Line Issue</th>
+                    <th>Line Out</th> 
                 </tr>
                 </thead>
                 <tbody>
-
-                <?php
-                if (!empty($tableData)) {
-                    $styleTd = '';
-                    $delivery = '';
-                    $orderQty = '';
-
-                    $actualQty = 0;
-
-                    foreach ($tableData as $row){
-                        if ($row->delivery != $delivery) {
-                            $actualQty += (int)$row->passQty;
-                        }
-                    }
-
-                    foreach ($tableData as $row) {
-                        //// Style td ///
-                        ?>
-                        <tr>
-                            <?php
-                            if ($row->style != $styleTd) {
-                                $delivery ='';
-                                $styleTd = $row->style;
-                                ?>
-
-                                <td><?php echo $row->style; ?></td>
-
-                                <?php
-
-                            } else {///style
-                                ?>
-                                <td></td>
-                                <?php
-                            }
-
-                            if ($row->delivery != $delivery  ) {
-                                $orderQty ='';
-                                $delivery = $row->delivery;
-                                ?>
-
-                                <td><?php echo $row->delivery; ?></td>
-
-                                <?php
-
-                            } else { /// delivery
-                                ?>
-                                <td></td>
-                                <?php
-                            }
-
-                            if ($row->orderQty != $orderQty) {
-                                $orderQty = $row->orderQty;
-                                ?>
-
-                                <td><?php echo $row->orderQty; ?></td>
-                                <td><?php echo $actualQty; ?></td>
-
-                                <?php
-                            } else { /// order Qty
-                                ?>
-                                <td></td>
-                                <td></td>
-
-                                <?php
-                            }
-
-
-                            ?>
-                            <td><?php echo $row->defineSize; ?></td>
-                            <td><?php echo $row->orderSizeQty; ?></td>
-                            <td><?php echo $row->passQty; ?></td>
-                            <td><?php echo $row->location; ?></td>
-                            <td><?php echo $row->lineName; ?></td>
-                        </tr>
-                        <?php
-
-                    }/// Foreach
-
-                } else { ///If tableData
-                    ?>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
                     <?php
-                }
+                    if(!empty($tableData)){
+                        $location = '';
+                        $team = '';
+                        $style = '';
+                        $delv = '';
+                        $color = '';
+                        foreach($tableData as $row){   
+                    ?>
+                        <tr>
+                            <?php 
+                                if($location != $row->location){
+                                    $location = $row->location;
+                                    ?>
+                                <td><?php echo $row->location ?></td>
+                                <?php
+                                }else{
+                                ?>
+                                    <td></td>
+                                <?php
+                                }
 
-                ?>
+                                if($team != $row->teamName){
+                                    $team = $row->teamName;
+                                    ?>
+                                <td><?php echo $row->teamName ?></td>
+                                <?php
+                                }else{
+                                ?>
+                                    <td></td>
+                                <?php
+                                }
 
+                                if($style != $row->style){
+                                    $style = $row->style;
+                                    ?>
+                                <td><?php echo $row->style ?></td>
+                                <?php
+                                }else{
+                                ?>
+                                    <td></td>
+                                <?php
+                                }
+
+                                if($delv != $row->delv){
+                                    $delv = $row->delv;
+                                    ?>
+                                <td><?php echo $row->delv ?></td>
+                                <?php
+                                }else{
+                                ?>
+                                    <td></td>
+                                <?php
+                                }
+
+                                if($color != $row->color){
+                                    $color = $row->color;
+                                    ?>
+                                <td><?php echo $row->color ?></td>
+                                <?php
+                                }else{
+                                ?>
+                                    <td></td>
+                                <?php
+                                }
+                            ?>
+                            <td><?php echo $row->size ?></td>
+                            <td><?php echo $row->cutInQty ?></td>
+                            <td><?php echo $row->issueQty ?></td>
+                            <td><?php echo $row->outQty ?></td>
+                        </tr>
+                    <?php
+                        }
+                    }else{
+                        ?>
+                            <td colspan="9" class="text-center">No Result</td>
+                        <?php
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
     </div>
 
-
     <script>
-
-
-        $(document).ready(function () {
-
-            $('#StyleSizeWiseTable').DataTable({
+    $(document).ready(function () {
+        var fileName  = 'Style Production Report '+ date;
+        $('#StyleSizeWiseTable').DataTable({
                 retrieve: true,
-                "paging":   false,
-                "ordering": false,
+                "bSort" : false,
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Style Size Wise Report'
+                        title: fileName
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'Style Size Wise Report'
+                        title: fileName
                     },
                     {
                         extend: 'csvHtml5',
-                        title: 'Style Size Wise Report'
+                        title: fileName
                     }, {
                         extend: 'print',
-                        title: 'Style Size Wise Report'
+                        title: fileName
                     }
                 ]
-            });
-
-
-            var style = $('#style').val();
-            var delivery = $('#delivery').val();
-
-            if(style != ''){
-                getDelivery($('#style'));
-                if(delivery !=' '){
-                    getTeam($('#delivery'));
-                }
-            }
-
         });
-
-
-
-
-    function getDelivery(style) {
-        var style = $(style).val();
-
-        if(style != ''){
-            $.ajax({
-                url: '<?php echo base_url("report/StyleSizeWise_con/getDelivery")?>', //This is the current doc
-                type: "POST",
-                data: ({
-                    style: style,
-                }),
-                success: function (data) {
-                    var html =  "<option value='all' <?php if($selectDelivery == 'all'){echo 'selected';}?> >All</option>";
-                    var json_value = JSON.parse(data);
-                    for (var i = 0; i < json_value.length; i++) {
-                        var isSelect = '';
-
-                        if(json_value[i]['deliverNo'] =='<?php echo $selectDelivery;?>'){
-                            isSelect =  'Selected';
-                        }
-
-                        html += "<option value='" + json_value[i]['deliverNo'] + "' "+ isSelect +">" + json_value[i]['deliverNo'] + "</option>";
-                    }
-                    $('#delivery').empty().append(html);
-
-                    if(  $('#delivery').val()!='all'){
-                        getTeam( $('#delivery'));
-                    }
-
-
-                }
-            });
-        }else{
-            var html =  "<option value='' >-- Select a Delivery --</option>";
-            $('#delivery').empty().append(html);
-            var html =  "<option value='' >-- Select a Team --</option>";
-            $('#team').empty().append(html);
-        }
-    }
-
-
-    function getTeam(delivery) {
-
-        var delivery = $(delivery).val();
-
-        if(delivery != ''){
-            delivery = $('#delivery').val();
-        }
-
-        var style = $('#style').val();
-
-
-        if(style != '' && delivery !=''){
-            var html = "<option value='all' <?php if($selectTeam == 'all'){echo 'selected';}?> >All</option>";
-            $.ajax({
-                url: '<?php echo base_url("report/StyleSizeWise_con/getTeam")?>', //This is the current doc
-                type: "POST",
-                data: ({
-                    style: style,
-                    delivery: delivery,
-                }),
-                success: function (data) {
-                    var html = "<option value='all' >All</option>";
-                    var json_value = JSON.parse(data);
-                    for (var i = 0; i < json_value.length; i++) {
-
-                        var isSelect = '';
-
-                        if(json_value[i]['line_id'] =='<?php echo $selectTeam;?>'){
-                            isSelect =  'Selected';
-                        }
-
-                        html += "<option value='" + json_value[i]['line_id'] + "' "+ isSelect +"  >" +json_value[i]['location'] +' - '+ json_value[i]['line'] + "</option>";
-                    }
-                    $('#team').empty().append(html);
-                }
-            });
-
-        }else{
-            var html =  "<option value='' >-- Select a Team --</option>";
-            $('#team').empty().append(html);
-        }
-    }
-
-
-
+    });
+    
     </script>
