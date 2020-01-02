@@ -20,15 +20,25 @@
   /* font-weight: bold;  */
 }
 
+
 .cr-qty{
   background:#93d6b0 !important;
   font-weight: bold;
+  color:black !important;
   /* background:red; */
 }
 .cr-effi{
   background: #66b98a !important;
   /* background:red; */
+  color:black !important;
 }
+
+#hourlyOutTBody tr:hover td{
+  background: #706fd3 ;
+  color:white;
+  /* font-size: .8300rem */
+}
+
 
 #tv-icon{
   cursor: pointer;
@@ -46,7 +56,6 @@
 
 </style>
 <div class="content-wrapper">
-
   <!-- Page header -->
   <div class="page-header page-header-light">
     <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
@@ -629,7 +638,7 @@
             if(hourlyOut[i]['styleStartHour'] == 1 || hourlyOut[i]['styleStartHour'] == null){
               if(currentHour == i){
                 htmlTBody +="<td class='cr-qty'>"+hourlyOut[i]['qty']+"</td>";
-              htmlTBody +="<td class='cr-effi'>"+effi.toFixed(2)+"</td>";
+                htmlTBody +="<td class='cr-effi'>"+effi.toFixed(2)+"</td>";
               }else{
                 htmlTBody +="<td class='qty'>"+hourlyOut[i]['qty']+"</td>";
                 htmlTBody +="<td class='effi'>"+effi.toFixed(2)+"</td>";
