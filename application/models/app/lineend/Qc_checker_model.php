@@ -3,7 +3,6 @@
 class Qc_checker_model extends CI_Model{
 
     private $lastHeaderSavedId;
-    private $gridSavedId;
 
     function __construct(){
         parent::__construct();
@@ -130,30 +129,31 @@ class Qc_checker_model extends CI_Model{
         $btn = $data[0]['btn'];
         $checking_id = $this->lastHeaderSavedId;
         $curDate = date('Y-m-d');
+        $gridId = '';
 
         $sql = "SELECT `id`,`passQty`,`rejectQty`,`remakeQty`,`reRejectQty` FROM checking_grid_tb WHERE  delivery='$del_no' AND color ='$color' AND size='$size' AND chckHeaderId ='$checking_id' AND DATE(`lastModifiedDate`) = '$curDate'";
         
         $result = $this->db->query($sql)->result();
 
         if(empty($result)){
-            $gridSaved =  $this->saveGridDataNew($del_no,$color,$size,$btn);
+            $gridId =  $this->saveGridDataNew($del_no,$color,$size,$btn);
         }else{
-            $this->gridSavedId = $result[0]->id;
-            $gridSaved = $this->updateGridData($result[0]->id,$btn,$result[0]->passQty,$result[0]->rejectQty,$result[0]->remakeQty);
+            $gridId = $result[0]->id;
+            $gridUpdate = $this->updateGridData($result[0]->id,$btn,$result[0]->passQty,$result[0]->rejectQty,$result[0]->remakeQty);
         }
 
-        if($gridSaved){
+        if($gridId !='' || $gridUpdate){
             if($btn == 'pass'){
-                $this->setPassLog($color,$size);
+                $this->setPassLog($color,$size,$gridId);
             }
         
             if($btn == 'defect'){
                 $reject_reason = $data[0]['defectReason'];
-                $this->setRejectLog($color,$size,$reject_reason);
+                $this->setRejectLog($color,$size,$gridId,$reject_reason);
             }
             if($btn == 'remake'){
-                $this->setPassLog($color,$size);
-                $this->setRemakeLog($color,$size);
+                $this->setPassLog($color,$size,$gridId);
+                $this->setRemakeLog($color,$size,$gridId);
             }
         }else{
             return false;
@@ -195,8 +195,8 @@ class Qc_checker_model extends CI_Model{
           );
       }
 
-     return  $this->db->insert('checking_grid_tb', $data);
-       $this->gridSavedId = $this->db->insert_id();
+              $this->db->insert('checking_grid_tb', $data);
+       return $this->gridSavedId = $this->db->insert_id();
   }
 
   public function updateGridData($gridId,$btn,$passQty,$rejectQty,$remakeQty){
@@ -227,13 +227,11 @@ class Qc_checker_model extends CI_Model{
   }
 
   /////// ********** set log ***********//////
-
-  public function setPassLog($color,$size){
+  public function setPassLog($color,$size,$gridId){
       $header_id = $this->lastHeaderSavedId;
-      $grid_id = $this->gridSavedId;
       $data = array(
           'chckHeaderId' => $header_id,
-          'chckGridId' => $grid_id,
+          'chckGridId' => $gridId,
           'color' => $color,
           'size' => $size,
           'dateTime' => date('Y-m-d H:i:s')
@@ -241,13 +239,12 @@ class Qc_checker_model extends CI_Model{
       return $this->db->insert('qc_pass_log', $data);
   }
 
-  public function setRejectLog($color,$size,$reject_reason){
+  public function setRejectLog($color,$size,$gridId,$reject_reason){
       $header_id = $this->lastHeaderSavedId;
-      $grid_id = $this->gridSavedId;
 
       $data = array(
           'chckHeaderId' => $header_id,
-          'chckGridId' => $grid_id,
+          'chckGridId' => $gridId,
           'rejectReason' => $reject_reason,
           'color' => $color,
           'size' => $size,
@@ -256,12 +253,11 @@ class Qc_checker_model extends CI_Model{
       return $this->db->insert('qc_reject_log', $data);
   }
 
-  public function setRemakeLog($color,$size){
+  public function setRemakeLog($color,$size,$gridId){
       $header_id = $this->lastHeaderSavedId;
-      $grid_id = $this->gridSavedId;
       $data = array(
           'chckHeaderId' => $header_id,
-          'chckGridId' => $grid_id,
+          'chckGridId' => $gridId,
           'color' => $color,
           'size' => $size,
           'dateTime' => date('Y-m-d H:i:s')
@@ -270,22 +266,25 @@ class Qc_checker_model extends CI_Model{
 
   }
 
-  public function checkOtherPlan($newStyle,$newDelv,$team){
+  public function checkOtherPlan($newStyle,$team){
       $date = date('Y-m-d');
-      $sql = "SELECT id,style,delivery,feedingHour FROM `day_plan` WHERE `style` ='$newStyle' AND `delivery` ='$newDelv' AND `status` IN ('2','4') AND line ='$team' AND DATE(`createDate`) = '$date'";
+      $sql = "SELECT id,style,delivery,feedingHour FROM `day_plan` WHERE `style` ='$newStyle' AND `status` IN ('2','4') AND line ='$team' AND DATE(`createDate`) = '$date'";
 
       return $this->db->query($sql)->result();
   }
 
   public function switchStyleStatus($newStyleId,$team){
 
-      $this->db->trans_start();
-      $this->changeToStyleHold($team);
-      $this->changeToStyleRunn($newStyleId);
+      $this->db->trans_start();  
+      $run = $this->changeStyleToHold($team);
+      if($run){
+        $this->changeToStyleRunn($newStyleId);
+      }
+     
       return $this->db->trans_complete();
   }
 
-  public function changeToStyleHold($team){
+  public function changeStyleToHold($team){
       $date = date('Y-m-d');
       $sql =  "UPDATE day_plan SET `status`='2' WHERE `status`='1' AND DATE(createDate) ='$date' AND line ='$team'";
 
@@ -309,7 +308,7 @@ class Qc_checker_model extends CI_Model{
     IFNULL(SUM(mt.defectQty),0) AS defectQty,
     IFNULL(SUM(mt.todayDefectQty),0) AS todayDefectQty,
     IFNULL(SUM(mt.remakeQty),0) AS remakeQty
-  FROM
+    FROM
     (SELECT
       htb.*,
       `qc_pass_log`.`size`,
@@ -326,8 +325,6 @@ class Qc_checker_model extends CI_Model{
 
     return $this->db->query($sql)->result();
   }
-
-
 
   ///// Validate input qty before checkout //////
   public function getInputVsOutBalance($data){
