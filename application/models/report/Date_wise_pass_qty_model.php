@@ -28,7 +28,7 @@ class Date_wise_pass_qty_model extends CI_model{
                 grd.passQty
                 FROM `checking_header_tb` hd
                 LEFT JOIN `checking_grid_tb`grd ON hd.`id` = grd.`chckHeaderId` 
-                LEFT JOIN `prod_line` pl ON hd.`lineNo` = pl.`line_id`
+                INNER JOIN `prod_line` pl ON hd.`lineNo` = pl.`line_id`
                 WHERE DATE(hd.`dateTime`) = '$date'";
 
                 if($team == 'All'){
@@ -36,8 +36,6 @@ class Date_wise_pass_qty_model extends CI_model{
                 }else{
                     $sql.= " AND lineNo = '$team'";
                 }
-
-                $sql.=" GROUP BY grd.`size`, grd.`color`, grd.`delivery`,hd.`style`";
 
           return $this->db->query($sql)->result();
 
