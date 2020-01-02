@@ -116,8 +116,13 @@
                         ?>
                         <tfoot>
                             <tr>
-                                <th colspan="6" style="text-align:right">Total:</th>
-                                <th></th>
+                            <th>Team</th>
+                            <th>Style</th>
+                            <th>SC Number</th>
+                            <th>Delivery</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th style="text-align:left">Total:</th>
                             </tr>
                         </tfoot>
                         <?php
@@ -150,8 +155,13 @@
             });
 
 
-            var fileName  = 'Day Wise Pass Qty ' + date;
+                    // Setup - add a text input to each footer cell
+             $('#dateWisePassReportTbl tfoot th').each( function () {
+                var title = $(this).text();
+                $(this).html( '<input type="text" placeholder="  Search '+title+'" />' );
+            } );
 
+            var fileName  = 'Day Wise Pass Qty ' + date;
             var table = $('#dateWisePassReportTbl').DataTable({
                 retrieve: true,
                 "lengthChange": false,
@@ -209,7 +219,22 @@
                 ]
             });
 
+            
+         table.columns().every( function () {
+                var that = this;
+        
+                $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                } );
+            } );
+
         });
+
+
 
         $('.datepick').pickadate({
                 selectMonths: true,
