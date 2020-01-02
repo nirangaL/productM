@@ -154,6 +154,8 @@
 
             var table = $('#dateWisePassReportTbl').DataTable({
                 retrieve: true,
+                "lengthChange": false,
+                "bPaginate": false,
                 // "bSort" : false,
                 "footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
@@ -184,6 +186,7 @@
  
             // Update footer
             $( api.column( 6 ).footer() ).html(
+                // pageTotal+' ( '+ total +' total)'
                 pageTotal
             );
         },
