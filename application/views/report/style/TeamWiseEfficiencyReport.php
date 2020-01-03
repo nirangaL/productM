@@ -86,7 +86,7 @@
 
             </div>
 
-            <table id="dateWiseEfficTable" class="table dataTable">
+            <table id="dateWiseEfficTable" class="table datatable">
                 <thead>
                 <tr>
                     <!-- <th>Location</th> -->
@@ -199,7 +199,11 @@
                         $factoryEff = (double)(($totaProduceMin/$totalUsedMin)*100);
 
                         ?>
-                        <td colspan="5" style="font-weight:bold;font-size:16px;" class="text-center"><i>Factory Total</i></td>
+                        <td></td>
+                        <td style="font-weight:bold;font-size:16px;" class="text-center">Factory Total</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalWorkerCount;?></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalPlanedQty;?></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalOutQty;?></td>
@@ -225,29 +229,29 @@
                 selectYears: true,
                 format: 'yyyy-mm-dd',
             })
-        //
-        //     $('#dateWiseEfficTable').DataTable({
-        //         retrieve: true,
-        //         buttons: [
-        //             {
-        //                 extend: 'excelHtml5',
-        //                 title: 'Date Wise Efficiency'
-        //             },
-        //             {
-        //                 extend: 'pdfHtml5',
-        //                 title: 'Date Wise Efficiency'
-        //             },
-        //             {
-        //                 extend: 'csvHtml5',
-        //                 title: 'Date Wise Efficiency'
-        //             }, {
-        //                 extend: 'print',
-        //                 title: 'Date Wise Efficiency'
-        //             }
-        //         ]
-        //     });
-        //
-        //
+            $('#dateWiseEfficTable').DataTable({
+                retrieve: true,
+                "lengthChange": false,
+                "bPaginate": false,
+                "ordering": false,
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Date Wise Efficiency'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Date Wise Efficiency'
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Date Wise Efficiency'
+                    }, {
+                        extend: 'print',
+                        title: 'Date Wise Efficiency'
+                    }
+                ]
+            });
         });
 
 
