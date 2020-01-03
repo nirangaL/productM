@@ -1,10 +1,15 @@
+<style>
+
+tfoot {
+    display: table-header-group;
+}</style>
 <div class="content-wrapper">
 
     <!-- Page header -->
     <div class="page-header page-header-light">
         <div class="page-header-content header-elements-md-inline">
             <div class="page-title d-flex">
-                <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Report</span> - Date wise pass QTY
+                <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Report</span> - Date Wise Pass Qty
                 </h4>
                 <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
             </div>
@@ -28,7 +33,7 @@
                 <div class="breadcrumb">
                     <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                     <a href="<?php echo base_url('Workstudy_con') ?>" class="breadcrumb-item">Report</a>
-                    <span class="breadcrumb-item active">Date wise pass QTY</span>
+                    <span class="breadcrumb-item active">Date Wise Pass Qty</span>
                 </div>
                 <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
             </div>
@@ -96,10 +101,25 @@
                     <th>Size</th>
                     <th>Pass Qty</th>
                 </tr>
+
+                <tfoot>
+                     <tr>
+                        <th>Team</th>
+                        <th>Style</th>
+                        <th>SC Number</th>
+                        <th>Delivery</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th></th>
+                        </tr>
+                </tfoot>
+
                 </thead>
+
                 <tbody>
                 <?php
                     if(!empty($tableData)){
+                       
                         foreach($tableData as $row){
                         ?>
                         <tr>
@@ -114,8 +134,8 @@
                         <?php
                         }
                         ?>
-                        <tfoot>
-                            <tr>
+                        <!-- <tfoot>
+                        <tr>
                             <th>Team</th>
                             <th>Style</th>
                             <th>SC Number</th>
@@ -124,9 +144,8 @@
                             <th>Size</th>
                             <th style="text-align:left">Total:</th>
                             </tr>
-                        </tfoot>
+                        </tfoot> -->
                         <?php
-                    
                     }else{
                 ?>
                     <td colspan="7" class="text-center">No Result</td>
@@ -197,7 +216,7 @@
             // Update footer
             $( api.column( 6 ).footer() ).html(
                 // pageTotal+' ( '+ total +' total)'
-                pageTotal
+                pageTotal + ' Total'
             );
         },
                 buttons: [
@@ -233,7 +252,6 @@
             } );
 
         });
-
 
 
         $('.datepick').pickadate({
