@@ -104,10 +104,10 @@
                        <!-- <li class="nav-item"><a href="<?php //echo base_url()?>bpom/Buyer_info_Con" class="nav-link">  <i class="icon-user-tie"></i>BPOM - Buyer Info</a></li>-->
                         <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-reminder"></i>BPOM - Style Info</a></li>
                         <li class="nav-item"><a href="<?php echo base_url()?>bpom/Cut_Plan_Con" class="nav-link">  <i class="icon-scissors"></i>BPOM - Cut Plan</a></li>
+                        <!-- <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-pencil4"></i>BPOM - Style Info</a></li>
                         <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-pencil4"></i>BPOM - Style Info</a></li>
                         <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-pencil4"></i>BPOM - Style Info</a></li>
-                        <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-pencil4"></i>BPOM - Style Info</a></li>
-                        <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-pencil4"></i>BPOM - Style Info</a></li>
+                        <li class="nav-item"><a href="<?php echo base_url()?>bpom/Style_info_Con" class="nav-link">  <i class="icon-pencil4"></i>BPOM - Style Info</a></li> -->
                     </ul>
                 </li>
                 <!--/ bpom -->
@@ -161,9 +161,9 @@
                         <li class="nav-item"><a href="<?php echo base_url()?>report/StyleSizeWise_con" class="nav-link">  <i class="icon-menu6"></i>Style Report</a></li>
                         <li class="nav-item"><a href="<?php echo base_url()?>report/TeamWiseEfficiency_con" class="nav-link">  <i class="icon-esc"></i>Date Wise Efficiency Report</a></li>
                        <!-- <li class="nav-item"><a href="http://192.168.1.211/intranet/index.php/Pass_list_report_con" class="nav-link">  <i class="icon-sort-time-asc"></i>View Pass & Defect Qty</a></li> -->
-                       <li class="nav-item"><a href="<?php echo base_url()?>report/DateWisePassQtyReport" class="nav-link">  <i class="icon-calendar2"></i>Date wise pass Qty Report</a></li>
-                       <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_passlog" class="nav-link">  <i class="icon-stack-check"></i>Qc Pass Log Report</a></li>
-                       <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_defectlog" class="nav-link">  <i class="icon-stack-cancel"></i>Qc Defect Log Report</a></li>
+                       <li class="nav-item"><a href="<?php echo base_url()?>report/DateWisePassQtyReport" class="nav-link">  <i class="icon-calendar2"></i>Date wise pass Qty Report &nbsp; <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0"> New</span> </a>  </li>
+                       <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_passlog" class="nav-link">  <i class="icon-stack-check"></i>Qc Pass Log Report &nbsp; <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0"> New</span></a></li>
+                       <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_defectlog" class="nav-link">  <i class="icon-stack-cancel"></i>Qc Defect Log Report &nbsp; <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0"> New</span></a></li>
                        <li class="nav-item"><a href="<?php echo base_url()?>report/Team_Workers_List_Con" class="nav-link">  <i class="icon-people"></i>Date Wise worker list Report</a></li>
                        <!-- <li class="nav-item"><a href="--><?php //echo base_url()?><!--Workstudy_con" class="nav-link">  <i class="icon-vector"></i>Day plan</a></li> -->
                     </ul>
