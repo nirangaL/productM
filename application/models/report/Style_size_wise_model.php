@@ -47,20 +47,21 @@ class Style_size_wise_model extends CI_model{
     public function getTableData($style){
 
         $sql = "SELECT
-        ct.`style`,
-        ct.`delv`,
-        ct.`color`,
-        ct.`size`,
-        IFNULL(ct.`inputQty`,0) AS cutInQty,
-        IFNULL(input.`inputQty`,0) AS issueQty,
-        IFNULL(ot.qty,0) AS outQty,
-        ct.`teamName`,
-        ct.`location`
-      FROM 
-      `line_cutin_view` ct
-        JOIN `line_issue_view` input ON (ct.`style` = input.`style`) AND (ct.`delv` = input.`delv`) AND (ct.`color` = input.`color`) AND (ct.`size` = input.`size`) AND (ct.`teamId` = input.`teamId`)
-        JOIN `line_out_view` ot ON (input .`style` = ot.`style`) AND (input .`delv` = ot.`delv`) AND (input .`color` = ot.`color`) AND (input .`size` = ot.`size`) AND (input.`teamId` = ot.`line_id`)
-        WHERE ct.`style` = '$style'";
+        sinfo.`styleNo` AS style,
+        sinfo.deliveryNo AS delv,
+        sinfo.orderQty AS delvOrderQty,
+        sinfo.garmentColour AS `color`,
+        sinfo.`size`,
+        IFNULL(sinfo.`qty`,0) AS orderQty,
+        IFNULL(SUM(ct.`inputQty`),0) AS cutInQty,
+        IFNULL(SUM(input.`inputQty`),0) AS issueQty,
+        IFNULL(SUM(ot.qty),0) AS outQty
+      FROM
+      style_Info sinfo
+       LEFT JOIN `line_cutin_view` ct ON (sinfo.`styleNo` = ct.`style`) AND (sinfo.`deliveryNo` = ct.`delv`) AND (sinfo.`garmentColour` = ct.`color`) AND (sinfo.`size` = ct.`size`)
+        LEFT JOIN `line_issue_view` input ON (sinfo.`styleNo` = input.`style`) AND (sinfo.`deliveryNo` = input.`delv`) AND (sinfo.`garmentColour` = input.`color`) AND (sinfo.`size` = input.`size`)
+        LEFT JOIN `line_out_view` ot ON (sinfo.`styleNo` = ot.`style`) AND (sinfo.`deliveryNo` = ot.`delv`) AND (sinfo.`garmentColour` = ot.`color`) AND (sinfo.`size` = ot.`size`) 
+        WHERE sinfo.`styleNo` = '$style' GROUP BY sinfo.`size`,sinfo.garmentColour,sinfo.deliveryNo ORDER  BY sinfo.deliveryNo,sinfo.garmentColour,sinfo.`size`";
 
         return $this->db->query($sql)->result();
 

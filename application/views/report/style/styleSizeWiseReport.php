@@ -1,3 +1,35 @@
+<style>
+
+    .qty{
+        background-color: #f1f2f6;
+        /* font-weight: bold; */
+    }
+    .amount{
+        text-align: right;
+    }
+    .red{
+        color: red;
+    }
+    th{
+        text-align: center;
+    }
+
+    .colorTotal{
+        font-size: 12px;
+        font-weight: bolder;
+        text-align: right;
+        font-style: italic;
+    }
+
+    .stTotal{
+       
+        font-size: 14px;
+        font-weight: bolder;
+        text-align: right ;
+    }
+
+</style>
+
 <div class="content-wrapper">
 
     <!-- Page header -->
@@ -76,15 +108,18 @@
             <table id="StyleSizeWiseTable" class="table dataTable ">
                 <thead>
                 <tr>
-                    <th>Location</th>
-                    <th>Team</th>
                     <th>Style</th>
-                    <th>Delivery</th>
+                    <th>Delv/OrderQty</th>
                     <th>Color</th>
                     <th>Size</th>
-                    <th>Line In</th>
-                    <th>Line Issue</th>
-                    <th>Line Out</th> 
+                    <th>Order Qty</th>
+                    <th>(WIP)</th>
+                    <th>In</th>
+                    <th>(WIP)</th>
+                    <th> Issue</th>
+                    <th>(WIP)</th>
+                    <th> Out</th> 
+                    <th>Order Vs LineOut</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -95,32 +130,68 @@
                         $style = '';
                         $delv = '';
                         $color = '';
+
+                        $ctOrderQty = 0;
+                        $ctInQty = 0;
+                        $ctIssueQty = 0;
+                        $ctOutQty = 0;
+
+
+                        $stTotalQty = 0;
+                        $stInQty = 0;
+                        $stIssueQty = 0;
+                        $stOutQty = 0;
+                        // echo count($tableData);
+                        
+                        $i = 1;
+                        $colorCount = 0;
                         foreach($tableData as $row){   
+                           
+                            if($color != $row->color && $color !=''){
+                                $colorCount +=1;
+                                ?>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="colorTotal">Color Total : </td>
+                                    <td></td>
+                                    <td class="colorTotal"><?php echo  $ctOrderQty ?></td>
+                                    <td></td>
+                                    <td class="colorTotal"><?php echo $ctInQty ?></td>
+                                    <td></td>
+                                    <td class="colorTotal"><?php echo $ctIssueQty ?></td>
+                                    <td></td>
+                                    <td class="colorTotal"><?php echo $ctOutQty ?></td>
+                                    <td></td>
+                                </tr>
+
+                                
+                            
+                            <?php
+                                
+                                $stTotalQty += $ctOrderQty ;
+                                $stInQty += $ctInQty;
+                                $stIssueQty +=$ctIssueQty;
+                                $stOutQty +=  $ctOutQty;
+
+                                $ctOrderQty = 0;
+                                $ctInQty = 0;
+                                $ctIssueQty = 0;
+                                $ctOutQty = 0;
+                            }
+
+                            if($color =='' || $color == $row->color){
+                               
+                                $ctOrderQty += (int)$row->orderQty;
+                                $ctInQty += (int)$row->cutInQty;
+                                $ctIssueQty += (int)$row->issueQty;
+                                $ctOutQty += (int)$row->outQty;
+                            }
+
                     ?>
                         <tr>
                             <?php 
-                                if($location != $row->location){
-                                    $location = $row->location;
-                                    ?>
-                                <td><?php echo $row->location ?></td>
-                                <?php
-                                }else{
-                                ?>
-                                    <td></td>
-                                <?php
-                                }
-
-                                if($team != $row->teamName){
-                                    $team = $row->teamName;
-                                    ?>
-                                <td><?php echo $row->teamName ?></td>
-                                <?php
-                                }else{
-                                ?>
-                                    <td></td>
-                                <?php
-                                }
-
+                                 
                                 if($style != $row->style){
                                     $style = $row->style;
                                     ?>
@@ -134,8 +205,9 @@
 
                                 if($delv != $row->delv){
                                     $delv = $row->delv;
+                                    $color = '';
                                     ?>
-                                <td><?php echo $row->delv ?></td>
+                                <td><?php echo $row->delv.' / Odr.Qty : '.$row->delvOrderQty; ?></td>
                                 <?php
                                 }else{
                                 ?>
@@ -155,15 +227,128 @@
                                 }
                             ?>
                             <td><?php echo $row->size ?></td>
-                            <td><?php echo $row->cutInQty ?></td>
-                            <td><?php echo $row->issueQty ?></td>
-                            <td><?php echo $row->outQty ?></td>
+                            <?php
+                                $orderQtyVsLineIn = (int)$row->orderQty - (int)$row->cutInQty;
+                                $lineInVsLineIssue = (int)$row->cutInQty - (int)$row->issueQty;
+                                $lineIssuVsLineOut = (int)$row->issueQty - (int)$row->outQty;
+                                $orderQtyVsLineOut = (int)$row->orderQty - (int)$row->outQty;
+                            ?>
+                            
+                            <td class="qty amount"><?php echo $row->orderQty ?></td>
+
+                            <?php
+                                if($orderQtyVsLineIn>=0){
+                                    ?>
+                                    <td class="amount red"><?php echo $orderQtyVsLineIn;  ?></td>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <td class="amount"><?php echo $orderQtyVsLineIn;  ?></td>
+                                    <?php  
+                                }
+                            ?>
+
+                            <td class="qty amount"><?php echo $row->cutInQty ?></td>
+
+                            <?php
+                                if($lineInVsLineIssue>=0){
+                                    ?>
+                                    <td class="amount red"><?php echo $lineInVsLineIssue;  ?></td>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <td class="amount "><?php echo $lineInVsLineIssue;  ?></td>
+                                    <?php  
+                                }
+                            ?>
+
+                         
+                            <td class="qty amount"><?php echo $row->issueQty ?></td>
+                            <?php
+                                if( $lineIssuVsLineOut>=0){
+                                    ?>
+                                    <td class="amount red"><?php echo  $lineIssuVsLineOut;  ?></td>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <td class="amount "><?php echo  $lineIssuVsLineOut;  ?></td>
+                                    <?php  
+                                }
+                            ?>
+
+                            <td class="qty amount"><?php echo $row->outQty ?></td>
+
+                           <?php
+                                if( $orderQtyVsLineOut>=0){
+                                    ?>
+                                    <td class="amount red"><?php echo  $orderQtyVsLineOut;  ?></td>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <td class="amount "><?php echo  $orderQtyVsLineOut;  ?></td>
+                                    <?php  
+                                }
+                            ?>
                         </tr>
                     <?php
+
+                        if($i == count($tableData)){
+
+                            if( $colorCount != 0){
+                                ?>
+                                <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="colorTotal">Color Total : </td>
+                                <td></td>
+                                <td class="colorTotal"><?php echo  $ctOrderQty ?></td>
+                                <td></td>
+                                <td class="colorTotal"><?php echo $ctInQty ?></td>
+                                <td></td>
+                                <td class="colorTotal"><?php echo $ctIssueQty ?></td>
+                                <td></td>
+                                <td class="colorTotal"><?php echo $ctOutQty ?></td>
+                                <td></td>
+                            </tr>
+                                <?php
+                            }
+                            ?>
+                            
+                            
+
+                        <?php
+                            $stTotalQty += $ctOrderQty ;
+                            $stInQty += $ctInQty;
+                            $stIssueQty +=$ctIssueQty;
+                            $stOutQty+=  $ctOutQty;
+                            $ctOrderQty = 0;
+                            $ctInQty = 0;
+                            $ctIssueQty = 0;
+                            $ctOutQty = 0;
+
+                            ?>
+                             <tr>
+                             <td></td>
+                             <td></td>
+                             <td></td>
+                            <td class="stTotal">Total : </td>
+                                <td class="stTotal"><?php echo  $stTotalQty ?></td>
+                                <td></td>
+                                <td class="stTotal"><?php echo $stInQty ?></td>
+                                <td></td>
+                                <td class="stTotal"><?php echo $stIssueQty ?></td>
+                                <td></td>
+                                <td class="stTotal"><?php echo $stOutQty ?></td>
+                                <td></td>
+                            </tr>
+                            <?php
+
+                        }
+                        $i++;
                         }
                     }else{
                         ?>
-                            <td colspan="9" class="text-center">No Result</td>
+                            <td colspan="12" class="text-center">No Result</td>
                         <?php
                     }
                     ?>
@@ -178,6 +363,7 @@
         $('#StyleSizeWiseTable').DataTable({
                 retrieve: true,
                 "bSort" : false,
+                "bPaginate": false,
                 buttons: [
                     {
                         extend: 'excelHtml5',
