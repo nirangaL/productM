@@ -1,3 +1,9 @@
+<style>
+    tfoot {
+        display: table-header-group;
+    }
+</style>
+
 <div class="content-wrapper">
 
     <!-- Page header -->
@@ -139,6 +145,17 @@
                     <th>Size</th>
                     <th>Date Time</th>
                 </tr>
+                <tfoot>
+                     <tr>
+                        <th>Team</th>
+                        <th>Style</th>
+                        <th>SC Number</th>
+                        <th>Delivery</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Date Time</th>
+                    </tr>
+                </tfoot>
                 </thead>
                 <tbody>
                 <?php
@@ -156,19 +173,6 @@
                         </tr>
                         <?php
                         }
-                        ?>
-                        <tfoot>
-                            <tr>
-                            <th>Team</th>
-                            <th>Style</th>
-                            <th>SC Number</th>
-                            <th>Delivery</th>
-                            <th>Color</th>
-                            <th>Size</th>
-                            <th>Date Time</th>
-                            </tr>
-                        </tfoot>
-                        <?php
                     }else{
                 ?>
                     <td colspan="7" class="text-center">No Result</td>
