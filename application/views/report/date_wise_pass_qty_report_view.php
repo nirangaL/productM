@@ -1,8 +1,9 @@
 <style>
+    tfoot {
+        display: table-header-group;
+    }
+</style>
 
-tfoot {
-    display: table-header-group;
-}</style>
 <div class="content-wrapper">
 
     <!-- Page header -->
