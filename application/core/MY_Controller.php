@@ -83,7 +83,7 @@ class MY_Controller extends CI_Controller{
 
     public function checkRule($rule){
         
-        $result = $this->Core_model->getRuleStatus(get_cookie('location'),$rule);
+        $result = $this->Core_model->getRuleStatus(get_cookie('line'),$rule);
         if(!empty($result)){
            return $result[0]->rule;
         }else{

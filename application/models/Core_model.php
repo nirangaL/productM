@@ -8,8 +8,8 @@
 
 class Core_model extends CI_Model{
 
-    public function getRuleStatus($location,$rule){
-        $sql = "SELECT ".$rule." AS rule FROM rules_master WHERE location = '$location'";
+    public function getRuleStatus($team,$rule){
+        $sql = "SELECT ".$rule." AS rule FROM rules_master WHERE team = '$team'";
         return $this->db->query($sql)->result();
     }
 }
