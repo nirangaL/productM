@@ -55,7 +55,7 @@ class Style_size_wise_model extends CI_model{
         IFNULL(sinfo.`qty`,0) AS orderQty,
         IFNULL(SUM(ct.`inputQty`),0) AS cutInQty,
         IFNULL(SUM(input.`inputQty`),0) AS issueQty,
-        IFNULL(SUM(ot.qty),0) AS outQty
+        IFNULL(ot.qty,0) AS outQty
       FROM
       style_Info sinfo
        LEFT JOIN `line_cutin_view` ct ON (sinfo.`styleNo` = ct.`style`) AND (sinfo.`deliveryNo` = ct.`delv`) AND (sinfo.`garmentColour` = ct.`color`) AND (sinfo.`size` = ct.`size`)
