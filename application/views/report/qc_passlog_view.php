@@ -134,7 +134,7 @@
                 
             </div>
 
-            <table id="qcPassLogTbl" class="table dataTable ">
+            <table id="qcPassLogTbl" class="table datatable-fixed-left">
                 <thead>
                 <tr>
                     <th>Team</th>
@@ -211,7 +211,13 @@
 
             var table = $('#qcPassLogTbl').DataTable({
                 retrieve: true,
+                "lengthChange": false,
+                "bPaginate": false,
                 // "bSort" : false,
+                // scrollX: true,
+                // scrollY: '700px',
+                // scrollCollapse: true,
+                // fixedColumns: true,
                 buttons: [
                     {
                         extend: 'excelHtml5',
