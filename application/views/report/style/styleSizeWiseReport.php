@@ -36,7 +36,7 @@
     <div class="page-header page-header-light">
         <div class="page-header-content header-elements-md-inline">
             <div class="page-title d-flex">
-                <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Report</span> - Style Size Wise
+                <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Report</span> - Style Details Report
                 </h4>
                 <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
             </div>
@@ -60,7 +60,7 @@
                 <div class="breadcrumb">
                     <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                     <a href="<?php echo base_url('Workstudy_con') ?>" class="breadcrumb-item">Report</a>
-                    <span class="breadcrumb-item active">Style Size Wise</span>
+                    <span class="breadcrumb-item active">Style Details Report</span>
                 </div>
 
                 <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -359,7 +359,7 @@
 
     <script>
     $(document).ready(function () {
-        var fileName  = 'Style Production Report '+ date;
+        var fileName  = 'Style Details Report '+ date;
         $('#StyleSizeWiseTable').DataTable({
                 retrieve: true,
                 "bSort" : false,
