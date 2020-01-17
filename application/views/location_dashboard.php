@@ -196,7 +196,7 @@
     <!-- /View Production Team -->
 
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-lg-2">
         <!-- Members online -->
         <div class="card bg-teal-400" data-toggle="modal" data-target="#wokerModal" style="cursor:pointer;">
           <div class="card-body">
@@ -216,6 +216,31 @@
             </div>
           </div>
         </div>
+        <!-- /members online -->
+
+      </div>
+      <div class="col-lg-2">
+        <!-- Members online -->
+        <a href="<?php echo base_url('qcDashboard')?>">
+          <div class="card bg-warning-400">
+            <div class="card-body">
+              <div class="d-flex">
+                <h1 class="font-weight-semibold mb-0" id="totalDefect"></h1>
+                <!--                                    <span class="badge bg-teal-800 badge-pill align-self-center ml-auto">+53,6%</span>-->
+                <div class="list-icons ml-auto">
+                  <div class="list-icons-item ">
+                    <i class="icon-loop" style="font-size: 35px;"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <span class="font-size-lg">Click to see more details of defect</span>
+                <!-- <div class="font-size-md opacity-75"><span id="avgWorkers"></span> avg for a Teem</div> -->
+              </div>
+            </div>
+          </div>
+        </a>
         <!-- /members online -->
 
       </div>
@@ -301,7 +326,7 @@
 
     var timeTicket = setInterval(function () {
       getAllData();
-    }, 10000);
+    }, 30000);
 
 
     function getAllData() {
@@ -309,6 +334,7 @@
       var totalWorkers = 0;
       var totalPlanQty = 0;
       var totalOutQty = 0;
+      var totalDefectQty = 0;
       var styleArray = [];
 
       $.ajax({
@@ -410,6 +436,7 @@
                   status = json_value['tvData'][i]['gridData'][x]['status'];
                   smv = json_value['tvData'][i]['gridData'][x]['smv'];
                   currentHour = parseInt(json_value['tvData'][i]['gridData'][x]['currentHr']);
+                  totalDefectQty += parseInt(json_value['tvData'][i]['gridData'][x]['defectQty']);
 
                   
                   if(jQuery.inArray(style, styleArray) !== -1){}else{styleArray.push(style)}
@@ -543,6 +570,7 @@
             $('#totWorker').text(totalWorkers);
                 $('#totPlan').text(totalPlanQty);
                 $('#totOut').text(totalOutQty);
+                $('#totalDefect').text(totalDefectQty);
                 $('#totStyle').text(styleArray.length);
 
             $('#teamData').append(html);
