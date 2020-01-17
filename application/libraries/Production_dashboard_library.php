@@ -21,7 +21,7 @@ class Production_dashboard_library
         // $this->date = $params['date'];
     }
 
-    public function get_team_data($location,$team,$date)
+    public function get_team_data($location,$team,$date,$from)
     {
         $this->location = $location;
         $this->team = $team;
@@ -118,6 +118,8 @@ class Production_dashboard_library
                     }else{
                         $currentHour = $getTime[0]->currentHour;
                     }
+
+                    // $currentHour = $getTime[0]->currentHour;
                     
                     ///// This is get to TV Display to show count down ///////
                     $timeForTimeCountDown = date('M j, Y') . ' ' . $getTime[0]->endTime;
@@ -301,9 +303,12 @@ class Production_dashboard_library
                     'styleDayPlanQty'=> $styleDayPlanQty,
                     'styleNeedQty'=> intval($styleNeedQty),
                     'allDefectQty'=> $allDefectQty,
+                    'defectQty'=> $temaData[$i]->defectQty,
                 );
-                
-                $data['hourlyOut'][$i] = $this->getHourlyOut($team,$style,$hrs,$smv,$noOfwokers,$dayPlanId,$dayPlanType,$currentHour,$timeTemplate);        
+                if($from == 'webAppDashboard'){
+                    $data['hourlyOut'][$i] = $this->getHourlyOut($team,$style,$hrs,$smv,$noOfwokers,$dayPlanId,$dayPlanType,$currentHour,$timeTemplate);        
+                }
+                 
             }
 
             return $data;
@@ -372,7 +377,7 @@ class Production_dashboard_library
                         $result[0]->productHourForStyle = new stdClass();
                         $result[0]->productHourForStyle = $i;
                     break;
-                    }else{
+                    }else if((strtotime($currentTime) > strtotime($result[0]->endTime))){
                         $result[0]->currentHour = new stdClass();
                         $result[0]->currentHour = $totalHour;
                     } 
@@ -778,7 +783,7 @@ class Production_dashboard_library
             $result = $CI->Dashboard_production_model->getTimeRange($i, $timeTemplId);
 
             if (!empty($result)) {
-                if (strtotime($result[0]->startTime) != '00:00:00'  &&  strtotime($result[0]->endTime) != '00:00:00' ) {
+                if (strtotime($result[0]->startTime) != '00:00:00'   &&  strtotime($result[0]->endTime) != '00:00:00' ) {
                     if($workedHourDecimal !=0 && $i == floor($totalHour)){
                         $hourQty = $CI->Dashboard_production_model->getHourQty($team,$style,$result[0]->startTime,'23:00:00');
                     }else{
