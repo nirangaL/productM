@@ -34,7 +34,7 @@ class Tv_Production_Con extends MY_Controller
         
         // $params = array('location' => $this->location, 'team' => $this->team, 'date' => $date);
         $this->load->library('production_dashboard_library');
-        $teamData = $this->production_dashboard_library->get_team_data($this->location,$this->team,$date);
+        $teamData = $this->production_dashboard_library->get_team_data($this->location,$this->team,$date,'teamTvDashboard');
 
         $dayPlanCount = sizeOf($teamData['teamData']);
         $data = array();
