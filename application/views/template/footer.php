@@ -158,6 +158,17 @@ $("body").prepend('<div class="loading"></div>');
       }
     }
 
+    function loaderOn() {
+  $("body").prepend('<div class="loading"></div>');
+}
+
+function loaderOff() {
+  $(document).ready(function() {
+    $(".loading").remove();
+  });
+}
+
+
 </script>
 
 </html>
