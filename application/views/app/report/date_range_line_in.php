@@ -11,7 +11,7 @@
     }
 
     .table-condensed{
-      font-size: 25px;!importent
+      font-size: 25px !important;
     }
 
     a.text-default:focus, a.text-default:hover {
