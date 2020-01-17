@@ -30,9 +30,9 @@ class Dashboard_production_model extends CI_Model{
         , `day_plan`.`location`
         , prod_line.`line` AS lineName
         ,  IFNULL(`checking_header_tb`.`id`,0) as chckTblHdId
-        ,IFNULL((SELECT COUNT(*) AS pass FROM `qc_pass_log` WHERE `chckHeaderId` = ifnull(`checking_header_tb`.`id`,0) AND DATE(`dateTime`) = '$date'),0) AS passQty
-          ,IFNULL((SELECT COUNT(*) FROM `qc_reject_log` WHERE `chckHeaderId` = ifnull(`checking_header_tb`.`id`,0) AND DATE(`dateTime`)= '$date' ),0) AS defectQty
-          ,(SELECT COALESCE(COUNT(rej.`rejectId`)) FROM `qc_reject_log` rej LEFT JOIN `checking_header_tb` tbH ON rej.`chckHeaderId` = tbH.`id` WHERE tbH.`style` = `checking_header_tb`.style AND tbH.lineNo = `checking_header_tb`.lineNo) - (SELECT COALESCE(COUNT(rem.id)) FROM `qc_remake_log` rem LEFT JOIN `checking_header_tb` tbH ON rem.`chckHeaderId` = tbH.`id` WHERE tbH.`style` =  `checking_header_tb`.style AND tbH.lineNo = `checking_header_tb`.lineNo) AS allDefectQty
+        ,IFNULL((SELECT SUM(`passQty`) AS pass FROM  checking_grid_tb WHERE `chckHeaderId` = IFNULL(`checking_header_tb`.`id`,0) ),0) AS passQty
+         ,IFNULL((SELECT SUM(`rejectQty`) FROM checking_grid_tb WHERE `chckHeaderId` = IFNULL(`checking_header_tb`.`id`,0)),0) AS defectQty
+         ,((SELECT COALESCE(SUM(grd.rejectQty),0) FROM checking_header_tb chtb LEFT JOIN checking_grid_tb grd ON chtb.id = grd.chckHeaderId WHERE chtb.style = checking_header_tb.`style` AND chtb.lineNo = checking_header_tb.`lineNo`) - (SELECT COALESCE(SUM(grd.remakeQty),0) FROM checking_header_tb chtb LEFT JOIN checking_grid_tb grd ON chtb.id = grd.chckHeaderId WHERE chtb.style = checking_header_tb.`style` AND chtb.lineNo = checking_header_tb.`lineNo`))  AS allDefectQty
          ,IFNULL((SELECT COUNT(*) FROM `qc_remake_log` WHERE `chckHeaderId` = ifnull(`checking_header_tb`.`id`,0) AND DATE(`dateTime`) = '$date' ),0) AS remakeQty
         FROM `day_plan`
         left join `checking_header_tb`
