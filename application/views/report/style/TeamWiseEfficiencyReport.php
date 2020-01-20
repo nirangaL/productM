@@ -100,6 +100,7 @@
                     <th>Actual Qty</th>
                     <th>Produced Min</th>
                     <th>Used Min</th>
+                    <th>Plan.Effi</th>
                     <th>Efficiency</th>
                     <th>QR Lvl</th>
                 </tr>
@@ -113,9 +114,11 @@
                       $totalOutQty = 0;
                       $totaProduceMin = 0;
                       $totalUsedMin = 0;
-                      $previLine = '';
+                      $previLine = 0;
+                   
                       $thisLineEffAlreadyCal = 'no';
                         for($i=0;$i<count($tableData);$i++){
+                            $forecastEffi = $tableData[$i]->forecastEffi;
                           if($tableData[$i]->line == $tableData[$i+1]->line){
                             $workingMin =  (double)$tableData[$i]->workingHour * $tableData[$i]->minuuteForHour;
                             $workingMinNextRow =  (double)$tableData[$i+1]->workingHour * $tableData[$i+1]->minuuteForHour;
@@ -180,10 +183,12 @@
                             <?php if($previLine == $tableData[$i+1]->line){
                               $thisLineEffAlreadyCal = "yes";
                             ?>
+                             <td rowspan="2"><?php echo $forecastEffi.'%';?></td>
                               <td rowspan="2"><?php echo number_format($lineEff,2).'%';?></td>
                             <?php
                           }else if($thisLineEffAlreadyCal !="yes"){
                             ?>
+                              <td><?php echo $forecastEffi.'%';?></td>
                               <td><?php echo $tableData[$i]->efficiency.'%';?></td>
                             <?php
 
@@ -209,6 +214,7 @@
                         <td style="font-weight:bold;font-size:16px;"><?php echo $totalOutQty;?></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo number_format((float)$totaProduceMin, 2, '.', '');?></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo number_format((float)$totalUsedMin, 2, '.', '');?></td>
+                        <td></td>
                         <td style="font-weight:bold;font-size:16px;"><?php echo number_format((float)$factoryEff, 2, '.', '')."%";?></td>
                         <td></td>
                         <?php

@@ -12,12 +12,15 @@ class Team_wise_efficiency_model extends CI_model{
     public function getTableData($date,$location){
         $sql = "SELECT
                 day_efficiency.*,
+                day_plan.`forecastEffi`,
                 prod_line.`line`,
                 `location`.`location`,
                 (SELECT minuuteForHour FROM mstr_department WHERE location ='$location' AND department ='Production') AS minuuteForHour,
                 (SELECT buyer FROM temp_accller_view WHERE style = day_efficiency.`style` GROUP BY style) AS buyer
               FROM
                 `day_efficiency`
+                JOIN day_plan 
+                  ON day_efficiency.`dayPlanId` = day_plan.`id`
                 JOIN `prod_line`
                   ON `day_efficiency`.`lineId` = prod_line.`line_id`
                 JOIN `location`

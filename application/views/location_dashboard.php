@@ -180,6 +180,7 @@
               <th>Workers</th>
               <th>Plan.Qty</th>
               <th>Out.Qty</th>
+              <th>Plan.Effi%</th>
               <th>Effi%</th>
               <th>QR.Lvl%</th>
               <th>Incen</th>
@@ -429,6 +430,7 @@
                   noOfwokers = json_value['tvData'][i]['gridData'][x]['noOfwokers'];
                   runDay = json_value['tvData'][i]['gridData'][x]['styleRunDatys'];
                   aQty = json_value['tvData'][i]['gridData'][x]['lineOutQty'];
+                  ForEff = json_value['tvData'][i]['gridData'][x]['ForEff'];
                   effi = json_value['tvData'][i]['gridData'][x]['actEff'];
                   qrL = json_value['tvData'][i]['gridData'][x]['actualQrLevel'];
                   incentive = json_value['tvData'][i]['gridData'][x]['incentive'];
@@ -481,20 +483,24 @@
 
                     if(dayPlanType == "4" ){
                         if(json_value['tvData'][i]['gridData'].length != (x+1)){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>"; 
                         }
 
                     }else if(((json_value['tvData'][i]['gridData'].length)-1) == (x+1)){
                        if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "2" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "1"){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>"; 
                         }else if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "1" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>"; 
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";           
                         }else if(json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
                           // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
                         } 
                     }else if((json_value['tvData'][i]['gridData'].length) == 2){
                      
                     }else{
+                      html += "<td>" + ForEff + "</td>";
                       html += "<td>" + effi + "</td>";
                     }
 
