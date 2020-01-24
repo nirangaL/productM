@@ -59,6 +59,9 @@ $("body").prepend('<div class="loading"></div>');
         $("form").on("submit", function(){
         $(".loading").fadeIn();
         })
+
+      setInterval(function(){ $('.ci-flash-alert').fadeOut(); }, 3000);
+
         ////// Snow fallen effect ////
         // $('body').flurry({
         //     character: "❄",
@@ -78,6 +81,9 @@ $("body").prepend('<div class="loading"></div>');
         //     overflow: "hidden",
         //     zIndex: 9999
         //     });
+
+
+
         
     });
 
