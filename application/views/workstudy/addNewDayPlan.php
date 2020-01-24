@@ -14,20 +14,33 @@
   <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
       <div class="page-title d-flex">
-        <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Day-Plan</span> - Add
+        <h4> <a href="<?php echo base_url('Workstudy_con') ?>"><i class="icon-arrow-left52 mr-2"></i></a> <span class="font-weight-semibold">Production Day Plan</span> - Add
         </h4>
         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
       </div>
 
       <div class="header-elements d-none">
-        <div class="d-flex justify-content-center">
+      <?php
+          if(null !== $this->session->flashdata('item')) {
+            $message = $this->session->flashdata('item');
+               ?>
+            <div class="alert ci-flash-alert <?php echo $message['class']?> text-white alert-styled-left alert-dismissible mt-2">
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                <span class="font-weight-semibold"> <?php echo $message['msg-title']?></span>&nbsp;&nbsp; <?php echo $message['msg']?>
+            </div>
+          <?php 
+          }
+          ?>
+
+
+        <!-- <div class="d-flex justify-content-center">
           <a href="#" class="btn btn-link btn-float text-default"><i
             class="icon-bars-alt text-primary"></i><span>Statistics</span></a>
             <a href="#" class="btn btn-link btn-float text-default"><i class="icon-calculator text-primary"></i>
               <span>Invoices</span></a>
               <a href="#" class="btn btn-link btn-float text-default"><i class="icon-calendar5 text-primary"></i>
                 <span>Schedule</span></a>
-              </div>
+              </div> -->
             </div>
 
           </div>
@@ -35,7 +48,7 @@
           <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
             <div class="d-flex">
               <div class="breadcrumb">
-                <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+              <a href="<?php echo base_url('Location_Dashboard_Con')?>" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                 <a href="<?php echo base_url('Workstudy_con') ?>" class="breadcrumb-item">DayPlan-List</a>
                 <span class="breadcrumb-item active">Add Day Plan</span>
               </div>
@@ -247,8 +260,10 @@
                 </div>
                 <div class="col-md-9">
                   <div class="text-right">
-                    <button type="submit" id="save" name="save" class="btn btn-primary">Save<i
-                      class="icon-paperplane ml-2"></i></button>
+                      <button type="submit" id="save" name="save" value="sv-nw" class="btn bg-teal">Save & New<i
+                      class="icon-floppy-disks ml-2"></i></button>
+                      <button type="submit" id="save" name="save" value="sv-cl" class="btn btn-primary">Save & Close<i
+                      class="icon-floppy-disk ml-2"></i></button>
                       <button type="reset" class="btn btn-warning">Reset<i class="icon-reset ml-2"></i>
                       </button>
                     </div>

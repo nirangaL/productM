@@ -52,6 +52,9 @@ class Workstudy_con extends MY_Controller{
   }
 
   public function saveDayPlan(){
+
+    $clickBtn = $this->input->post('save');
+
     if($this->dayPlanFormValidation('save')) {
       $dayPlanType  = $this->input->post('dayPlanType');
       if($dayPlanType == 4){
@@ -59,11 +62,18 @@ class Workstudy_con extends MY_Controller{
       }
       $result = $this->Workstudy_model->saveDayPlan();
       if($result){
-        redirect(base_url('Workstudy_con'), 'refresh');
+        $this->session->set_flashdata('item', array('msg-title'=>'Day Plan Saved!','msg' => '','class' => 'bg-success'));
+        if($clickBtn == 'sv-nw'){
+          redirect(base_url('Workstudy_con/addNewDayPlan'),'refresh');
+        }else{
+          redirect(base_url('Workstudy_con'), 'refresh');
+        }
       }else{
+        $this->session->set_flashdata('item', array('msg-title'=>'Day Plan Not Saved!','msg' => 'Try Again','class' => 'bg-danger'));
         $this->addNewDayPlan();
       }
     }else{
+      $this->session->set_flashdata('item', array('msg-title'=>'Day Plan Not Saved!','msg' => 'Try Again','class' => 'bg-danger'));
       $this->addNewDayPlan();
     }
   }
@@ -88,11 +98,14 @@ class Workstudy_con extends MY_Controller{
       if($this->dayPlanFormValidation('edit')) {
         $result = $this->Workstudy_model->editDayPlan($planId);
         if($result){
+          $this->session->set_flashdata('item', array('msg-title'=>'Day Plan Updated!','msg' => '','class' => 'bg-success'));
           redirect(base_url('Workstudy_con'), 'refresh');
         }else{
+          $this->session->set_flashdata('item', array('msg-title'=>'Day Plan Not Update!','msg' => 'Try Again','class' => 'bg-danger'));
           $this->getDatPlanToEdit($planId);
         }
       }else{
+        $this->session->set_flashdata('item', array('msg-title'=>'Day Plan Not Update!','msg' => 'Try Again','class' => 'bg-danger'));
         $this->getDatPlanToEdit($planId);
       }
 
@@ -111,10 +124,6 @@ class Workstudy_con extends MY_Controller{
       $this->form_validation->set_rules('ince_hour', 'Incentive calculate Hour', 'trim|required');
     }
     if($task=='edit'){
-      // $this->form_validation->set_rules('line', 'Team', 'trim|required');
-      // $this->form_validation->set_rules('style', 'Style', 'trim|required');
-      // $this->form_validation->set_rules('dayPlanType', 'dayPlanType', 'trim|required');
-      // $this->form_validation->set_rules('timeTempl', 'timeTempl', 'trim|required');
       $this->form_validation->set_rules('runDay', 'Run Day', 'trim|required');
       $this->form_validation->set_rules('smv', 'SMV', 'trim|required');
       $this->form_validation->set_rules('workingHrs', 'Hrs', 'trim|required');

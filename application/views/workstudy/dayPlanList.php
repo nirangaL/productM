@@ -12,20 +12,33 @@
     <div class="page-header page-header-light">
         <div class="page-header-content header-elements-md-inline">
             <div class="page-title d-flex">
-                <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Work-Study</span> - Day Plans
+                <h4> <a href="<?php echo base_url('Location_Dashboard_Con') ?>"><i class="icon-arrow-left52 mr-2"></i></a>  <span class="font-weight-semibold">Work-Study</span> - Day Plans
                 </h4>
                 <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
             </div>
-
+               
             <div class="header-elements d-none">
-                <div class="d-flex justify-content-center">
+
+            <?php
+                if(null !== $this->session->flashdata('item')) {
+                $message = $this->session->flashdata('item');
+                        ?>
+                    <div class="alert ci-flash-alert <?php echo $message['class']?> text-white alert-styled-left alert-dismissible mt-2">
+                        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                        <span class="font-weight-semibold"> <?php echo $message['msg-title']?></span>&nbsp;&nbsp; <?php echo $message['msg']?>
+                    </div>
+                <?php 
+                }
+                ?>
+
+                <!-- <div class="d-flex justify-content-center">
                     <a href="#" class="btn btn-link btn-float text-default"><i
                             class="icon-bars-alt text-primary"></i><span>Statistics</span></a>
                     <a href="#" class="btn btn-link btn-float text-default"><i class="icon-calculator text-primary"></i>
                         <span>Invoices</span></a>
                     <a href="#" class="btn btn-link btn-float text-default"><i class="icon-calendar5 text-primary"></i>
                         <span>Schedule</span></a>
-                </div>
+                </div> -->
             </div>
 
         </div>
@@ -33,7 +46,7 @@
         <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
             <div class="d-flex">
                 <div class="breadcrumb">
-                    <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                    <a href="<?php echo base_url('Location_Dashboard_Con')?>" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
                     <span class="breadcrumb-item active">Work-Study</span>
                 </div>
 
@@ -50,7 +63,7 @@
             <div class="card-header header-elements-inline">
                 <h5 class="card-title">Day Plans</h5>
                 <div class="header-elements">
-                    <a href="<?php echo base_url('Workstudy_con/addNewDayPlan')?>" type="submit" class="btn bg-primary"><i class="icon-pencil-ruler mr-2"></i>New Day Plan</a>
+                    <a href="<?php echo base_url('Workstudy_con/addNewDayPlan')?>" type="submit" class="btn bg-primary"><i class="icon-crop mr-2"></i>New Day Plan</a>
                 </div>
             </div>
 
