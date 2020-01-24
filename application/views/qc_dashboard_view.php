@@ -306,6 +306,7 @@
         var html='';
         var totalDefect = 0;
         var totolRemake = 0;
+        var p = 1;
         for(var i=0;i<teamCount;i++){
           // console.log(remakeData[i]);
           if(teamData[i].length > 0){
@@ -320,6 +321,7 @@
           var rowCount = teamData[i].length;
           var remakeRowCount = remakeData[i].length;
           for(var x=0;x<rowCount;x++){
+            p++;
             if(preStyle != teamData[i][x]['style'].toString() ){
               preStyle = teamData[i][x]['style'].toString();
  
@@ -327,7 +329,7 @@
               html +=    '<div class="card-header row ">';
               html +=    '<div class="col-sm-6">';
               html +=       '<h6 class="card-title">';
-              html +=        '<a data-toggle="collapse" class="text-default" href="#teamList'+i+'"><b>'+preStyle+'</b></a>';
+              html +=        '<a data-toggle="collapse" class="text-default" href="#teamList'+(i+''+p)+'"><b>'+preStyle+'</b></a>';
                
               html +=      '</h6>';
               html += '<span class="text-muted font-size-sm">Style</span>'
@@ -336,11 +338,11 @@
               html +=    '<div class="col-sm-2 text-right">';
               html +=       '<h6 class="card-title">';
               var passQty = 0;
-                if(preStyle == teamData[i][0]['style'].toString()){
-                  passQty = parseInt(teamData[i][0]['passQty']);  
+                if(preStyle == teamData[i][x]['style'].toString()){
+                  passQty = parseInt(teamData[i][x]['passQty']);  
                   totalOut += passQty;
                 }
-              html +=        '<a data-toggle="collapse" class="text-default " href="#teamList'+i+'"><b id="defectAmountTotal'+i+'">'+passQty+'</b></a>';
+              html +=        '<a data-toggle="collapse" class="text-default " href="#teamList'+(i+''+p)+'"><b id="defectAmountTotal'+i+'">'+passQty+'</b></a>';
               html +=      '</h6>';
               html += '<span class="text-muted font-size-sm">Pass</span>';
               html +=    '</div>';
@@ -357,7 +359,7 @@
                 
                 } 
               }
-              html +=        '<a data-toggle="collapse" class="text-default " href="#teamList'+i+'"><b id="defectAmountTotal'+i+'">'+totalDefectTotal+'</b></a>';
+              html +=        '<a data-toggle="collapse" class="text-default " href="#teamList'+(i+''+p)+'"><b id="defectAmountTotal'+i+'">'+totalDefectTotal+'</b></a>';
               html +=      '</h6>';
               html += '<span class="text-muted font-size-sm">Defect</span>';
               html +=    '</div>';
@@ -375,7 +377,7 @@
               }
                 
               }
-              html +=        '<a data-toggle="collapse" class="text-default " href="#teamList'+i+'"><b id="defectAmountTotal'+i+'">'+totalRemakeQty+'</b></a>';
+              html +=        '<a data-toggle="collapse" class="text-default " href="#teamList'+(i+''+p)+'"><b id="defectAmountTotal'+i+'">'+totalRemakeQty+'</b></a>';
               html +=      '</h6>';
               html += '<span class="text-muted font-size-sm">Remake</span>';
               html +=    '</div>';
@@ -384,7 +386,7 @@
 
               
               html +=    '</div>';
-              html +=    '<div id="teamList'+i+'" class="collapse show" >';
+              html +=    '<div id="teamList'+(i+''+p)+'" class="collapse show" >';
               html +=        '<div class="card-body ">';
               html +=   '<div class="form-group row">'
               html +=   '<div class="table-responsive">'
@@ -399,17 +401,17 @@
               html +=   '</thead>'
               html +=   '<tbody id="inputTbl">'
               
-              var shortedArray = teamData[i].sort(function (a, b) {
-                        return b.defectAmount - a.defectAmount;
-                  });
+              // var shortedArray = teamData[i].sort(function (a, b) {
+              //           return b.defectAmount - a.defectAmount;
+              //     });
 
               for(var y = 0; y < rowCount; y++){
-                if(preStyle == shortedArray[y]['style'].toString() &&  shortedArray[y]['defectReason'] != undefined){
+                if(preStyle == teamData[i][y]['style'].toString() &&  teamData[i][y]['defectReason'] != undefined){
                 html += "<tr>";
-                html += "<td>" + shortedArray[y]['defectReason'].toString() + "</td>";
-                html += "<td>" + shortedArray[y]['defectAmount'] + "</td>";
-                html += "<td>" + ((parseInt(shortedArray[y]['defectAmount'])/totalOut)*100).toFixed(2) + '%'+"</td>";
-                html += "<td>" + ((parseInt(shortedArray[y]['defectAmount'])/totalDefectTotal)*100).toFixed(2) + '%'+"</td>";
+                html += "<td>" + teamData[i][y]['defectReason'].toString() + "</td>";
+                html += "<td>" + teamData[i][y]['defectAmount'] + "</td>";
+                html += "<td>" + ((parseInt(teamData[i][y]['defectAmount'])/totalOut)*100).toFixed(2) + '%'+"</td>";
+                html += "<td>" + ((parseInt(teamData[i][y]['defectAmount'])/totalDefectTotal)*100).toFixed(2) + '%'+"</td>";
                 html += "</tr>";
               }
 

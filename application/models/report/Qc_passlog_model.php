@@ -14,6 +14,7 @@ class Qc_passlog_model extends CI_model{
         return $this->db->query($sql)->result();
     }
 
+
     public function getTableData($team,$fromDate,$fromTime,$toDate,$toTime){
 
         $fromDateTime =  date("Y-m-d",strtotime($fromDate)).' '.$fromTime;
