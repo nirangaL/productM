@@ -156,6 +156,8 @@
                         $('#errorLogin').text('Entered credentials are incorrect! ');
                     } else if(data == "block"){
                         $('#errorLogin').text('Account is Disabled!');
+                    }else{
+                        window.location.replace(data);
                     }
                 }
             });

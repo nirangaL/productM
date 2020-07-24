@@ -30,7 +30,14 @@ class Welcome extends CI_Controller {
         if($this->FormValidation()){
            $result =  $this->login_model->checkUser();
             if($result == 'ok'){
-                echo 'ok';
+                if(!empty($_SESSION['new'])){
+                    $url_new    =   $_SESSION['new'];
+                    $_SESSION['new']="";
+                  echo $url_new;
+                }else{
+                    echo 'ok';
+                }
+                
             }else if($result == 'block'){
                 echo 'block';
             }else if($result == 'notOk'){
