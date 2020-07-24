@@ -139,7 +139,7 @@ class Manual_qc_out_enter_model extends CI_model{
      ////Save A DayPlan //////
     public function saveDayPlan($location,$user){
 
-        $date = date('Y-m-d H:i:s');
+      
         $data = array(
             'line' => $team = $this->input->post('team'),
             'dayPlanType'  => '1',
@@ -159,8 +159,10 @@ class Manual_qc_out_enter_model extends CI_model{
             'feedingHour'  => '0',
             'location'  => $location,
             'createBy'  => $user,
-            'createDate'  => $date,
+            'createDate'  => $this->input->post('enterdDate').' '.date('H:i:s'),
         );
+        // echo '<pre>';
+        // print_r($data);
 
         $this->db->insert('day_plan', $data);
         return $this->db->insert_id();
@@ -175,11 +177,15 @@ class Manual_qc_out_enter_model extends CI_model{
             'incentive'  => $oldData['incentive'],
         );
 
+        // echo '<pre>';
+        // print_r($oldDayPlanId);
+
         $this->db->where('id',$oldDayPlanId);
-        $this->db->replace('day_efficiency', $data);
+        $this->db->update('day_efficiency', $data);
     }
 
     public function saveManualData($location,$dayPlanId){
+
         $data = array(
             'locationId' => $location,
             'lineId'  => $this->input->post('team'),
@@ -187,7 +193,7 @@ class Manual_qc_out_enter_model extends CI_model{
             'timeTemplate'=>0,
             'style'=>$this->input->post('style'),
             'smv'=>$this->input->post('smv'),
-            'runDay'=>$this->input->post('runDay'),
+            'runDay'=>$this->input->post('runday'),
             'totalPlanQty'=>$this->input->post('planQty'),
             'actualOutQty'=>$this->input->post('passQty'),
             'workersCount'=>$this->input->post('workrs'),
@@ -197,12 +203,12 @@ class Manual_qc_out_enter_model extends CI_model{
             'incentive'=>$this->input->post('incentive'),
             'defectQty'=>$this->input->post('defectQty'),
             'qr_level'=>$this->input->post('qrLvl'),
-            'dateTime'=>date('Y-m-d H:i:s'),
+            'dateTime'=>$this->input->post('enterdDate').' '.date('H:i:s'),
         );
 
-        
-       
-      return  $this->db->insert('table', $data);
+        // echo '<pre>';
+        // print_r($data);       
+      return  $this->db->insert('day_efficiency', $data);
     }
 
 

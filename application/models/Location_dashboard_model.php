@@ -268,4 +268,17 @@ class Location_dashboard_model extends CI_model{
          return $this->db->query($sql)->result();
     }
 
+    public function monthEffi($minuteForHour,$location){
+        $date  = date('Y-m');
+        $sql = "SELECT
+                    DATE_FORMAT(`dateTime`,'%Y-%m') yearMonth	
+                    ,IFNULL((SUM(actualOutQty) * SUM(smv)),0) AS produceMin
+                    ,IFNULL((SUM(workersCount) * (SUM(workingHour) * $minuteForHour)),0) AS usedMin
+                FROM
+                    day_efficiency
+                WHERE locationId = '$location' AND DATE_FORMAT(`dateTime`,'%Y-%m')  = '$date'
+                GROUP BY DATE_FORMAT(`dateTime`,'%Y-%m')";
+         return $this->db->query($sql)->result();
+    }
+
 }

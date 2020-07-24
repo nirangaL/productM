@@ -56,6 +56,12 @@ class Workstudy_model extends CI_Model{
     $status = $this->input->post('status');
     $feedingHours = $this->input->post('feedHours');
     $ince_hour = $this->input->post('ince_hour');
+    $peekEffi = $this->input->post('peekEffi');
+    if($peekEffi && $dayPlanType != '2'){
+      $peekEffi = 1;
+    }else{
+      $peekEffi = 0;
+    }
 
     if($status==''){
       $status ='2';
@@ -75,6 +81,7 @@ class Workstudy_model extends CI_Model{
       'noOfwokers' =>  $noOfWorkser,
       'incentiveHour' =>  $ince_hour,
       'sysEffi' =>  $efficiency_hid,
+      'peekEffiYesNo' =>  $peekEffi,
       'incenEffi' =>  $incenEffi,
       'forecastEffi' =>  $forecastEffi,
       'status' =>  $status,
@@ -116,6 +123,13 @@ class Workstudy_model extends CI_Model{
     $forecastEffi = $this->input->post('forecastEffi');
     $status = $this->input->post('status');
     $runningDay = $this->input->post('showRunDay');
+    $peekEffi = $this->input->post('peekEffi');
+
+    if($peekEffi){
+      $peekEffi = 1;
+    }else{
+      $peekEffi = 0;
+    }
 
     $this->db->trans_start();
     $this->db->set('hrs', $workingHrs);
@@ -124,6 +138,7 @@ class Workstudy_model extends CI_Model{
     $this->db->set('dayPlanQty', $planQty);
     $this->db->set('runningDay', $runDay);
     $this->db->set('showRunningDay', $runningDay);
+    $this->db->set('peekEffiYesNo', $peekEffi);
     $this->db->set('incentiveHour', $ince_hour);
     $this->db->set('incenEffi', $efficiency);
     $this->db->set('forecastEffi', $forecastEffi);

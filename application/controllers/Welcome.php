@@ -15,7 +15,7 @@ class Welcome extends CI_Controller {
         if ($this->session->userdata('session_user_data'))
         {
 //            $this->load->view('Location_Dashboard_Con');
-            redirect(base_url('Location_Dashboard_Con'), 'refresh');
+            redirect(base_url('Comdashboard'), 'refresh');
         }else{
             $this->load->view('login');
         }

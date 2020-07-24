@@ -36,7 +36,7 @@ class MY_Controller extends CI_Controller{
         $this->load->library('session');
         if (!$this->session->userdata('session_user_data')) {
             if ($_SERVER['REQUEST_METHOD'] == "GET" OR empty($_SERVER['REQUEST_METHOD'])) {
-                $_SESSION['new'] = current_url();
+                // $_SESSION['new'] = current_url();
             }
             redirect(base_url('Welcome'));
         }

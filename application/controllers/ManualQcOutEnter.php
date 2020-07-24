@@ -6,17 +6,20 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ManualQcOutEnter extends MY_Controller{
+    private $location;
+    private $oldDayPlanId = 0;
 
     function __construct(){
         parent::__construct();
         $this->checkSession();
+        $this->location = $this->myConlocation;
         $this->load->model('Style_model');
         $this->load->model('Manual_qc_out_enter_model');
     }
 
   public function index(){
 
-    $data['teams'] = $this->Manual_qc_out_enter_model->getTeams($this->myConlocation);
+    $data['teams'] = $this->Manual_qc_out_enter_model->getTeams($this->location);
     $data['style'] = $this->Style_model->getStyle();
 
       $this->load->view('template/header',$data);
@@ -46,6 +49,7 @@ class ManualQcOutEnter extends MY_Controller{
     $defectQty = $this->input->post('defectQty');
     $team = $this->input->post('team');
     $incentiveHour = $this->input->post('incenHour');
+    $style = $this->input->post('style');
     
     $result['new'] = $this->calculate($style,$team,$noOfWorkers,$hour,$passQty,$smv,$runDays,$incentiveEffi,$defectQty,$incentiveHour);
     $result['old'] = $this->getEffectedOtherDayPlan();
@@ -57,7 +61,7 @@ class ManualQcOutEnter extends MY_Controller{
   public function calculate($style,$team,$noOfWorkers,$hour,$passQty,$smv,$runDays,$incentiveEffi,$defectQty,$incentiveHour){
    ////// calaculate Effiency //////
  
-   $minuteForHour = $this->Manual_qc_out_enter_model->getMinuteForHour($this->myConLocation);
+   $minuteForHour = $this->Manual_qc_out_enter_model->getMinuteForHour($this->location);
 
   //     echo $smv;
 
@@ -124,7 +128,7 @@ class ManualQcOutEnter extends MY_Controller{
  //// Get target efficiency from ladder ////
  public function getTargetEffi($smv,$styleRunDays){
 
-     $needEff = $this->Manual_qc_out_enter_model->needRuningDaysEffi($styleRunDays,$smv, $this->myConLocation);
+     $needEff = $this->Manual_qc_out_enter_model->needRuningDaysEffi($styleRunDays,$smv, $this->location);
      if (!empty($needEff)) {
          return $needEff;
      } else {
@@ -180,7 +184,7 @@ class ManualQcOutEnter extends MY_Controller{
   public function getRoundUpstart()
   {
 
-      $result = $this->Manual_qc_out_enter_model->getRoundUpstart($this->myConLocation);
+      $result = $this->Manual_qc_out_enter_model->getRoundUpstart($this->location);
       if ($result) {
           return $result[0]->effi_roundup_start;
       } else {
@@ -204,7 +208,7 @@ class ManualQcOutEnter extends MY_Controller{
 
   public function getQrLevel(){
         //// get allow qr level from db/////
-        $qrLevel = $this->Manual_qc_out_enter_model->getQrLevel($this->myConLocation);
+        $qrLevel = $this->Manual_qc_out_enter_model->getQrLevel($this->location);
         if ($qrLevel) {
             return $qrLevel[0]->qr_level;
         } else {
@@ -222,7 +226,7 @@ class ManualQcOutEnter extends MY_Controller{
     $enterDate = $this->input->post('enterdDate');
     $oldData = '';
     /////Recalculate Old Dayplan ///////
-    $oldDayPlan  = $this->getOldDayPlanDataAndCalulate($team,$style,$enterDate);
+    $oldDayPlan  = $this->getOldDayPlan($team,$style,$enterDate);
    
     // print_r($oldDayPlan);
    
@@ -235,7 +239,7 @@ class ManualQcOutEnter extends MY_Controller{
      $oldIncentiveEff = $oldDayPlan[0]->incenEffi;
      $oldDefectQty = (int)$oldDayPlan[0]->defectQty - (int)$defectQty;
      $oldIncentiveEff = $oldDayPlan[0]->incentiveHour;
-     $oldDayPlanId = $oldDayPlan[0]->id;
+     $this->oldDayPlanId = $oldDayPlan[0]->id;
    
      ////// calculate old day plan again and update //////
      $oldData =  $this->calculate($style,$team,$oldNoOfWorkers,$oldHour,$oldpassQty,$oldSmv,$oldRunDay,$oldIncentiveEff,$oldDefectQty,$oldIncentiveEff);
@@ -246,11 +250,13 @@ class ManualQcOutEnter extends MY_Controller{
     ////save data //////
    public function setData(){
 
-       //$updateOldDayEff = $this->Manual_qc_out_enter_model->updateOldDayEffi($oldData,$oldDayPlanId);
-      
+        $oldData = $this->getEffectedOtherDayPlan();
+
+       $updateOldDayEff = $this->Manual_qc_out_enter_model->updateOldDayEffi($oldData,$this->oldDayPlanId);
+
        ////// Save maunal enterd data to DayPlan //////
-       $dayPlanId = $this->Manual_qc_out_enter_model->saveDayPlan($this->myConLocation,$this->myConUserName);
-       $saveManualDayEffi = $this->Manual_qc_out_enter_model->saveManualData($this->myConLocation,$dayPlanId);
+       $dayPlanId = $this->Manual_qc_out_enter_model->saveDayPlan($this->location,$this->myConUserName);
+       $saveManualDayEffi = $this->Manual_qc_out_enter_model->saveManualData($this->location,$dayPlanId);
        ///// Get and calculet old dayplan data and recalculate ////
        
        if($saveManualDayEffi){
@@ -261,7 +267,7 @@ class ManualQcOutEnter extends MY_Controller{
 
     }
 
-    public function getOldDayPlanDataAndCalulate($team,$style,$enterDate){
+    public function getOldDayPlan($team,$style,$enterDate){
 
         $result  = $this->Manual_qc_out_enter_model->getOtherDayPlan($team,$style,$enterDate);
 

@@ -245,6 +245,10 @@
 
             <div class="form-group row">
               <div id="tempDiv" class="col-md-3">
+              <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                <input  name="peekEffi" type="checkbox" class="custom-control-input" id="customControlInline">
+                <label class="custom-control-label" for="customControlInline">Allow Peek Efficiency</label>
+              </div>
               </div>
 
               <label id="feedingLbl" class="col-form-label col-md-1" style="display: none;">Feeding Hrs
@@ -252,17 +256,17 @@
                 <div id="feedingInputDiv" class="col-md-2" style="display: none;">
                   <input id="feedHours" name="feedHours" type="number" class="form-control "
                   value="<?php if (set_value('feedHours') == '') {
-    echo '0';
-} else {
-    echo set_value('feedHours');
-}?>" placeholder="Feeding Hours" min="0" >
+                        echo '0';
+                    } else {
+                        echo set_value('feedHours');
+                    }?>" placeholder="Feeding Hours" min="0" >
                   <span class="error" id="error"><?php echo form_error('feedHours'); ?></span>
                 </div>
                 <div class="col-md-9">
                   <div class="text-right">
-                      <button type="submit" id="save" name="save" value="sv-nw" class="btn bg-teal">Save & New<i
+                      <button type="submit" id="sv-nw" name="save" value="sv-nw" class="btn bg-teal">Save & New<i
                       class="icon-floppy-disks ml-2"></i></button>
-                      <button type="submit" id="save" name="save" value="sv-cl" class="btn btn-primary">Save & Close<i
+                      <button type="submit" id="sv-cl" name="save" value="sv-cl" class="btn btn-primary">Save & Close<i
                       class="icon-floppy-disk ml-2"></i></button>
                       <button type="reset" class="btn btn-warning">Reset<i class="icon-reset ml-2"></i>
                       </button>
@@ -466,11 +470,13 @@
 
           if(status == '4'){
             $('#tempDiv').css('display','none');
+             $('#customControlInline').removeAttr('checked','checked');
             $('#feedingLbl').css('display','block');
             $('#feedingInputDiv').css('display','block');
             $('#feedHours').val('1');
             $('#feedHours').attr('Required','Required');
           }else{
+            // $('#peekEffi').attr('checked','checked');
             $('#feedingLbl').css('display','none');
             $('#feedingInputDiv').css('display','none');
             $('#tempDiv').css('display','block');

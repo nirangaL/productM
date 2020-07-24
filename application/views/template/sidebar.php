@@ -54,7 +54,7 @@
 
                 <!-- Dashboard -->
                 <li class="nav-item">
-                    <a href="<?php echo base_url('Location_Dashboard_Con')?>" class="nav-link">
+                    <a href="<?php echo base_url('Comdashboard')?>" class="nav-link">
                         <i class="icon-home4"></i>
                         <span>Dashboard
 						</span>
@@ -163,7 +163,8 @@
                     <li class="nav-item"><a href="<?php echo base_url()?>report/StyleSizeWise_con" class="nav-link">  <i class="icon-tree6"></i>Style Details Report &nbsp; </a> </li>
                         <li class="nav-item"><a href="<?php echo base_url()?>report/StyleColorWiseReport" class="nav-link">  <i class="icon-list"></i>Style Summary Report &nbsp; </a> </li>
                         <li class="nav-item"><a href="<?php echo base_url()?>report/TeamWiseEfficiency_con" class="nav-link">  <i class="icon-esc"></i>Date Wise Efficiency Report</a></li>
-                        <li class="nav-item"><a href="<?php echo base_url()?>report/TeamHourlyProgress" class="nav-link">  <i class="icon-watch"></i>Team Hourly Progress Report <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0"> New</span></a></li>
+                        <li class="nav-item"><a href="<?php echo base_url()?>YearEfficiency" class="nav-link">  <i class="icon-calendar"></i>Year & Months Efficiency  <span class="badge badge-pill bg-warning-400 ml-auto ml-md-0"> New</span></a></li>
+                        <li class="nav-item"><a href="<?php echo base_url()?>report/TeamHourlyProgress" class="nav-link">  <i class="icon-watch"></i>Team Hourly Progress Report </a></li>
                        <!-- <li class="nav-item"><a href="http://192.168.1.211/intranet/index.php/Pass_list_report_con" class="nav-link">  <i class="icon-sort-time-asc"></i>View Pass & Defect Qty</a></li> -->
                        <li class="nav-item"><a href="<?php echo base_url()?>report/DateWisePassQtyReport" class="nav-link">  <i class="icon-calendar2"></i>Date wise pass Qty Report &nbsp;  </a>  </li>
                        <li class="nav-item"><a href="<?php echo base_url()?>report/Qc_passlog" class="nav-link">  <i class="icon-stack-check"></i>Qc Pass Log Report &nbsp;</a></li>

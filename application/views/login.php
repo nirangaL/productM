@@ -1,10 +1,4 @@
-<!---->
-<!--/**-->
-<!-- * Created by PhpStorm.-->
-<!-- * User: nirangal-->
-<!-- * Date: 01/21/2019-->
-<!-- * Time: 9:26 AM-->
-<!-- */-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,29 +26,62 @@
     <!-- Theme JS files -->
     <script src="<?php echo base_url()?>/assets/js/app.js"></script>
     <!-- /theme JS files -->
+    <style>
+        body {
+            position: relative;
+            height: 100%;
+            margin: 0;
+        }
+
+        .bg-image {
+            position: absolute;
+            /* The image used */
+            background-image: url("<?php echo base_url('assets/images/login_back.png')?>");
+            opacity: 0.2;
+            /* Full height */
+            height: 100%; 
+            width: 100%; 
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            z-index:0;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .login-form{
+            opacity: 1 !important;
+            /* z-index:11; */
+        }
+
+    </style>
+
 
 </head>
 
 <body>
+
 <!-- Main navbar -->
-<div class="navbar navbar-expand-md navbar-dark">
+<!-- <div class="navbar navbar-expand-md navbar-dark">
     <div class="navbar-brand">
         <a href="index.html" class="d-inline-block">
             <img src="<?php echo base_url()?>assets/global_assets/images/logo_light.png" alt="">
         </a>
     </div>
 
-</div>
+</div> -->
 <!-- /main navbar -->
 <!-- Page content -->
 <div class="page-content">
+<div class="bg-image"></div>
 
     <!-- Main content -->
-    <div class="content-wrapper">
-
+    <div class="content-wrapper ">
+   
         <!-- Content area -->
         <div class="content d-flex justify-content-center align-items-center">
-
+        <!-- <div class=""></div> -->
             <!-- Login form -->
             <div class="login-form">
                 <div class="card mb-0">
@@ -99,7 +126,7 @@
 
 
         <!-- Footer -->
-        <div class="navbar navbar-expand-lg navbar-light">
+        <!-- <div class="navbar navbar-expand-lg navbar-light">
             <div class="text-center d-lg-none w-100">
                 <button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse" data-target="#navbar-footer">
                     <i class="icon-unfold mr-2"></i>
@@ -116,7 +143,7 @@
                     <li class="nav-item"><a href="https://kopyov.ticksy.com/" class="navbar-nav-link" target="_blank"><i class="icon-lifebuoy mr-2"></i> Support</a></li>
                 </ul>
             </div>
-        </div>
+        </div> -->
         <!-- /footer -->
 
     </div>
@@ -151,7 +178,7 @@
                 }),
                 success: function (data) {
                     if (data == "ok") {
-                        window.location.replace("<?php echo base_url('Location_Dashboard_Con')?>");
+                        window.location.replace("<?php echo base_url('Comdashboard')?>");
                     } else if(data == "notOk") {
                         $('#errorLogin').text('Entered credentials are incorrect! ');
                     } else if(data == "block"){

@@ -75,7 +75,7 @@
     <div class="container-fluid ewu-col-offset">
     <div class="row">
         <div class="col-sm-4">
-            <a href="#">
+            <a href="<?php echo base_url('Undercontraction')?>">
                 <div class="m-1" >
                     <i class="icon-search4 icon-3x"></i>
                     <h5 class="title">Inspection</h5>
@@ -86,7 +86,7 @@
         </div>
        
         <div class="col-sm-4">
-        <a href="#">
+        <a href="<?php echo base_url('Undercontraction')?>">
         <div class="m-1" >
             <i class="icon-scissors icon-3x"></i>
             <h5 class="title">Cutting</h5>
@@ -96,7 +96,7 @@
         </a>
         </div>
         <div class="col-sm-4">
-        <a href="<?php echo base_url('Location_Dashboard_Con/production')?>">
+        <a href="<?php echo base_url('Location_Dashboard_Con')?>">
         <div class="m-1" >
             <i class="icon-hammer-wrench icon-3x"></i>
             <h5 class="title">Production</h5>
@@ -116,7 +116,7 @@
         </a>
         </div>
         <div class="col-sm-4">
-        <a href="#">
+        <a href="<?php echo base_url('Undercontraction')?>">
         <div class="m-1" >
             <i class="icon-make-group icon-3x"></i>
             <h5 class="title">Acceptable Quality Limit</h5>
@@ -126,7 +126,7 @@
         </a>
         </div>
         <div class="col-sm-4">
-        <a href="#">
+        <a href="<?php echo base_url('Undercontraction')?>">
         <div class="m-1" >
             <i class="icon-truck icon-3x"></i>
             <h5 class="title">Finish Good</h5>

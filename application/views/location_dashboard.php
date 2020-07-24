@@ -1,4 +1,4 @@
-
+<script src="<?php echo base_url()?>assets/js/location_dashboard.js"></script>
 <style>
 /* #teamData tr:nth-child(even) {background: #FCF8E8} */
 #myPopoverContent {display: none; float: right;}
@@ -52,6 +52,7 @@
 .summary span{
   font-weight: bold;
 }
+
 
 
 </style>
@@ -199,7 +200,7 @@
     <div class="row">
       <div class="col-lg-2">
         <!-- Members online -->
-        <div class="card bg-teal-400" data-toggle="modal" data-target="#wokerModal" style="cursor:pointer;">
+        <div class="card bg-teal-400 tile" data-toggle="modal" data-target="#wokerModal" style="cursor:pointer; ">
           <div class="card-body">
             <div class="d-flex">
               <h1 class="font-weight-semibold mb-0" id="workerCount"></h1>
@@ -223,7 +224,7 @@
       <div class="col-lg-2">
         <!-- Members online -->
         <a href="<?php echo base_url('qcDashboard')?>">
-          <div class="card bg-warning-400">
+          <div class="card bg-warning-400 tile">
             <div class="card-body">
               <div class="d-flex">
                 <h1 class="font-weight-semibold mb-0" id="totalDefect"></h1>
@@ -245,6 +246,35 @@
         <!-- /members online -->
 
       </div>
+
+      <div class="col-lg-2">
+        <!-- Members online -->
+        <a href="<?php echo base_url('YearEfficiency')?>">
+          <div class="card bg-primary-400 tile">
+            <div class="card-body">
+              <div class="d-flex">
+                <h1 class="font-weight-semibold mb-0" id="monthEffi">&nbsp</h1>
+
+                <div class="list-icons ml-auto">
+                  <div class="list-icons-item ">
+                    <i class="icon-calendar52" style="font-size: 35px;"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <span>Produced Min : </span><span id='monthProducedMin'></span><br>
+                <span>Used Min : </span><span id='monthUsedMin'></span><br>
+                <!-- <span class="font-size-lg">Click to see more year Efficiency</span> -->
+                <!-- <div class="font-size-md opacity-75"><span id="avgWorkers"></span> avg for a Teem</div> -->
+              </div>
+            </div>
+          </div>
+        </a>
+        <!-- /members online -->
+
+      </div>
+
     </div>
 
     <!-- Zoom option -->
@@ -322,6 +352,7 @@
     var hourLength = 0;
     var loopStart = 1;
     $(document).ready(function () {
+      // loaderOn();
       getAllData();
     });
 
@@ -356,6 +387,15 @@
             }else{
               LocaEffi = 0;
             }
+
+            var monthProduceMin = parseFloat(json_value['monthEffi'][0]);
+            var monthUsedMin = parseFloat(json_value['monthEffi'][1]);
+            var monthEffi = (monthProduceMin/monthUsedMin)*100;
+            
+            $('#monthProducedMin').text(monthProduceMin.toFixed(2));
+            $('#monthUsedMin').text(monthUsedMin.toFixed(2));
+            $('#monthEffi').text(monthEffi.toFixed(2)+'%');
+
 
             var dataVal = [];
             var forcastEffVal = [];
@@ -419,6 +459,7 @@
               var smv = '-';
               var noOfwokers = '-';
               var currentHour = '-';
+              var defectQty = '-';
               if(json_value['tvData'][i]['gridData'] != null){
                 var dayPlanLength = json_value['tvData'][i]['gridData'].length;
                 totalWorkers += parseFloat(json_value['tvData'][i]['gridData'][(dayPlanLength-1)]['noOfwokers']);
@@ -433,16 +474,15 @@
                   ForEff = json_value['tvData'][i]['gridData'][x]['ForEff'];
                   effi = json_value['tvData'][i]['gridData'][x]['actEff'];
                   qrL = json_value['tvData'][i]['gridData'][x]['actualQrLevel'];
-                  incentive = json_value['tvData'][i]['gridData'][x]['incentive'];
+                  incentive = json_value['tvData'][i]['gridData'][(x)]['peekIncentive'] ;
                   neededQrLvl = json_value['tvData'][i]['gridData'][x]['needQrLvl'];
                   status = json_value['tvData'][i]['gridData'][x]['status'];
                   smv = json_value['tvData'][i]['gridData'][x]['smv'];
                   currentHour = parseInt(json_value['tvData'][i]['gridData'][x]['currentHr']);
-                  totalDefectQty += parseInt(json_value['tvData'][i]['gridData'][x]['defectQty']);
-
+                  defectQty = parseInt(json_value['tvData'][i]['gridData'][x]['defectQty']);
+                  totalDefectQty += defectQty;
                   
                   if(jQuery.inArray(style, styleArray) !== -1){}else{styleArray.push(style)}
-  
                    
                   if(dayPlanType=='4'){
                     pQty = json_value['tvData'][i]['gridData'][x]['styleDayPlanQty'];
@@ -480,19 +520,19 @@
                     }else{
                       html += "<td>" + '-' +"</td>";
                     }
-
+                    html += "<td>" + json_value['tvData'][i]['gridData'][(x)]['ForEff'] + "</td>";
                     if(dayPlanType == "4" ){
                         if(json_value['tvData'][i]['gridData'].length != (x+1)){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
+                          // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
                           html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>"; 
                         }
 
                     }else if(((json_value['tvData'][i]['gridData'].length)-1) == (x+1)){
                        if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "2" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "1"){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
+                          // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
                           html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>"; 
                         }else if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "1" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>"; 
+                          // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>"; 
                           html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";           
                         }else if(json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
                           // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
@@ -500,7 +540,7 @@
                     }else if((json_value['tvData'][i]['gridData'].length) == 2){
                      
                     }else{
-                      html += "<td>" + ForEff + "</td>";
+                      // html += "<td>" + ForEff + "</td>";
                       html += "<td>" + effi + "</td>";
                     }
 
@@ -509,7 +549,7 @@
                           if(neededQrLvl <= parseFloat(json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'])){
                           html += "<td rowspan='2' style='color:green;font-weight:bold;'>" + json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'] + "</td>";
                           }else{
-                            html += "<td rowspan='2' style='color:red;font-weight:bold;'>" + json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'] + "</td>";
+                          html += "<td rowspan='2' style='color:red;font-weight:bold;'>" + json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'] + "</td>";
                           }
                         }
                         
@@ -523,15 +563,17 @@
 
                     if(dayPlanType == "4" ){
                         if(json_value['tvData'][i]['gridData'].length != (x+1)){
-                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['incentive'] + "</td>";
+                          html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['peekIncentive'] + "</td>";
                         }
                     }else {
                       html += "<td>" + incentive + "</td>";
                     }
 
                     // html += "<td>" + incentive + "</td>";
-
-                    if ( status == 'up') {
+                    
+                    if(dayPlanType == 2 && aQty == 0 && defectQty == 0) {
+                      html += "<td><span class='badge bg-primary-400'>Feeding</span></td>";
+                    }else if ( status == 'up') {
                       html += "<td><span class='badge bg-success-400'>Up</span></td>";
 
                     } else if (status == 'down') {
@@ -582,6 +624,8 @@
             $('#teamData').append(html);
           }
         }
+
+        // loaderOff();
       }); /// Close Ajax ///
     }
 
@@ -631,7 +675,7 @@
     var hourTotalArray = [];
 
     function hourlyOut(teamName,hourlyOut,style,currentHour){
-      console.log(currentHour);
+      // console.log(currentHour);
       // console.log(size);
       var htmlTHead = "";
       var htmlTBody = "";
@@ -702,7 +746,7 @@
           // console.log(hourTotalArray);
         $('#hourlyOutTBody').append(htmlTBody);
         
-            // $('#workerCount').text(totalWorkersCount);
+        // $('#workerCount').text(totalWorkersCount);
     }
 
 
@@ -710,10 +754,13 @@
       self.close();
       var company  = <?php echo $sessionData['company'] ?>;
       var location  = <?php echo $sessionData['location'] ?>;
+      // alert(location);
       document.cookie = 'company='+company+'';
       document.cookie = 'line='+team+'';
       document.cookie = 'location='+location+'';
  
+      // console.log( document.cookie);
+
      my_window = window.open('<?php echo base_url('tv/Tv_Production_Con')?>','TeamTv','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1280,height=760');
 
     }

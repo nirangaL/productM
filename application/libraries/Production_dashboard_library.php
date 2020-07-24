@@ -76,6 +76,8 @@ class Production_dashboard_library
                 $showRunningDay = $temaData[$i]->showRunningDay;
                 $styleDayPlanQty = $temaData[$i]->dayPlanQty;
                 $allDefectQty = $temaData[$i]->allDefectQty;
+                $feedingHour = $temaData[$i]->feedingHour;
+                $peekEffiYesNo = $temaData[$i]->peekEffiYesNo;
                
                 $finalHourMin = 0;
                 $workingMin = 0; ///// total working min /////
@@ -85,39 +87,46 @@ class Production_dashboard_library
                 $timeForTimeCountDown = '-';
                 $statusTeamTv = '-';
 
-                if($temaData[$i]->dayPlanType == '4'){
-                    $dayPlanQty += $temaData[$i]->dayPlanQty;
-                    $passQty += $temaData[$i]->passQty;
-                    $defectQty += $temaData[$i]->defectQty;
-                    $remakeQty += $temaData[$i]->remakeQty;
-                }else{
-                    $dayPlanQty = $temaData[$i]->dayPlanQty;
-                    $passQty = $temaData[$i]->passQty;
-                    $defectQty = $temaData[$i]->defectQty;
-                    $remakeQty = $temaData[$i]->remakeQty;
-                    
-                }
+                 ///****** Get this time range hour and which start
+                 $getTime = $this->getTeamTime($hrs,$dayPlanId,$dayPlanType,$timeTemplate, $team);
 
-                ///****** Get this time range hour and which start
-                $getTime = $this->getTeamTime($hrs,$dayPlanId,$dayPlanType,$timeTemplate, $team);
+                // echo '<pre>';
+                // print_r($getTime); 
 
                 if (!empty($getTime)) {
+
+                    if(array_key_exists('productHourForStyle',$getTime[0])){
+                        // print_r($getTime); 
+                        if(!($getTime[0]->productHourForStyle >= $getTime[0]->currentHour)){
+                            continue;
+                        }
+                        ////this is second or theird day plan current hour ///
+                        $currentHour = $getTime[0]->productHourForStyle; 
+                    }else{
+                        $currentHour = $getTime[0]->currentHour;
+                    }
+
+
+                    if($temaData[$i]->dayPlanType == '4'){
+                        $dayPlanQty += $temaData[$i]->dayPlanQty;
+                        $passQty += $temaData[$i]->passQty;
+                        $defectQty += $temaData[$i]->defectQty;
+                        $remakeQty += $temaData[$i]->remakeQty;
+                    }else{
+                        $dayPlanQty = $temaData[$i]->dayPlanQty;
+                        $passQty = $temaData[$i]->passQty;
+                        $defectQty = $temaData[$i]->defectQty;
+                        $remakeQty = $temaData[$i]->remakeQty;
+                        
+                    }
+
+
                     ////// This is the current time day plan ///////
                     $hourStartTime = $getTime[0]->startTime;
                     $endTime = $getTime[0]->endTime;
                     $startDateTime = date('Y-m-d') . ' ' . $getTime[0]->startTime;
                     $endDateTime = date('Y-m-d') . ' ' . $getTime[0]->endTime;
                     $currentTime = date('H:i:s');
-
-                    // print_r($getTime); 
-
-                    if(array_key_exists('productHourForStyle',$getTime[0])){
-                        // print_r($getTime); 
-                        ////this is second or theird day plan current hour ///
-                        $currentHour = $getTime[0]->productHourForStyle; 
-                    }else{
-                        $currentHour = $getTime[0]->currentHour;
-                    }
 
                     // $currentHour = $getTime[0]->currentHour;
                     
@@ -162,6 +171,10 @@ class Production_dashboard_library
 
                     $timeFramePerMin = $this->get_time_difference($hourStartTime, $endTime) * $this->minuteForHour;
 
+                    if($plannedQtyHrs ==0){
+                        $plannedQtyHrs = 1;
+                    }
+
                     // One Pcs sawing time
                     $perPcsMinits = $timeFramePerMin / $plannedQtyHrs;
                     /// actual ne Pcs sawing time within current progress ////
@@ -186,8 +199,8 @@ class Production_dashboard_library
                 }
 
                 //// Line status /////
-                $neededQtyAtTime = $this->getNeededQtyAtTime($hrs, $workingMin, $dayPlanQty);
-                $styleNeedQty = $this->getNeededQtyAtTime($hrs, $workingMin, $styleDayPlanQty);
+                $neededQtyAtTime = $this->getNeededQtyAtTime(($hrs),$workingMin,$dayPlanQty);
+                $styleNeedQty = $this->getNeededQtyAtTime(($hrs),$workingMin,$styleDayPlanQty);
 
                 if ($neededQtyAtTime > $dayPlanQty) {
                     $neededQtyAtTime = $dayPlanQty;
@@ -239,6 +252,7 @@ class Production_dashboard_library
                 }else{
                     $actualQrLevel = number_format((float) $actualQrLevel, 2, '.', '');
                 }
+                $peekIncentive = 0;
                 if ($qrLevelNeed <= $actualQrLevel && $targetEfficiency != 0) {
 
                     // //// if two style and same smv then we need to get incenctive according to  efficiency of both style ////
@@ -247,13 +261,25 @@ class Production_dashboard_library
                     //         // $preStyleRunDays = $CI->Dashboard_production_model->getStyleRunDays($temaData[$i - 1]->stylee, $this->team);
                     //         $incentive = $this->getIncentive($lineAndStyleEffi['lineEffi'], $targetEfficiency, $baseAmount, $increPrecent, $increAmount, $reductPrecent, $reductAmount, $team, $smv,$styleRunningDay);
                     //     }
-
                     // }
 
+                    $peekEffi = $CI->Dashboard_production_model->getPeekEffi($location,$smv);
+                    if($peekEffiYesNo == '1' && $lineAndStyleEffi['styleEff'] < $targetEfficiency){
+                      if($lineAndStyleEffi['styleEff'] >= $peekEffi && $targetEfficiency > $peekEffi){
+                        $reduceEffiAmount = $targetEfficiency - (float)$lineAndStyleEffi['styleEff'];
+                        $offerIncentive = $this->getIncentive($targetEfficiency, $targetEfficiency, $baseAmount, $increPrecent, $increAmount, $reductPrecent, $reductAmount, $team, $smv, $styleRunningDay);
+                        $peekIncentive = $offerIncentive - ((int)$reduceEffiAmount * $increPrecent);
+                      }
+                    }
+                    
                     $incentive = $this->getIncentive($lineAndStyleEffi['styleEff'], $targetEfficiency, $baseAmount, $increPrecent, $increAmount, $reductPrecent, $reductAmount, $team, $smv, $styleRunningDay);
                     $ince_hour = $temaData[$i]->incentiveHour;
                     if ($ince_hour != 0) {
                         $incentive = ($incentive / ($ince_hour * $this->minuteForHour)) * ($temaData[$i]->hrs * $this->minuteForHour);
+                    }
+
+                    if($peekIncentive == 0 ){
+                        $peekIncentive = $incentive;
                     }
                 } else {
                     $incentive = 0;
@@ -304,6 +330,7 @@ class Production_dashboard_library
                     'styleNeedQty'=> intval($styleNeedQty),
                     'allDefectQty'=> $allDefectQty,
                     'defectQty'=> $temaData[$i]->defectQty,
+                    'peekIncentive'=> $peekIncentive,
                 );
                 if($from == 'webAppDashboard'){
                     $data['hourlyOut'][$i] = $this->getHourlyOut($team,$style,$hrs,$smv,$noOfwokers,$dayPlanId,$dayPlanType,$currentHour,$timeTemplate);        
@@ -380,7 +407,7 @@ class Production_dashboard_library
                     }else if((strtotime($currentTime) > strtotime($result[0]->endTime))){
                         $result[0]->currentHour = new stdClass();
                         $result[0]->currentHour = $totalHour;
-                    } 
+                    }
                 }
             }
 

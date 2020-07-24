@@ -27,8 +27,10 @@ class Dashboard_production_model extends CI_Model{
         , `day_plan`.`incentiveHour`
         , `day_plan`.`forecastEffi` AS forecastEffi
         , `day_plan`.`incenEffi`
+        , `day_plan`.`peekEffiYesNo`
         , `day_plan`.`location`
         , prod_line.`line` AS lineName
+        , day_plan.`feedingHour`
         ,  IFNULL(`checking_header_tb`.`id`,0) as chckTblHdId
         ,IFNULL((SELECT SUM(`passQty`) AS pass FROM  checking_grid_tb WHERE `chckHeaderId` = IFNULL(`checking_header_tb`.`id`,0) ),0) AS passQty
          ,IFNULL((SELECT SUM(`rejectQty`) FROM checking_grid_tb WHERE `chckHeaderId` = IFNULL(`checking_header_tb`.`id`,0)),0) AS defectQty
@@ -197,5 +199,45 @@ class Dashboard_production_model extends CI_Model{
          return $this->db->query($sql)->result();
     }
 
+
+    public function getBaseEffi($smv,$location){
+
+        $sql = "SELECT
+        `start_smv`,
+        `end_smv`,
+        `base_line_amount`,
+        `delete_ID`
+        FROM
+        `intranet_db`.`day_plan_eff_baseamout` WHERE start_smv < '$smv' AND end_smv >= '$smv' AND locationId='$location'";
+        return $this->db->query($sql)->result();
+      }
+  
+      public function getBaseAmountAndDayBaseAmount($smv,$eff,$location){
+  
+        $sql = "SELECT
+                `id`,
+                `locationId`,
+                `smv_start`,
+                `smv_end`,
+                `days`,
+                `efficiency`,
+                `base_amount`
+              FROM
+               `incentive_ladderid` WHERE smv_start < '$smv' AND smv_end >= '$smv' AND locationId='$location' AND efficiency='$eff'";
+        return $this->db->query($sql)->result();
+      }
+
+      public function getPeekEffi($locationId,$smv){
+          $sql = "SELECT
+          `base_line_amount` AS peekEffi
+        FROM
+          `day_plan_eff_baseamout`
+        WHERE locationId = '$locationId'
+          AND start_smv < '$smv'
+          AND end_smv > '$smv'";
+        
+          $result = $this->db->query($sql)->result();
+          return $result[0]->peekEffi;
+      }
 
 }

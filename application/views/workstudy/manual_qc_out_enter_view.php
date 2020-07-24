@@ -342,11 +342,11 @@
             var json_data = JSON.parse(response);
             
 
-            data['producedMin'] = json_data['producedMin'];
-            data['usedMin'] = json_data['usedMin'];
-            data['effi'] = json_data['effi'];
-            data['qrLvl'] = json_data['qrLvl'];
-            data['incentive'] = json_data['incentive'];
+            data['producedMin'] = json_data['new']['producedMin'];
+            data['usedMin'] = json_data['new']['usedMin'];
+            data['effi'] = json_data['new']['effi'];
+            data['qrLvl'] = json_data['new']['qrLvl'];
+            data['incentive'] = json_data['new']['incentive'];
 
              html += '<div class="card">';
                 html += '<div class="card-body p-4">';
@@ -408,9 +408,14 @@
             type:'POST',
             url: '<?php echo base_url("ManualQcOutEnter/setData") ?>'
         }).done(function(data) {
-
+            if(data=='ok'){
+                sweetAlert('Successfully Saved ','','success');
+            }else{
+                sweetAlert('Not Saved','Contac the System Administrator','warning');
+            }
+            
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            // If fail
+            sweetAlert('Not Saved','Check the connection Or contact the System Administrator','warning')
             console.log(textStatus + ': ' + errorThrown);
         });
 

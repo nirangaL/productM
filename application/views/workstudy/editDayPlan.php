@@ -234,7 +234,13 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div id="tempDiv" class="col-md-3" <?php if($dayPlanData[0]->status == '4'){echo 'style="display: none"';}else{echo 'style="display: block;"';}?> >
+                      <div class="col-md-3" <?php if($dayPlanData[0]->dayPlanType == '2'){echo 'style="display: none"';}else{echo 'style="display: block;"';}?>>
+                      <div id="tempDiv"   >
+                      <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                        <input  name="peekEffi" type="checkbox" class="custom-control-input" id="customControlInline"  <?php if($dayPlanData[0]->peekEffiYesNo == '1'){echo 'checked';}?>>
+                        <label class="custom-control-label" for="customControlInline">Allow Peek Efficiency</label>
+                      </div>
+                      </div>
                       </div>
                       <label id="feedingLbl" class="col-form-label col-md-1" <?php if($dayPlanData[0]->status == '4'){echo 'style="display: block;"';}else{echo 'style="display: none;"';}?> >Feeding Hrs
                         :</label>
@@ -398,14 +404,14 @@
               var status =  $("input[name=status]:checked").val();
 
               if(status == '4'){
-                $('#tempDiv').css('display','none');
+                // $('#tempDiv').css('display','none');
                 $('#feedingLbl').css('display','block');
                 $('#feedingInputDiv').css('display','block');
                 $('#feedHours').val('1');
               }else{
                 $('#feedingLbl').css('display','none');
                 $('#feedingInputDiv').css('display','none');
-                $('#tempDiv').css('display','block');
+                // $('#tempDiv').css('display','block');
                 $('#feedHours').val('0');
               }
             });

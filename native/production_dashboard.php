@@ -1,5 +1,3 @@
-<script src="assets/jquery.min.js"></script>
-
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors',1);
@@ -236,11 +234,11 @@ for($i=0;$i<$teamsSize;$i++){
     // echo '<pre>';
     // print_r($data['hourlyData'][$x]);
 
-    // if(!empty($data)){
-    //     echo json_encode($data);
-    // }else{
-    //     echo 'no any day plan';
-    // }
+    if(!empty($data)){
+        echo json_encode($data);
+    }else{
+        echo 'no any day plan';
+    }
   
 
 
@@ -694,323 +692,50 @@ function calEfficiency($prodMin,$usedMin){
 
 
 <script>
-
-     var json_value = <?php print json_encode($data); ?>;
-     console.log(json_value);
-        var totalWorkers = 0;
-        var totalPlanQty = 0;
-        var totalOutQty = 0;
-        var totalDefectQty = 0;
-        var styleArray = [];
-    if(json_value!=null){
-
-      var runTeamCount = 0;
-      var workerCount = 0;
-    //   var json_value = JSON.parse(data);
-
-      team=[];
-      expectEff=[];
-      actualEff=[];
-
-      var html = '';
-      var teamsSize = <?php echo $dayPlanSize;?>;
-
-
-
-      $('#teamData').empty();
-      // $('#hourlyOutTHead').empty();
-      $('#hourlyOutTBody').empty();
-      for(var i=0;i<teamsSize;i++){
-        team.push(json_value['team'][i]);
-        forEff = 0;
-        actEf = 0;
-        if(json_value['tvData'][i] == null ){
-          forEff = 0;
-          actEf = 0;
-        }else{
-          // console.log(json_value['tvData'][i]['gridData'].length);
-          if(Array.isArray(json_value['tvData'][i]['gridData']) && json_value['tvData'][i]['gridData'].length){
-            // console.log(i);
-          for(var x=0;x<json_value['tvData'][i]['gridData'].length;x++){
-            forEff = json_value['tvData'][i]['gridData'][x]['ForEff'];
-            actEf = json_value['tvData'][i]['gridData'][x]['actEff'];
-            // console.log(json_value['team'][i]+" -"+forEff +" "+actEf);
-          }
-          }
-         
-          runTeamCount +=1;
-        }
-        expectEff.push(forEff);
-        actualEff.push(actEf);
-
-        var teamName = json_value['team'][i];
-        var style = '-';
-        var delv = '-';
-        var runDay = '-';
-        var pQty = '-';
-        var aQty = '-';
-        var effi = '-';
-        var qrL = '-';
-        var status = '-';
-        var neededQtyAtTime = '-';
-        var neededQrLvl = '-';
-        var incentive = '-';
-        var smv = '-';
-        var noOfwokers = '-';
-        var currentHour = '-';
-        if(json_value['tvData'][i]['gridData'] != null){
-          var dayPlanLength = json_value['tvData'][i]['gridData'].length;
-          totalWorkers += parseFloat(json_value['tvData'][i]['gridData'][(dayPlanLength-1)]['noOfwokers']);
-          for(var x=0;x<dayPlanLength;x++){
-            teamName = json_value['tvData'][i]['gridData'][x]['lineName'];
-            dayPlanType = json_value['tvData'][i]['gridData'][x]['dayPlanType'];
-            buyer = json_value['tvData'][i]['gridData'][x]['buyer'];
-            style = json_value['tvData'][i]['gridData'][x]['style'];
-            noOfwokers = json_value['tvData'][i]['gridData'][x]['noOfwokers'];
-            runDay = json_value['tvData'][i]['gridData'][x]['styleRunDatys'];
-            aQty = json_value['tvData'][i]['gridData'][x]['lineOutQty'];
-            ForEff = json_value['tvData'][i]['gridData'][x]['ForEff'];
-            effi = json_value['tvData'][i]['gridData'][x]['actEff'];
-            qrL = json_value['tvData'][i]['gridData'][x]['actualQrLevel'];
-            incentive = json_value['tvData'][i]['gridData'][x]['incentive'];
-            neededQrLvl = json_value['tvData'][i]['gridData'][x]['needQrLvl'];
-            status = json_value['tvData'][i]['gridData'][x]['status'];
-            smv = json_value['tvData'][i]['gridData'][x]['smv'];
-            currentHour = parseInt(json_value['tvData'][i]['gridData'][x]['currentHr']);
-            totalDefectQty += parseInt(json_value['tvData'][i]['gridData'][x]['defectQty']);
-
-            
-            if(jQuery.inArray(style, styleArray) !== -1){}else{styleArray.push(style)}
-
-             
-            if(dayPlanType=='4'){
-              pQty = json_value['tvData'][i]['gridData'][x]['styleDayPlanQty'];
-              neededQtyAtTime = json_value['tvData'][i]['gridData'][x]['styleNeedQty'];
-            }else{
-              pQty = json_value['tvData'][i]['gridData'][x]['dayPlanQty'];
-              neededQtyAtTime = json_value['tvData'][i]['gridData'][x]['neededQtyAtTime'];
-            }
-
-           
-            totalPlanQty += parseInt(pQty);
-            totalOutQty += parseInt(aQty);
-
-            if(json_value['tvData'][i]['gridData'][x]['whatData'] == 'feeding'){
-              html += "<tr>";
-              html += "<td>" + teamName + "</td>";
-              html += "<td>" + buyer + "</td>";
-              html += "<td>" + style + "</td>";
-              html += "<td colspan='8' style='color:orange;text-align:center;font-weight:bold;'>Feeding...</td>";
-              html += "</tr>";
-            }else{
-              html += "<tr>";
-              if(x==0){
-                html += "<td rowspan='"+json_value['tvData'][i]['gridData'].length+"'>" + teamName + "</td>";
-              }
-              html += "<td>" + buyer + "</td>";
-              html += "<td>" + style + "</td>";
-              html += "<td>" + smv + "</td>";
-              html += "<td>" + runDay + "</td>";
-              html += "<td>" + noOfwokers + "</td>";
-              html += "<td>" + pQty + "</td>";
-
-              if(neededQtyAtTime != '-'){
-                html += "<td>" + aQty + " / "+ neededQtyAtTime +"</td>";
-              }else{
-                html += "<td>" + '-' +"</td>";
-              }
-
-              if(dayPlanType == "4" ){
-                  if(json_value['tvData'][i]['gridData'].length != (x+1)){
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>"; 
-                  }
-
-              }else if(((json_value['tvData'][i]['gridData'].length)-1) == (x+1)){
-                 if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "2" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "1"){
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>";
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>"; 
-                  }else if(json_value['tvData'][i]['gridData'][(x)]['dayPlanType'] == "1" && json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['ForEff'] + "</td>"; 
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";           
-                  }else if(json_value['tvData'][i]['gridData'][(x+1)]['dayPlanType'] == "2"){
-                    // html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['actEff'] + "</td>";
-                  } 
-              }else if((json_value['tvData'][i]['gridData'].length) == 2){
-               
-              }else{
-                html += "<td>" + ForEff + "</td>";
-                html += "<td>" + effi + "</td>";
-              }
-
-              if(dayPlanType == "4"){
-                  if(json_value['tvData'][i]['gridData'].length != (x+1)){
-                    if(neededQrLvl <= parseFloat(json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'])){
-                    html += "<td rowspan='2' style='color:green;font-weight:bold;'>" + json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'] + "</td>";
-                    }else{
-                      html += "<td rowspan='2' style='color:red;font-weight:bold;'>" + json_value['tvData'][i]['gridData'][(x+1)]['actualQrLevel'] + "</td>";
-                    }
-                  }
-                  
-              }else{
-                if(neededQrLvl <= parseFloat(qrL)){
-                html += "<td style='color:green;font-weight:bold;'>" + qrL + "</td>";
-              }else{
-                html += "<td style='color:red;font-weight:bold;'>" + qrL + "</td>";
-              }
-              }
-
-              if(dayPlanType == "4" ){
-                  if(json_value['tvData'][i]['gridData'].length != (x+1)){
-                    html += "<td rowspan='2'>" + json_value['tvData'][i]['gridData'][(x+1)]['incentive'] + "</td>";
-                  }
-              }else {
-                html += "<td>" + incentive + "</td>";
-              }
-
-              // html += "<td>" + incentive + "</td>";
-
-              if ( status == 'up') {
-                html += "<td><span class='badge bg-success-400'>Up</span></td>";
-
-              } else if (status == 'down') {
-                html += "<td><span class='badge bg-danger'>Down</span></td>";
-              } else {
-                html += "<td>'-'</td>";
-              }
-              if(x==0){
-                html += "<td rowspan='"+json_value['tvData'][i]['gridData'].length+"' class='text-center'><i id='tv-icon' class='icon-display mr-2' onclick='showTeamDash("+json_value['tvData'][i]['gridData'][(x)]['line']+")'></i></td>";
-              }
-              
-              html += "</tr>";
-
-            }
-           
-          }
-          hourLength = 0;
-          loopStart = 1;
-          for(var x=0;x<json_value['tvData'][i]['hourlyData'].length;x++){
-            hourlyOut(teamName,json_value['tvData'][i]['hourlyData'][x],style,currentHour);
-          }
-        }else{
-          html +="<tr>";
-          html +="<td>"+json_value['team'][i]+"</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td>-</td>";
-          html +="<td class='text-center'>-</td>";
-          html +="<tr>";
-        }
-       
-      }      
-  
-      $('#totWorker').text(totalWorkers);
-          $('#totPlan').text(totalPlanQty);
-          $('#totOut').text(totalOutQty);
-          $('#totalDefect').text(totalDefectQty);
-          $('#totStyle').text(styleArray.length);
-
-      $('#teamData').append(html);
-    }
-
-
-
-Object.size = function(obj) {
-var size = 0, key;
-for (key in obj) {
-    if (obj.hasOwnProperty(key)) size++;
-}
-return size;
-};
-
-///// globel variable for hourlyOut Function
-var maxHour = 0;
-var hourTotalArray = [];
-
-function hourlyOut(teamName,hourlyOut,style,currentHour){
-// console.log(currentHour);
-// console.log(size);
-var htmlTHead = "";
-var htmlTBody = "";
-
-hourLength += Object.size(hourlyOut);
-
-var totalHourQty = 0;
-var totalTeamQty = 0;
-
-if(maxHour<hourLength){
-  maxHour = hourLength;
-  htmlTHead +="<tr>";
-  htmlTHead +="<th rowspan='2' class='text-center'>Team</th>";
-  htmlTHead +="<th rowspan='2' class='text-center'>Style</th>";
-
-    for(var i=0;i<hourLength;i++){
-      htmlTHead +="<th colspan='2' class='text-center'>"+(i+1)+" Hour</th>";
-    }
-    htmlTHead +="</tr>";
-    htmlTHead +="<tr>";
-    for(var i=0;i<hourLength;i++){ 
-      htmlTHead +="<th class='text-center'>QTY</th>";
-      htmlTHead +="<th class='text-center'>Effi %</th>";
-    }
-    htmlTHead +="</tr>";
-    $('#hourlyOutTHead').empty().append(htmlTHead);
-}
-
-  
-  htmlTBody +="<tr>";
-    htmlTBody +="<td class='names'>"+teamName+"</td>";
-    htmlTBody +="<td class='names'>"+hourlyOut[loopStart]['style']+"</td>";
- 
-
-      for(var i=loopStart;i<=hourLength;i++){
-
-        var effi = (parseFloat(hourlyOut[i]['prodeMin'])/parseFloat(hourlyOut[i]['userMin'])) * 100;
-      if(hourlyOut[i]['styleStartHour'] == 1 || hourlyOut[i]['styleStartHour'] == null){
-        if(currentHour == i){
-          htmlTBody +="<td class='cr-qty'>"+hourlyOut[i]['qty']+"</td>";
-          htmlTBody +="<td class='cr-effi'>"+effi.toFixed(2)+"</td>";
-        }else{
-          htmlTBody +="<td class='qty'>"+hourlyOut[i]['qty']+"</td>";
-          htmlTBody +="<td class='effi'>"+effi.toFixed(2)+"</td>";
-        }
-       
-        // hourTotalArray.push((hourTotalArray[i] + parseInt(hourlyOut[i]['qty'])));
-      }else{
-        htmlTBody +="<td colspan='"+ (parseInt(hourlyOut[i]['styleStartHour'])-1)*2 +"'></td>";
-        // htmlTBody +="<td colspan='"+hourlyOut[i]['styleStartHour']+"'></td>";
-        for(var x=(parseInt(hourlyOut[i]['styleStartHour'])); x<= hourLength;x++){
-          if(currentHour == x){
-            htmlTBody +="<td class='cr-qty'>"+hourlyOut[x]['qty']+"</td>";
-          htmlTBody +="<td class='cr-effi'>"+effi.toFixed(2)+"</td>";
-          }else{
-            htmlTBody +="<td class='qty'>"+hourlyOut[x]['qty']+"</td>";
-            htmlTBody +="<td class='effi'>"+effi.toFixed(2)+"</td>";
-          }
-          
-          // hourTotalArray.push((hourTotalArray[x] + parseInt(hourlyOut[x]['qty'])));
-        }
-        break;
-      }
-    
-    }
-    loopStart += Object.size(hourlyOut);
-    htmlTBody +="</tr>";
-    // console.log(hourTotalArray);
-  $('#hourlyOutTBody').append(htmlTBody);
-  
-  // $('#workerCount').text(totalWorkersCount);
-}
-
-
-
-
+     var stuff = <?php print json_encode($stuff); ?>;
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+?>

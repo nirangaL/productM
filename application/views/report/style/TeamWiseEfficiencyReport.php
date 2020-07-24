@@ -134,7 +134,7 @@
                             $totalUsedMin += ($usedMin+$usedMinNext);
 
                             $lineEff = ($produceMin+$produceMinNextRow)/($usedMin+$usedMinNext)*100;
-                            $totalWorkerCount +=  (double)$tableData[$i]->workersCount;
+                            // $totalWorkerCount +=  (double)$tableData[$i]->workersCount;
                           }else if($thisLineEffAlreadyCal == "yes"){
                             $workingMin =  (double)$tableData[$i]->workingHour * $tableData[$i]->minuuteForHour;
                             $produceMin = 0;
@@ -180,15 +180,16 @@
                             <td><?php echo $tableData[$i]->actualOutQty;?></td>
                             <td><?php echo $tableData[$i]->actualOutQty * (float)$tableData[$i]->smv;?></td>
                             <td><?php echo (double)$tableData[$i]->workersCount * $workingMin;?></td>
+                            <td><?php echo $forecastEffi.'%';?></td>
                             <?php if($previLine == $tableData[$i+1]->line){
                               $thisLineEffAlreadyCal = "yes";
                             ?>
-                             <td rowspan="2"><?php echo $forecastEffi.'%';?></td>
+                            
                               <td rowspan="2"><?php echo number_format($lineEff,2).'%';?></td>
                             <?php
                           }else if($thisLineEffAlreadyCal !="yes"){
                             ?>
-                              <td><?php echo $forecastEffi.'%';?></td>
+                              <!-- <td><?php // echo $forecastEffi.'%';?></td> -->
                               <td><?php echo $tableData[$i]->efficiency.'%';?></td>
                             <?php
 
